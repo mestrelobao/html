@@ -1,0 +1,336 @@
+<!e-mail: mestrelobaoguiga@gmail.com>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function funcao() {
+
+  var listamodo = document.getElementById("modo").value;
+  var listatom = document.getElementById("tom").value;
+  let acorde;
+  let escala;
+  
+  ///// DÓRICO
+  
+  if (listamodo == "DÓRICO"&& listatom == "C") {
+    acorde = "ACORDE: Cm"
+    escala = "ESCALA (Bb): C D Eb F G A Bb";
+  } else if (listamodo == "DÓRICO"&& listatom == "C#"){
+    acorde = "ACORDE: C#m"
+    escala = "ESCALA (B): C# D# E F# G# A# B";
+  } else if (listamodo == "DÓRICO"&& listatom == "D"){
+    acorde = "ACORDE: Dm"
+    escala = "ESCALA (C): D E F G A B C";
+  } else if (listamodo == "DÓRICO"&& listatom == "Eb"){
+    acorde = "ACORDE: Ebm"
+    escala = "ESCALA (Db): Eb F Gb Ab Bb C Db";
+  } else if (listamodo == "DÓRICO"&& listatom == "E"){
+    acorde = "ACORDE: Em"
+    escala = "ESCALA (D): E F# G A B C# D";
+  } else if (listamodo == "DÓRICO"&& listatom == "F"){
+    acorde = "ACORDE: Fm"
+    escala = "ESCALA (Eb): F G Ab Bb C D Eb";
+  } else if (listamodo == "DÓRICO"&& listatom == "Gb"){
+    acorde = "ACORDE: F#m"
+    escala = "ESCALA (E): F# G# A B C# D# E";
+  } else if (listamodo == "DÓRICO"&& listatom == "G"){
+    acorde = "ACORDE: Gm"
+    escala = "ESCALA (F): G A Bb C D E F";
+  } else if (listamodo == "DÓRICO"&& listatom == "Ab"){
+    acorde = "ACORDE: Abm"
+    escala = "ESCALA (Gb): Ab Bb B Db Eb F Gb";
+  } else if (listamodo == "DÓRICO"&& listatom == "A"){
+    acorde = "ACORDE: Am"
+    escala = "ESCALA (G): A B C D E F# G";
+  } else if (listamodo == "DÓRICO"&& listatom == "Bb"){
+    acorde = "ACORDE: Bbm"
+    escala = "ESCALA (Ab): Bb C Db Eb F G Ab";
+  } else if (listamodo == "DÓRICO"&& listatom == "B"){
+    acorde = "ACORDE: Bm"
+    escala = "ESCALA (A): B C# D E F# G# A";
+  
+  ///// JÔNICO
+  
+  } else if (listamodo == "JÔNICO"&& listatom == "C") {
+    acorde = "ACORDE: C"
+    escala = "ESCALA (C): C D E F G A B";
+  } else if (listamodo == "JÔNICO"&& listatom == "C#"){
+    acorde = "ACORDE: C#"
+    escala = "ESCALA (C#): C# D# F F# G# A# C";
+  } else if (listamodo == "JÔNICO"&& listatom == "D"){
+    acorde = "ACORDE: D"
+    escala = "ESCALA (D): D E F# G A B C#";
+  } else if (listamodo == "JÔNICO"&& listatom == "Eb"){
+    acorde = "ACORDE: Eb"
+    escala = "ESCALA (Eb): Eb F G Ab Bb C D";
+  } else if (listamodo == "JÔNICO"&& listatom == "E"){
+    acorde = "ACORDE: E"
+    escala = "ESCALA (E): E F# G# A B C# D#";
+  } else if (listamodo == "JÔNICO"&& listatom == "F"){
+    acorde = "ACORDE: F"
+    escala = "ESCALA (F): F G A Bb C D E";
+  } else if (listamodo == "JÔNICO"&& listatom == "Gb"){
+    acorde = "ACORDE: F#"
+    escala = "ESCALA (F#): F# G# A# B C# D# F";
+  } else if (listamodo == "JÔNICO"&& listatom == "G"){
+    acorde = "ACORDE: G"
+    escala = "ESCALA (G): G A B C D E F#";
+  } else if (listamodo == "JÔNICO"&& listatom == "Ab"){
+    acorde = "ACORDE: Ab"
+    escala = "ESCALA (Ab): Ab Bb C Db Eb F G";
+  } else if (listamodo == "JÔNICO"&& listatom == "A"){
+    acorde = "ACORDE: A"
+    escala = "ESCALA (A): A B C# D E F# G#";
+  } else if (listamodo == "JÔNICO"&& listatom == "Bb"){
+    acorde = "ACORDE: Bb"
+    escala = "ESCALA (Bb): Bb C D Eb F G A";
+  } else if (listamodo == "JÔNICO"&& listatom == "B"){
+    acorde = "ACORDE: B"
+    escala = "ESCALA (B): B C# D# E F# G# A#";
+    
+//}  
+  
+  ///// FRÍGIO
+  
+  } else if (listamodo == "FRÍGIO"&& listatom == "C") {
+    acorde = "ACORDE: Cm"
+    escala = "ESCALA (Ab): C Db Eb F G Ab Bb";
+  } else if (listamodo == "FRÍGIO"&& listatom == "C#"){
+    acorde = "ACORDE: C#m"
+    escala = "ESCALA (A): C# D E F# G# A B";
+  } else if (listamodo == "FRÍGIO"&& listatom == "D"){
+    acorde = "ACORDE: Dm"
+    escala = "ESCALA (Bb): D Eb F G A Bb C";
+  } else if (listamodo == "FRÍGIO"&& listatom == "Eb"){
+    acorde = "ACORDE: Ebm"
+    escala = "ESCALA (B): Eb E Gb Ab Bb B Db";
+  } else if (listamodo == "FRÍGIO"&& listatom == "E"){
+    acorde = "ACORDE: Em"
+    escala = "ESCALA (C): E F G A B C D";
+  } else if (listamodo == "FRÍGIO"&& listatom == "F"){
+    acorde = "ACORDE: Fm"
+    escala = "ESCALA (C#): F F# G# A# C C# D#";
+  } else if (listamodo == "FRÍGIO"&& listatom == "Gb"){
+    acorde = "ACORDE: Gbm"
+    escala = "ESCALA (D): F# G A B C# D E";
+  } else if (listamodo == "FRÍGIO"&& listatom == "G"){
+    acorde = "ACORDE: Gm"
+    escala = "ESCALA (Eb): G Ab Bb C D Eb F";
+  } else if (listamodo == "FRÍGIO"&& listatom == "Ab"){
+    acorde = "ACORDE: Abm"
+    escala = "ESCALA (E): G# A B C# D# E F#";
+  } else if (listamodo == "FRÍGIO"&& listatom == "A"){
+    acorde = "ACORDE: Am"
+    escala = "ESCALA (F): A Bb C D E F G";
+  } else if (listamodo == "FRÍGIO"&& listatom == "Bb"){
+    acorde = "ACORDE: Bbm"
+    escala = "ESCALA (F#): A# B C# D# F# G#";
+  } else if (listamodo == "FRÍGIO"&& listatom == "B"){
+    acorde = "ACORDE: Bm"
+    escala = "ESCALA (G): B C D E F# G A";
+  
+  ///// LÍDIO
+  
+  } else if (listamodo == "LÍDIO"&& listatom == "C") {
+    acorde = "ACORDE: C"
+    escala = "ESCALA (G): C D E F# G A B";
+  } else if (listamodo == "LÍDIO"&& listatom == "C#"){
+    acorde = "ACORDE: C#"
+    escala = "ESCALA (Ab): Db Eb F G Ab Bb C";
+  } else if (listamodo == "LÍDIO"&& listatom == "D"){
+    acorde = "ACORDE: D"
+    escala = "ESCALA (A): D E F# G# A B C#";
+  } else if (listamodo == "LÍDIO"&& listatom == "Eb"){
+    acorde = "ACORDE: Eb"
+    escala = "ESCALA (Bb): Eb F G A Bb C D";
+  } else if (listamodo == "LÍDIO"&& listatom == "E"){
+    acorde = "ACORDE: E"
+    escala = "ESCALA (B): E F# G# A# B C# D#";
+  } else if (listamodo == "LÍDIO"&& listatom == "F"){
+    acorde = "ACORDE: F"
+    escala = "ESCALA (C): F G A B C D E";
+  } else if (listamodo == "LÍDIO"&& listatom == "Gb"){
+    acorde = "ACORDE: Gb"
+    escala = "ESCALA (C#): F# G# A# C C# D#";
+  } else if (listamodo == "LÍDIO"&& listatom == "G"){
+    acorde = "ACORDE: G"
+    escala = "ESCALA (D): G A B C# D E F#";
+  } else if (listamodo == "LÍDIO"&& listatom == "Ab"){
+    acorde = "ACORDE: Ab"
+    escala = "ESCALA (Eb): G# A# C D D# F G";
+  } else if (listamodo == "LÍDIO"&& listatom == "A"){
+    acorde = "ACORDE: A"
+    escala = "ESCALA (E): A B C# D# E F# G#";
+  } else if (listamodo == "LÍDIO"&& listatom == "Bb"){
+    acorde = "ACORDE: Bb"
+    escala = "ESCALA (F): Bb C D E F G A";
+  } else if (listamodo == "LÍDIO"&& listatom == "B"){
+    acorde = "ACORDE: B"
+    escala = "ESCALA (F#): B C# D# F F# G# A#";
+ 
+ ///// MIXOLÍDIO
+  
+  } else if (listamodo == "MIXOLÍDIO"&& listatom == "C") {
+    acorde = "ACORDE: C"
+    escala = "ESCALA (F): C D E F G A Bb";
+  } else if (listamodo == "MIXOLÍDIO"&& listatom == "C#"){
+    acorde = "ACORDE: C#"
+    escala = "ESCALA (F#): C# D# F F# G# A# B";
+  } else if (listamodo == "MIXOLÍDIO"&& listatom == "D"){
+    acorde = "ACORDE: D"
+    escala = "ESCALA (G): D E F# G A B C";
+  } else if (listamodo == "MIXOLÍDIO"&& listatom == "Eb"){
+    acorde = "ACORDE: Eb"
+    escala = "ESCALA (Ab): Eb F G Ab Bb C Db";
+  } else if (listamodo == "MIXOLÍDIO"&& listatom == "E"){
+    acorde = "ACORDE: E"
+    escala = "ESCALA (A): E F# G# A B C# D";
+  } else if (listamodo == "MIXOLÍDIO"&& listatom == "F"){
+    acorde = "ACORDE: F"
+    escala = "ESCALA (Bb): F G A Bb C D Eb";
+  } else if (listamodo == "MIXOLÍDIO"&& listatom == "Gb"){
+    acorde = "ACORDE: Gb"
+    escala = "ESCALA (B): F# G# A# B C# D# E";
+  } else if (listamodo == "MIXOLÍDIO"&& listatom == "G"){
+    acorde = "ACORDE: G"
+    escala = "ESCALA (C): G A B C D E F";
+  } else if (listamodo == "MIXOLÍDIO"&& listatom == "Ab"){
+    acorde = "ACORDE: Ab"
+    escala = "ESCALA (C#): G# A# C D D# F F#";
+  } else if (listamodo == "MIXOLÍDIO"&& listatom == "A"){
+    acorde = "ACORDE: A"
+    escala = "ESCALA (D): A B C# D E F# G";
+  } else if (listamodo == "MIXOLÍDIO"&& listatom == "Bb"){
+    acorde = "ACORDE: Bb"
+    escala = "ESCALA (Eb): Bb C D Eb F G Ab";
+  } else if (listamodo == "MIXOLÍDIO"&& listatom == "B"){
+    acorde = "ACORDE: B"
+    escala = "ESCALA (E): B C# D# E F# G# A";
+ 
+ 
+  ///// EÓLIO
+  
+  } else if (listamodo == "EÓLIO"&& listatom == "C") {
+    acorde = "ACORDE: Cm"
+    escala = "ESCALA (Eb): C D Eb F G Ab Bb";
+  } else if (listamodo == "EÓLIO"&& listatom == "C#"){
+    acorde = "ACORDE: C#m"
+    escala = "ESCALA (E): C# D# E F# G# A B";
+  } else if (listamodo == "EÓLIO"&& listatom == "D"){
+    acorde = "ACORDE: Dm"
+    escala = "ESCALA (F): D E F G A Bb C";
+  } else if (listamodo == "EÓLIO"&& listatom == "Eb"){
+    acorde = "ACORDE: Ebm"
+    escala = "ESCALA (Gb): Eb F Gb Ab Bb B Db";
+  } else if (listamodo == "EÓLIO"&& listatom == "E"){
+    acorde = "ACORDE: Em"
+    escala = "ESCALA (G): E F# G A B C D";
+  } else if (listamodo == "EÓLIO"&& listatom == "F"){
+    acorde = "ACORDE: Fm"
+    escala = "ESCALA (Ab): F G Ab Bb C Db Eb";
+  } else if (listamodo == "EÓLIO"&& listatom == "Gb"){
+    acorde = "ACORDE: Gbm"
+    escala = "ESCALA (A): F# G# A B C# D E";
+  } else if (listamodo == "EÓLIO"&& listatom == "G"){
+    acorde = "ACORDE: Gm"
+    escala = "ESCALA (Bb): G A Bb C D Eb F";
+  } else if (listamodo == "EÓLIO"&& listatom == "Ab"){
+    acorde = "ACORDE: Abm"
+    escala = "ESCALA (B): G# A# B C# D# E F#";
+  } else if (listamodo == "EÓLIO"&& listatom == "A"){
+    acorde = "ACORDE: Am"
+    escala = "ESCALA (C): A B C D E F G";
+  } else if (listamodo == "EÓLIO"&& listatom == "Bb"){
+    acorde = "ACORDE: Bbm"
+    escala = "ESCALA (Db): Bb C Db Eb F Gb Ab";
+  } else if (listamodo == "EÓLIO"&& listatom == "B"){
+    acorde = "ACORDE: Bm"
+    escala = "ESCALA (D): B C# D E F# G A";
+ 
+ 
+  ///// LÓCRIO
+  
+  } else if (listamodo == "LÓCRIO"&& listatom == "C") {
+    acorde = "ACORDE: Cm"
+    escala = "ESCALA (Db): C Db Eb F Gb Ab Bb";
+  } else if (listamodo == "LÓCRIO"&& listatom == "C#"){
+    acorde = "ACORDE: C#m"
+    escala = "ESCALA (D): C# D E F# G A B";
+  } else if (listamodo == "LÓCRIO"&& listatom == "D"){
+    acorde = "ACORDE: Dm"
+    escala = "ESCALA (D#): Eb F G Ab Bb C D Eb";
+  } else if (listamodo == "LÓCRIO"&& listatom == "Eb"){
+    acorde = "ACORDE: Ebm"
+    escala = "ESCALA (E): Eb E Gb Ab A B Db";
+  } else if (listamodo == "LÓCRIO"&& listatom == "E"){
+    acorde = "ACORDE: Em"
+    escala = "ESCALA (F): E F G A Bb C D";
+  } else if (listamodo == "LÓCRIO"&& listatom == "F"){
+    acorde = "ACORDE: Fm"
+    escala = "ESCALA (Gb): F Gb Ab Bb B Db Eb";
+  } else if (listamodo == "LÓCRIO"&& listatom == "Gb"){
+    acorde = "ACORDE: Gbm"
+    escala = "ESCALA (G): F# G A B C D E";
+  } else if (listamodo == "LÓCRIO"&& listatom == "G"){
+    acorde = "ACORDE: Gm"
+    escala = "ESCALA (G#): G Ab Bb C Db Eb F";
+  } else if (listamodo == "LÓCRIO"&& listatom == "Ab"){
+    acorde = "ACORDE: Abm"
+    escala = "ESCALA (A): G# A B C# D E F#";
+  } else if (listamodo == "LÓCRIO"&& listatom == "A"){
+    acorde = "ACORDE: Am"
+    escala = "ESCALA (Bb): A Bb C D Eb F G";
+  } else if (listamodo == "LÓCRIO"&& listatom == "Bb"){
+    acorde = "ACORDE: Bbm"
+    escala = "ESCALA (B): Bb B Db Eb E Gb Ab";
+  } else if (listamodo == "LÓCRIO"&& listatom == "B"){
+    acorde = "ACORDE: Bm"
+    escala = "ESCALA (C): B C D E F G A";
+ 
+ }  
+  
+  document.getElementById("linha1").innerHTML = acorde;
+  document.getElementById("linha2").innerHTML = escala;
+
+}
+</script>
+</head>
+<body>
+
+<form>
+Selecione o modo desejado: 
+<select id="modo">
+  <option>JÔNICO</option>
+  <option>DÓRICO</option>
+  <option>FRÍGIO</option>
+  <option>LÍDIO</option>
+  <option>MIXOLÍDIO</option>
+  <option>EÓLIO</option>
+  <option>LÓCRIO</option>
+</select>
+<br><br>
+Selecione o tom desejado: 
+<select id="tom">
+  <option>C</option>
+  <option>C#</option>
+  <option>D</option>
+  <option>Eb</option>
+  <option>E</option>
+  <option>F</option>
+  <option>Gb</option>
+  <option>G</option>
+  <option>Ab</option>
+  <option>A</option>
+  <option>Bb</option>
+  <option>B</option>
+</select>
+<input type="button" onclick="funcao()" value="OK">
+</form>
+
+<p id="linha1"></p>
+<p id="linha2"></p>
+
+</body>
+</html>
