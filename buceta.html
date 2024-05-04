@@ -6,7 +6,17 @@
 <p id="demo"></p>
 
 <script>
-const xmlhttp = new XMLHttpRequest();
+Object.prototype.find = function() {
+  try {
+    return Array.prototype.slice.call(arguments).reduce(function(acc, key) {
+      return acc[key]
+    }, this)
+  }
+  catch(e) {
+    return 
+  }
+}  
+  const xmlhttp = new XMLHttpRequest();
 xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
   document.getElementById("demo").innerHTML = myObj.name;
