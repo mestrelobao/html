@@ -2,14 +2,14 @@
 <html>
 <body>
 
-<h2>Tábua de marés de 2024</h2>
+<h2>1Tábua de marés de 2024</h2>
 <p id="demo"></p>
 
 <script>
 const xmlhttp = new XMLHttpRequest();
 xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
-  document.getElementById("demo").innerHTML = myObj.janeiro;
+  document.getElementById("demo").innerHTML = myObj.nome;
 }
 xmlhttp.open("GET", "teste.json");
 xmlhttp.send();
