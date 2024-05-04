@@ -2,14 +2,14 @@
 <html>
 <body>
 
-<h2>9Tábua de marés de 2024</h2>
+<h2>10Tábua de marés de 2024</h2>
 <p id="demo"></p>
 
 <script>
 
 fetch('json_demo.txt')
    .then(response => response.text())
-   .then(text => document.getElementById("demo").innerHTML = response.nome;)
+   .then(text => document.getElementById("demo").innerHTML = text;)
   
 // output: {"success":"true"}
   
