@@ -1,6 +1,7 @@
 {
     "nome" : "guiga" ,
     "idade" : "32",
+    "pet" : [ "cachorro" : "toto", "gato" : "tom" ],
     "sexo" : { 
         "masculino" : "guilherme",
         "feminino" : "guilhermina"
