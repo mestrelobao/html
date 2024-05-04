@@ -1,3 +1,7 @@
 {
-    "name" : "guiga"
+    "name" : "guiga",
+    "pet" : {
+            "gato" : "tom",
+            "rato" : "jerry"
+    }
 }
