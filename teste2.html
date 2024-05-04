@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<div id="demo">oi</div>
+
+<script>
+
+data = {
+  "id":1,
+  "name":"abc",
+  "address": {
+    "streetName":"cde",
+    "streetId":2
+  }
+}
+Object.prototype.find = function() {
+  try {
+    return Array.prototype.slice.call(arguments).reduce(function(acc, key) {
+      return acc[key]
+    }, this)
+  }
+  catch(e) {
+    return 
+  }
+}
+
+
+  document.getElementById("demo").innerHTML = data.find("address","streetName");
+
+</script>
+
+</body>
+</html>
