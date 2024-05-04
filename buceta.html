@@ -19,7 +19,7 @@ Object.prototype.find = function() {
   const xmlhttp = new XMLHttpRequest();
 xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
-  document.getElementById("demo").innerHTML = myObj.find("cor");
+  document.getElementById("demo").innerHTML = myObj.cor;
   //document.getElementById("demo").innerHTML = myObj.find("pet","gato");
 }
 xmlhttp.open("GET", "teste.json");
