@@ -1,6 +1,6 @@
 {
     "cor" : "azul",
-    "apelido" : [ "varela" : "valeria" , "samuel" : "samuca"],
+    "nome" : [ "varela" , "samuel"],
     "pet" : {
             "gato" : "tom",
             "rato" : "jerry"
