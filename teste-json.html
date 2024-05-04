@@ -9,7 +9,7 @@
 const xmlhttp = new XMLHttpRequest();
 xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
-  document.getElementById("demo").innerHTML = myObj.pet[0];
+  document.getElementById("demo").innerHTML = myObj.pet0;
 }
 xmlhttp.open("GET", "teste.json");
 xmlhttp.send();
