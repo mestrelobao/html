@@ -1,8 +1,8 @@
 {
     "nome" : "guiga" ,
+    "idade" : "32",
     "sexo" : { 
         "masculino" : "guilherme",
         "feminino" : "guilhermina"
-    },
-    "idade" : "31"
+    }
 }
