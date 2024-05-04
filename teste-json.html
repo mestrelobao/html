@@ -7,19 +7,19 @@
 
 <script>
 
-fetch('json_demo.txt')
-   .then(response => response.text())
-   .then(text => document.getElementById("demo").innerHTML = text;)
+//fetch('json_demo.txt')
+ //  .then(response => response.text())
+//   .then(text => document.getElementById("demo").innerHTML = text;)
   
 // output: {"success":"true"}
   
-//const xmlhttp = new XMLHttpRequest();
-//xmlhttp.onload = function() {
- // const myObj = JSON.parse(this.responseText);
- // document.getElementById("demo").innerHTML = text;
-//}
-//xmlhttp.open("GET", "json_demo.txt");
-//xmlhttp.send();
+const xmlhttp = new XMLHttpRequest();
+xmlhttp.onload = function() {
+ const myObj = JSON.parse(this.responseText);
+ document.getElementById("demo").innerHTML = myObj.nome;
+}
+xmlhttp.open("GET", "json_demo.txt");
+xmlhttp.send();
 </script>
 
 </body>
