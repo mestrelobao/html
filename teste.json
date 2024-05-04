@@ -1,3 +1,7 @@
 {
-    "nome" : "guiga" 
+    "nome" : "guiga" ,
+    "sexo" : { 
+        "masculino" : "guilherme",
+        "feminino" : "guilhermina"
     }
+}
