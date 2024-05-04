@@ -2,16 +2,16 @@
 <html>
 <body>
 
-<h2>5Tábua de marés de 2024</h2>
+<h2>6Tábua de marés de 2024</h2>
 <p id="demo"></p>
 
 <script>
 const xmlhttp = new XMLHttpRequest();
 xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
-  document.getElementById("demo").innerHTML = myObj.["sexo"]["feminino"];
+  document.getElementById("demo").innerHTML = myObj.[0];
 }
-xmlhttp.open("GET", "teste.json");
+xmlhttp.open("GET", "json_meno.txt");
 xmlhttp.send();
 </script>
 
