@@ -2,6 +2,6 @@
 "nome" : "guiga",
   "pet" : {
     "g1" : "tom",
-    "rato" : "jerry"
+    "g2" : ["dog" : "snoopy" , "cat" : "garfield"]
           }
 }
