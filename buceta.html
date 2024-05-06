@@ -21,9 +21,10 @@ xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
 
   
-  document.getElementById("demo").innerHTML = myObj.janeiro1[0];
-
-  
+ // document.getElementById("demo").innerHTML = myObj.janeiro1[0];
+for(let k in obj) {
+  document.write(myObj[k] + "<br>");
+} 
 //  document.getElementById("demo").innerHTML = myObj.nome[0];
 //  document.getElementById("demo").innerHTML = myObj.find("pet","gato");
 }
