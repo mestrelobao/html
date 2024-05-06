@@ -3,8 +3,11 @@
 <body>
 
 <h2>Tábua de marés</h2>
-<p id="demo"></p>
-
+<p id="linha1"></p>
+<p id="linha2"></p>
+<p id="linha3"></p>
+<p id="linha4"></p>
+  
 <script>
   const xmlhttp = new XMLHttpRequest();
 xmlhttp.onload = function() {
@@ -12,10 +15,13 @@ xmlhttp.onload = function() {
 
   
  // document.getElementById("demo").innerHTML = myObj.janeiro1[0];
-for(let k in myObj.janeiro1) {
+//for(let k in myObj.janeiro1) {
 //  document.write(myObj.janeiro1[k] + "<br>");
-   document.getElementById("demo").innerHTML = myObj.janeiro1[k] + "<br>";
-} 
+  document.getElementById("demo1").innerHTML = myObj.janeiro1[0];
+  document.getElementById("demo2").innerHTML = myObj.janeiro1[1];
+  document.getElementById("demo3").innerHTML = myObj.janeiro1[2];
+  document.getElementById("demo4").innerHTML = myObj.janeiro1[3];
+//} 
 //  document.getElementById("demo").innerHTML = myObj.nome[0];
 //  document.getElementById("demo").innerHTML = myObj.find("pet","gato");
 }
