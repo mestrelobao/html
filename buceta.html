@@ -13,16 +13,11 @@
 xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
 
-  
- // document.getElementById("demo").innerHTML = myObj.janeiro1[0];
-//for(let k in myObj.janeiro1) {
-//  document.write(myObj.janeiro1[k] + "<br>");
-
-  let qntsarrays = myObj.janeiro1.lenght;
+  const tamanho = myObj.janeiro1.lenght;
   
   document.getElementById("linha1").innerHTML = myObj.janeiro1[0];
   document.getElementById("linha2").innerHTML = myObj.janeiro1[1];
-  document.getElementById("linha3").innerHTML = qntsarrays;
+  document.getElementById("linha3").innerHTML = tamanho;
   document.getElementById("linha4").innerHTML = myObj.janeiro1[3];
 //} 
 //  document.getElementById("demo").innerHTML = myObj.nome[0];
