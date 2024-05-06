@@ -1,6 +1,6 @@
 {
  "pet" : {
-    "g1" : [ "gato" : "tom", "rato" : "jerry" ],
-    "g2" : "dog"
+    "ingles" : [ "gato" : "cat", "rato" : "mouse" ],
+    "fanho" : [ "gato" : "ato", "baleia" : "alêiam" ]
           }
 }
