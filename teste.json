@@ -1,7 +1,6 @@
 {
-"nome" : "guiga",
-  "pet" : {
-    "g1" : "tom",
+ "pet" : {
+    "g1" : [ "gato" : "tom", "rato" : "jerry" ],
     "g2" : "dog"
           }
 }
