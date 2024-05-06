@@ -1,7 +1,7 @@
 {
 "nome" : "guiga",
   "pet" : {
-    1 : "tom",
+    "gato" : "tom",
     "rato" : "jerry"
           }
 }
