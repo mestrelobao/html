@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Tábua de marés</h2>
+<p id="demo"></p>
+
+<script>
+//Object.prototype.find = function() {
+//  try {
+//    return Array.prototype.slice.call(arguments).reduce(function(acc, key) {
+//      return acc[key]
+//    }, this)
+//  }
+//  catch(e) {
+//    return 
+//  }
+//}  
+  const xmlhttp = new XMLHttpRequest();
+xmlhttp.onload = function() {
+  const myObj = JSON.parse(this.responseText);
+
+  
+  document.getElementById("demo").innerHTML = myObj.janeiro.1[0];
+
+  
+//  document.getElementById("demo").innerHTML = myObj.nome[0];
+//  document.getElementById("demo").innerHTML = myObj.find("pet","gato");
+}
+xmlhttp.open("GET", "mare.json");
+xmlhttp.send();
+</script>
+
+</body>
+</html>
