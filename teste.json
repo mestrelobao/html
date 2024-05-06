@@ -1,8 +1,0 @@
-{
-    "cor" : "azul",
-    "nome" : [ "varela" , "samuel"],
-    "pet" : {
-            "gato" : "tom",
-            "rato" : "jerry"
-    }
-}
