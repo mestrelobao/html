@@ -8,11 +8,11 @@ function funcao() {
   var ano = "2024";
   var listamodo = document.getElementById("mes").value;
   var listatom = document.getElementById("dia").value;
-  let cabecalho;
-  let mare1;
-  let mare2;
-  let mare3;
-  let mare4;
+  let cabecalho = "";
+  let mare1 = "";
+  let mare2 = "";
+  let mare3 = "";
+  let mare4 = "";
   
   if (listamodo == "JANEIRO"&& listatom == "1") {				
     cabecalho = listatom + " de " + listamodo + " de " + ano;				
@@ -376,7 +376,8 @@ function funcao() {
 	mare4 =	"	1906 2.1	";
 } else if (listamodo == "FEVEREIRO"&& listatom == "30"){
 	  alert("30 de febereiro não existe!");
-	  
+} else if (listamodo == "FEVEREIRO"&& listatom == "31"){
+	  alert("31 de febereiro não existe!");	  
 } else if (listamodo == "MARÇO"&& listatom == "1") {				
     cabecalho = listatom + " de " + listamodo + " de " + ano;				
 	mare1 =	"	0104 0.6	";
@@ -743,6 +744,8 @@ function funcao() {
 	mare2 =	"	0834 2.0	";
 	mare3 =	"	1506 0.7	";
 	mare4 =	"	2132 1.8	";
+} else if (listamodo == "ABRIL"&& listatom == "31"){
+	  alert("31 de abril não existe!");
 } else if (listamodo == "MAIO"&& listatom == "1") {				
     cabecalho = listatom + " de " + listamodo + " de " + ano;				
 	mare1 =	"	0336 0.9	";
@@ -1109,6 +1112,8 @@ function funcao() {
 	mare2 =	"	1128 2.1	";
 	mare3 =	"	1751 0.6	";
 	mare4 =	"		";
+} else if (listamodo == "JUNHO"&& listatom == "31"){
+	  alert("31 de junho não existe!");
 } else if (listamodo == "JULHO"&& listatom == "1") {				
     cabecalho = listatom + " de " + listamodo + " de " + ano;				
 	mare1 =	"	0009 2.0	";
@@ -1661,6 +1666,8 @@ function funcao() {
 	mare2 =	"	0904 0.4	";
 	mare3 =	"	1519 2.2	";
 	mare4 =	"	2111 0.4	";
+} else if (listamodo == "SETEMBRO"&& listatom == "31"){
+	  alert("31 de setembro não existe!");
  } else if (listamodo == "OUTUBRO"&& listatom == "1") {				
     cabecalho = listatom + " de " + listamodo + " de " + ano;				
 	mare1 =	"	0330 2.3	";
@@ -2027,6 +2034,8 @@ function funcao() {
 	mare2 =	"	0930 0.5	";
 	mare3 =	"	1549 2.3	";
 	mare4 =	"	2156 0.4	";
+} else if (listamodo == "NOVEMBRO"&& listatom == "31"){
+	  alert("31 de novembro não existe!");
 } else if (listamodo == "DEZEMBRO"&& listatom == "1") {				
     cabecalho = listatom + " de " + listamodo + " de " + ano; 				
 	mare1 =	"	0409 2.2	";
