@@ -5,10 +5,11 @@
 <script>
 function funcao() {
 
-  var ano = "2024";
-  var mes = document.getElementById("mes").value;
-  var dia = document.getElementById("dia").value;
+  let ano = "2024";
+  let mes = document.getElementById("mes").value;
+  let dia = document.getElementById("dia").value;
   const buceta = mes+dia+"[0]";
+  let guiga = "toto";
   
   let cabecalho = "";
   let mare1 = "";
@@ -21,7 +22,7 @@ function funcao() {
   const myObj = JSON.parse(this.responseText);
 
     
-  document.getElementById("linha1").innerHTML = myObj["toto"];
+  document.getElementById("linha1").innerHTML = myObj[guiga];
   document.getElementById("linha2").innerHTML = buceta;
   document.getElementById("linha3").innerHTML = myObj.janeiro2[2];
   if ( myObj.janeiro2[3] ){ document.getElementById("linha4").innerHTML = myObj.janeiro2[3];}
