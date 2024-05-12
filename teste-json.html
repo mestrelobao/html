@@ -8,9 +8,7 @@ function funcao() {
   let ano = "2024";
   let mes = document.getElementById("mes").value;
   let dia = document.getElementById("dia").value;
-  const buceta = mes+dia;
-  let guiga = "toto";
-  
+  const datas = mes+dia;
   let cabecalho = "";
   let mare1 = "";
   let mare2 = "";
@@ -21,25 +19,19 @@ function funcao() {
   xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
 
-    
-  document.getElementById("linha1").innerHTML = myObj[guiga];
-  document.getElementById("linha2").innerHTML = myObj[buceta][0];
-  document.getElementById("linha3").innerHTML = myObj.janeiro2[2];
-  if ( myObj.janeiro2[3] ){ document.getElementById("linha4").innerHTML = myObj.janeiro2[3];}
+  document.getElementById("linha1").innerHTML = myObj[datas][0];
+  document.getElementById("linha2").innerHTML = myObj[datas][1];
+  document.getElementById("linha3").innerHTML = myObj.[datas[2];
+  if ( myObj.[datas][3] ){ document.getElementById("linha4").innerHTML = myObj.[datas][3];}
 }
 xmlhttp.open("GET", "mare.json");
 xmlhttp.send();
-  
-  
-  
-
   
   document.getElementById("linha1").innerHTML = cabecalho;
   document.getElementById("linha2").innerHTML = mare1;
   document.getElementById("linha3").innerHTML = mare2;
   document.getElementById("linha4").innerHTML = mare3;
   document.getElementById("linha5").innerHTML = mare4;
-
 }
 </script>
 </head>
@@ -49,17 +41,17 @@ xmlhttp.send();
 Selecione o mês desejado: 
 <select id="mes">
   <option>janeiro</option>
-  <option>FEVEREIRO</option>
-  <option>MARÇO</option>
-  <option>ABRIL</option>
-  <option>MAIO</option>
-  <option>JUNHO</option>
-  <option>JULHO</option>
-  <option>AGOSTO</option>
-  <option>SETEMBRO</option>
-  <option>OUTUBRO</option>
-  <option>NOVEMBRO</option>
-  <option>DEZEMBRO</option>
+  <option>fevereiro</option>
+  <option>março</option>
+  <option>abril</option>
+  <option>maio</option>
+  <option>junho</option>
+  <option>julho</option>
+  <option>agosto</option>
+  <option>setembro</option>
+  <option>outubro</option>
+  <option>novembro</option>
+  <option>dezembro</option>
   
 </select>
 <br><br>
