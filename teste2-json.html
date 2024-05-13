@@ -8,10 +8,7 @@ function funcao() {
   let ano = "2024";
   let mes = document.getElementById("mes").value;
   let dia = document.getElementById("dia").value;
-  const buceta = mes+dia;
   const data = mes+dia;
-  let guiga = "toto";
-  
   let cabecalho = "";
   let mare1 = "";
   let mare2 = "";
@@ -24,23 +21,18 @@ function funcao() {
 
     
   document.getElementById("linha1").innerHTML = myObj[data][0];
-  document.getElementById("linha2").innerHTML = myObj[buceta][1];
-  document.getElementById("linha3").innerHTML = myObj[buceta][2];
-  if ( myObj.janeiro2[3] ){ document.getElementById("linha4").innerHTML = myObj.janeiro2[3];}
+  document.getElementById("linha2").innerHTML = myObj[data][1];
+  document.getElementById("linha3").innerHTML = myObj[data][2];
+  if ( myObj[data][3] ){ document.getElementById("linha4").innerHTML = myObj[data][3];}
 }
 xmlhttp.open("GET", "mare.json");
 xmlhttp.send();
-  
-  
-  
-
   
   document.getElementById("linha1").innerHTML = cabecalho;
   document.getElementById("linha2").innerHTML = mare1;
   document.getElementById("linha3").innerHTML = mare2;
   document.getElementById("linha4").innerHTML = mare3;
   document.getElementById("linha5").innerHTML = mare4;
-
 }
 </script>
 </head>
