@@ -9,6 +9,7 @@ function funcao() {
   let mes = document.getElementById("mes").value;
   let dia = document.getElementById("dia").value;
   const buceta = mes+dia;
+  const data = mes+dia;
   let guiga = "toto";
   
   let cabecalho = "";
@@ -22,7 +23,7 @@ function funcao() {
   const myObj = JSON.parse(this.responseText);
 
     
-  document.getElementById("linha1").innerHTML = myObj[buceta][0];
+  document.getElementById("linha1").innerHTML = myObj[data][0];
   document.getElementById("linha2").innerHTML = myObj[buceta][1];
   document.getElementById("linha3").innerHTML = myObj[buceta][2];
   if ( myObj.janeiro2[3] ){ document.getElementById("linha4").innerHTML = myObj.janeiro2[3];}
