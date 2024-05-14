@@ -9,8 +9,7 @@ function funcao() {
   let mes = document.getElementById("mes").value;
   let dia = document.getElementById("dia").value;
   
-  if (mes="fevereiro"&&dia>29){alert("data inválida");}
- // }                            
+  // }                            
  // else if ((mes="abril"||mes="junho"||mes="setembro"||mes="novembro")&&dia>30){alert("data inválida");                            
  // }
  // else {
@@ -29,7 +28,7 @@ function funcao() {
 }
 xmlhttp.open("GET", "mare.json");
 xmlhttp.send();
-  
+ if (mes="fevereiro"&&dia>29){alert("data inválida");} 
 }  
 </script>
 </head>
