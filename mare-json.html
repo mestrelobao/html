@@ -9,18 +9,13 @@ function funcao() {
   let mes = document.getElementById("mes").value;
   let dia = document.getElementById("dia").value;
   
-  if (mes="fevereiro"&&dia>29){alert("data inválida");
-  }                            
-  else if ((mes="abril"||mes="junho"||mes="setembro"||mes="novembro")&&dia>30){alert("data inválida");                            
-  }
-  else {
-  const data = mes+dia;
-//  let cabecalho = "";
-//  let mare1 = "";
-//  let mare2 = "";
-//  let mare3 = "";
-//  let mare4 = "";
-  
+ // if (mes="fevereiro"&&dia>29){alert("data inválida");
+ // }                            
+ // else if ((mes="abril"||mes="junho"||mes="setembro"||mes="novembro")&&dia>30){alert("data inválida");                            
+ // }
+ // else {
+//  const data = mes+dia;
+ 
   const xmlhttp = new XMLHttpRequest();
   xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
@@ -34,12 +29,6 @@ function funcao() {
 xmlhttp.open("GET", "mare.json");
 xmlhttp.send();
   
-//  document.getElementById("linha1").innerHTML = cabecalho;
-//  document.getElementById("linha2").innerHTML = mare1;
-//  document.getElementById("linha3").innerHTML = mare2;
-//  document.getElementById("linha4").innerHTML = mare3;
-//  document.getElementById("linha5").innerHTML = mare4;
-}
 }  
 </script>
 </head>
