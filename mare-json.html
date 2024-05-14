@@ -22,7 +22,7 @@ function funcao() {
   
   xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
-  if(!myObj[data]){alert("Data inválida!");}  
+  if!(myObj[data]){alert("Data inválida!");}  
   document.getElementById("linha1").innerHTML = myObj[data][0];
   document.getElementById("linha2").innerHTML = myObj[data][1];
   document.getElementById("linha3").innerHTML = myObj[data][2];
