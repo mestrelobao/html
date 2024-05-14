@@ -7,10 +7,10 @@ function funcao() {
   let ano = "2024";
   let mes = document.getElementById("mes").value;
   let dia = document.getElementById("dia").value;
-  document.getElementById("linha1").innerHTML = "Data inválida!";
-  document.getElementById("linha2").innerHTML = "";
-  document.getElementById("linha3").innerHTML = "";
-  document.getElementById("linha4").innerHTML = "";
+//  document.getElementById("linha1").innerHTML = "Data inválida!";
+//  document.getElementById("linha2").innerHTML = "";
+//  document.getElementById("linha3").innerHTML = "";
+//  document.getElementById("linha4").innerHTML = "";
   // }                            
  // else if ((mes="abril"||mes="junho"||mes="setembro"||mes="novembro")&&dia>30){alert("data inválida");                            
  // }
@@ -22,7 +22,7 @@ function funcao() {
   
   xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
-    
+  if(myObj[data]){alert("tudo certo!");}  
   document.getElementById("linha1").innerHTML = myObj[data][0];
   document.getElementById("linha2").innerHTML = myObj[data][1];
   document.getElementById("linha3").innerHTML = myObj[data][2];
