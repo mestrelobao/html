@@ -17,9 +17,9 @@ function funcao() {
   const data = mes+dia;
  
   const xmlhttp = new XMLHttpRequest();
+  
   xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
-
     
   document.getElementById("linha1").innerHTML = myObj[data][0];
   document.getElementById("linha2").innerHTML = myObj[data][1];
@@ -28,7 +28,7 @@ function funcao() {
 }
 xmlhttp.open("GET", "mare.json");
 xmlhttp.send();
- if (mes="fevereiro"&&dia>29){alert("data inválida");} 
+// if (mes="fevereiro"&&dia>29){alert("data inválida");} 
 }  
 </script>
 </head>
