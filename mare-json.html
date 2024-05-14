@@ -9,12 +9,13 @@ function funcao() {
   let mes = document.getElementById("mes").value;
   let dia = document.getElementById("dia").value;
   
- // if (mes="fevereiro"&&dia>29){alert("data inválida");
+  if (mes="fevereiro"&&dia>29){alert("data inválida");}
  // }                            
  // else if ((mes="abril"||mes="junho"||mes="setembro"||mes="novembro")&&dia>30){alert("data inválida");                            
  // }
  // else {
-//  const data = mes+dia;
+
+  const data = mes+dia;
  
   const xmlhttp = new XMLHttpRequest();
   xmlhttp.onload = function() {
