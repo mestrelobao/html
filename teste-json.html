@@ -7,9 +7,9 @@ function funcao() {
   const xmlhttp = new XMLHttpRequest();
   xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
-  document.getElementById("linha").innerHTML = myObj.nome;
+  document.getElementById("linha").innerHTML = myObj.name;
 }
-xmlhttp.open("GET", "https://drive.google.com/file/d/1oJTErwOA0G-bZWQdLm5Ln3Wdc-SKhpI-/view?usp=sharing");
+xmlhttp.open("GET", "https://www.w3schools.com/js/json_demo.txt");
 xmlhttp.send();
 }  
 </script>
