@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+function funcao() {
+  const xmlhttp = new XMLHttpRequest();
+  xmlhttp.onload = function() {
+  const myObj = JSON.parse(this.responseText);
+  document.getElementById("linha").innerHTML = myObj.nome;
+}
+xmlhttp.open("GET", "/data/teste.json");
+xmlhttp.send();
+}  
+</script>
+</head>
+<body>
+<p id="linha"></p>
+</body>
+</html>
