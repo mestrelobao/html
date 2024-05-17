@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Digite o CEP:</h2>
+<input id="numb">
+<button type="button" onclick="myFunction()">Ok</button>
+<p id="demo"></p>
+<script>
+function myFunction() {
+      var self = this;
+      $.getJSON("https://viacep.com.br/ws/" + numb + "/json", function (result) {
+        if ("erro" in result) {
+          self.error = "CEP não encontrado";
+          self.city = "";
+          $(".error").addClass("no");
+        } else {
+          self.city = result.logradouro + ", " + result.bairro + " - " + result.localidade + "/" + result.uf;
+          $(".display").addClass("animated fadeInDown");
+        }
+        console.log(result);
+      });
+    }
+</script>
+</body>
+</html> 
