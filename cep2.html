@@ -9,6 +9,7 @@
 <script>
 function myFunction() {
         const cep = document.getElementById("numb");
+        document.getElementById("demo").innerHTML = cep;
         window.open("https://viacep.com.br/ws/" + cep + "/json/","_blank","toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=400, height=400");
     }
 </script>
