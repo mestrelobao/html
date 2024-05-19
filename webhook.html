@@ -4,12 +4,14 @@
 <p id="demo">Mandando webhook para https://webhook-test.com/</p>
   <form>
   <input type="text" id="formulario" value="">
+  <input type="text" id="payload" value="">
   <input type="button" value="Digite o endpoint" onclick="postJSON(data)">
 </form>
 <script>
   async function postJSON(data) {
   try {
     var hook = document.getElementById("formulario").value;
+    var web = document.getElementById("payload").value;
     const response = await fetch(hook, {
       method: "POST", // or 'PUT'
       headers: {
@@ -24,7 +26,8 @@
     console.error("Error:", error);
   }
   }
-const data = { "nome" : "guiga" };
+//const data = { "nome" : "guiga" };
+const data = web;  
 postJSON(data);
 </script>
 </body>
