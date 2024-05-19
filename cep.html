@@ -1,170 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" >
-
-<head>
-  <meta charset="UTF-8">
-  
-
-    <link rel="apple-touch-icon" type="image/png" href="https://cpwebassets.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
-
-    <meta name="apple-mobile-web-app-title" content="CodePen">
-
-    <link rel="shortcut icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
-
-    <link rel="mask-icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-b4b4269c16397ad2f0f7a01bcdf513a1994f4c94b8af2f191c09eb0d601762b1.svg" color="#111" />
-
-
-
-  
-    <script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-2c7831bb44f98c1391d6a4ffda0e1fd302503391ca806e7fcc7b9b87197aec26.js"></script>
-
-
-  <title>CodePen - Busca CEP - ViaCEP.com.br (API)</title>
-
-    <link rel="canonical" href="https://codepen.io/EuclidesMarques/pen/vmJdNm">
-  
-  
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css'>
-  
-<style>
-body {
-  position: relative;
-  background: #f1f1f1;
-  font-family: "Arial";
-  overflow: hidden;
+<html>
+<body>
+<p id="demo">Fetch a file to change this text.</p>
+<script>
+async function logMovies() {
+  const response = await fetch("https://viacep.com.br/ws/58085590/json/");
+  const movies = await response.json();
+  console.log(movies.cep);
+ document.getElementById("demo").innerHTML = movies; 
 }
-
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: 100vh;
-}
-.container > * {
-  margin: 5px;
-}
-
-h2 {
-  color: #999EEE;
-}
-
-.form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 22px;
-  maxlength: 8;
-}
-.form > * {
-  margin: 10px;
-}
-
-.display {
-  color: #999EEE;
-  font-size: 28px;
-  letter-spacing: 1px;
-}
-
-input {
-  width: 150px;
-  height: 30px;
-  border: none;
-  outline: none;
-  color: #999EEE;
-  font-size: 20px;
-  text-align: center;
-  padding-left: 10px;
-  box-shadow: 0 3px 0 rgba(102, 106, 170, 0.5);
-}
-
-.error {
-  font-size: 12px;
-  letter-spacing: 1px;
-}
-
-.no {
-  animation: 0.5s shake infinite ease;
-}
-
-@keyframes shake {
-  0% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(2px);
-  }
-  0% {
-    transform: translateX(0);
-  }
-}
-</style>
-
-  <script>
-  window.console = window.console || function(t) {};
+logMovies();
+  const response = fetch("https://viacep.com.br/ws/58085590/json/");
+  const movies = response.json();
+  document.getElementById("demo").innerHTML = movies;
+ // console.log(movies);
+ // console.log("buceta");
 </script>
-
-  
-  
-</head>
-
-<body translate="no">
-  <div id="app" class="container">
-  <h2>Digite o CEP</h2>
-  <div class="form">
-    <input onclick="this.value=''" type="text" v-model="cep" maxlength="8" placeholder="ex: 56302000" />
-  </div>
-  <div class="error">{{error}}</div>
-  <div class="display">{{city}}</div>
-</div>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.min.js'></script>
-      <script id="rendered-js" >
-var app = new Vue({
-  el: "#app",
-  data: {
-    city: "",
-    cep: "56302000",
-    error: "" },
-
-  methods: {
-    getCity: function () {
-      var self = this;
-      $.getJSON("https://viacep.com.br/ws/" + this.cep + "/json", function (result) {
-        if ("erro" in result) {
-          self.error = "CEP não encontrado";
-          self.city = "";
-          $(".error").addClass("no");
-        } else {
-          self.city = result.logradouro + ", " + result.bairro + " - " + result.localidade + "/" + result.uf;
-          $(".display").addClass("animated fadeInDown");
-        }
-        console.log(result);
-      });
-    } },
-
-  watch: {
-    cep: function () {
-      if (this.cep.length === 8) {
-        this.getCity();
-        this.error = "";
-        $(".error").removeClass("no");
-      }
-      if (this.cep.length < 8) {
-        this.city = "";
-        this.error = "CEP Inválido";
-        $(".error").addClass("no");
-        $(".display").removeClass("animated fadeInDown");
-      }
-    } },
-
-  mounted: function () {
-    this.getCity();
-  } });
-//# sourceURL=pen.js
-    </script>
-
-  
 </body>
-
 </html>
