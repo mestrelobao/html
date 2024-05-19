@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<body>
+<p id="demo">Mandando webhook para https://webhook-test.com/</p>
+  <form>
+  <input type="text" id="formulario" value="">
+    <br>
+    <br>
+  <input type="text" id="formulario2" value="">
+    <br>
+    <br> 
+  <input type="button" value="Digite o endpoint" onclick="postJSON(data)">
+</form>
+<script>
+  async function postJSON(data) {
+  try {
+    var hook = document.getElementById("formulario").value;
+    var tyson = document.getElementById("formulario2").value;
+    console.log(tyson);
+    const response = await fetch(hook, {
+      method: "POST", // or 'PUT'
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    console.log("Success:", result);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+  }
+//const data = { username: "example" };
+const data = { "bunda" : "buceta" };
+//postJSON(data);
+</script>
+</body>
+</html>
