@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
 <body>
-<p id="demo">Coloque o CEP e receba o CEP na pagina e no console.</p>
+<p>Coloque o CEP e receba o CEP na pagina e no console.</p>
   <form>
   <input type="text" id="formulario" value="">
   <input type="button" value="Digite o CEP" onclick="myfunction()">
 </form>
+<br>
+  <p id="demo"></p>
 <script>
 async function myfunction() {
   var cep = document.getElementById("formulario").value;
