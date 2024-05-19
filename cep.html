@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-<p id="demo">Fetch a file to change this text.</p>
+<p id="demo">Coloque o CEP e receba o CEP na pagina e no console.</p>
   <form>
   <input type="text" id="formulario" value="">
   <input type="button" value="Digite o CEP" onclick="myfunction()">
@@ -14,7 +14,6 @@ async function myfunction() {
  console.log(dados.cep);
  document.getElementById("demo").innerHTML = dados.cep; 
 }
-myfunction();
 </script>
 </body>
 </html>
