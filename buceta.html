@@ -17,6 +17,10 @@
     var hook = document.getElementById("formulario").value;
     var tyson = document.getElementById("formulario2").value;
     console.log(tyson);
+    const pica = await tyson.json();
+    console.log(pica);
+
+    
     const response = await fetch(hook, {
       method: "POST", // or 'PUT'
       headers: {
