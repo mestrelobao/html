@@ -1,21 +1,15 @@
 <!DOCTYPE html>
 <html>
 <body>
-<p id="demo">Digite o endpoint do webhook</p>
+<p id="demo">Mandando webhook para https://webhook-test.com/</p>
   <form>
-  <input type="text" id="formulario">
-  <br>
-  <br> 
- <p id="demo">Digite o json</p>  
-  <input type="text" id="payload1"> : <input type="text" id="payload2">
-  <input type="button" value="Enviar" onclick="postJSON(data)">
+  <input type="text" id="formulario" value="">
+  <input type="button" value="Digite o endpoint" onclick="postJSON(data)">
 </form>
 <script>
   async function postJSON(data) {
   try {
     var hook = document.getElementById("formulario").value;
-    var pay1 = document.getElementById("payload1").value;
-    var pay2 = document.getElementById("payload2").value;
     const response = await fetch(hook, {
       method: "POST", // or 'PUT'
       headers: {
@@ -23,19 +17,15 @@
       },
       body: JSON.stringify(data),
     });
-
     const result = await response.json();
     console.log("Success:", result);
   } catch (error) {
     console.error("Error:", error);
   }
   }
-const guiga = "{" + pay1 + " : " + pay2 + "}";  
-console.log(guiga);
- // const data = guiga;
-  console.log("bunda");
-const data = { "rola" : "pica" };  
-//postJSON(data);
+const data = { username: "example" };
+const data = { "nome" : "guiga" };
+postJSON(data);
 </script>
 </body>
 </html>
