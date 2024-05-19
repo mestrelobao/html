@@ -3,9 +3,10 @@
 <body>
 <p id="demo">Mandando webhook para https://webhook-test.com/</p>
   <form>
-  <input type="text" id="formulario" value="">
-  <input type="text" id="payload" value="">
-  <input type="button" value="Digite o endpoint" onclick="postJSON(data)">
+  <input type="text" id="formulario" value="Digite o endpoint...">
+  <br>
+  <input type="text" id="payload" value="Digite o payload">
+  <input type="button" value="Enviar" onclick="postJSON(data)">
 </form>
 <script>
   async function postJSON(data) {
