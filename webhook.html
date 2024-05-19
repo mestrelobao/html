@@ -2,10 +2,15 @@
 <html>
 <body>
 <p id="demo">Mandando webhook para https://webhook-test.com/</p>
+  <form>
+  <input type="text" id="formulario" value="">
+  <input type="button" value="Digite o endpoint" onclick="postJSON(data)">
+</form>
 <script>
   async function postJSON(data) {
   try {
-    const response = await fetch("https://webhook-test.com/6ed50893b97a7208b2e28bc91eca530b", {
+    var hook = document.getElementById("formulario").value;
+    const response = await fetch(hook, {
       method: "POST", // or 'PUT'
       headers: {
         "Content-Type": "application/json",
