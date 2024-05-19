@@ -6,8 +6,9 @@
 async function logMovies() {
   const response = await fetch("https://viacep.com.br/ws/58085590/json/");
   const movies = await response.json();
-  console.log(movies.cep);
- document.getElementById("demo").innerHTML = movies; 
+ console.log(movies.cep);
+ //document.getElementById("demo").innerHTML = movies; 
+  document.getElementById("demo").innerHTML = `${movies.cep}`; 
 }
 logMovies();
 </script>
