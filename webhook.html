@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <body>
-<p id="demo">Mandando webhook para https://webhook-test.com/</p>
+<p id="demo">Digite o endpoint e o payload do webhook</p>
   <form>
-  <input type="text" id="formulario" value="Digite o endpoint...">
+  <input type="text" id="formulario">
   <br>
-  <input type="text" id="payload" value="Digite o payload">
+  <input type="text" id="payload">
   <input type="button" value="Enviar" onclick="postJSON(data)">
 </form>
 <script>
@@ -27,8 +27,8 @@
     console.error("Error:", error);
   }
   }
-//const data = { "nome" : "guiga" };
-const data = web;  
+const data = { "nome" : "guiga" };
+//const data = web;  
 postJSON(data);
 </script>
 </body>
