@@ -5,6 +5,7 @@
   <form>
   <input type="text" id="formulario">
   <br>
+  <br>  
   <input type="text" id="payload">
   <input type="button" value="Enviar" onclick="postJSON(data)">
 </form>
@@ -12,7 +13,7 @@
   async function postJSON(data) {
   try {
     var hook = document.getElementById("formulario").value;
-    var web = document.getElementById("payload").value;
+   // var web = document.getElementById("payload").value;
     const response = await fetch(hook, {
       method: "POST", // or 'PUT'
       headers: {
