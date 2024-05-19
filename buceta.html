@@ -15,7 +15,8 @@
   async function postJSON() {
   try {
     var hook = document.getElementById("formulario").value;
-    const tyson = document.getElementById("formulario2").value;
+    var tyson = document.getElementById("formulario2").value;
+    const obj = JSON.parse(tyson);
     console.log(tyson);
  //   const pica = await tyson.json();
  //   console.log(pica);
@@ -26,7 +27,7 @@
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(tyson),
+      body: JSON.stringify(obj),
     });
     const result = await response.json();
     console.log("Success:", result);
