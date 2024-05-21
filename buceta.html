@@ -11,11 +11,11 @@
   try {
     var hook = document.getElementById("formulario").value;
     const response = await fetch(hook, {
-      method: "POST", // or 'PUT'
+      method: "GET", // or 'PUT'
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+   //   body: JSON.stringify(data),
     });
     const result = await response.json();
     console.log("Success:", result);
@@ -23,9 +23,7 @@
     console.error("Error:", error);
   }
   }
-//const data = { username: "example" };
-const data = { "bunda" : "buceta" };
-//postJSON(data);
+//const data = { "bunda" : "buceta" };
 </script>
 </body>
 </html>
