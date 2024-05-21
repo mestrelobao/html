@@ -20,7 +20,7 @@
     console.log(painload);
     
     const response = await fetch(hook, {
-      method: "POST", // or 'PUT'
+      method: "POST",  mode: 'no-cors',// or 'PUT'
       headers: {
         "Content-Type": "application/json",
       },
