@@ -11,7 +11,7 @@
   try {
     var hook = document.getElementById("formulario").value;
     const response = await fetch(hook, {
-      method: "GET", // or 'PUT'
+      method: "GET", mode: 'no-cors'// or 'PUT'
       headers: {
         "Content-Type": "application/json",
       },
