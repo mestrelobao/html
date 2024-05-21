@@ -12,9 +12,9 @@
     var hook = document.getElementById("formulario").value;
     const response = await fetch(hook, {
       method: "GET", mode: 'no-cors'// or 'PUT'
-      headers: {
-        "Content-Type": "application/json",
-      },
+   //   headers: {
+   //     "Content-Type": "application/json",
+   //   },
    //   body: JSON.stringify(data),
     });
     const result = await response.json();
