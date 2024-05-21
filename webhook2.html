@@ -3,7 +3,7 @@
 <body>
 <p id="demo">Mandando webhook para https://webhook-test.com/</p>
   <form>
-  <input type="text" id="formulario" value="">
+  <input type="text" id="formulario1" value="">
     <br>
     <br>
   <input type="text" id="formulario2" value="">
@@ -14,13 +14,10 @@
 <script>
   async function postJSON() {
   try {
-    var hook = document.getElementById("formulario").value;
-    var tyson = document.getElementById("formulario2").value;
-    const obj = JSON.parse(tyson);
-    console.log(tyson);
- //   const pica = await tyson.json();
- //   console.log(pica);
-
+    var hook = document.getElementById("formulario1").value;
+    var painload = document.getElementById("formulario2").value;
+    const obj = JSON.parse(painload);
+    console.log(painload);
     
     const response = await fetch(hook, {
       method: "POST", // or 'PUT'
@@ -35,9 +32,6 @@
     console.error("Error:", error);
   }
   }
-//const data = pica;
-////const pica = { "bundas" : "bucetas" };
-//postJSON(data);
 </script>
 </body>
 </html>
