@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
 <h1>Resultado da MEGA SENA</h1>
 Resultado do concurso: <a id = "concurso"></a>
-<p id="demo"></p>
-
+<p id="resultado"></p>
 <script>
 async function myfunction() {
 //  var cep = document.getElementById("formulario").value;
@@ -12,7 +12,7 @@ async function myfunction() {
   const dados = await response.json();
  console.log(dados.numero);
  document.getElementById("concurso").innerHTML = dados.numero; 
-  document.getElementById("demo").innerHTML = dados.listaDezenas;
+  document.getElementById("resultado").innerHTML = dados.listaDezenas;
 }
   myfunction();
 </script>
