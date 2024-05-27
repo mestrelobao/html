@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <body>
-<h1>Resultado da mega sena do concurso<a id = "concurso"></a> :</h1>
+<h1>Resultado da MEGA SENA</h1>
+Resultado do concurso: <a id = "concurso"></a>
 <p id="demo"></p>
 
 <script>
@@ -11,7 +12,7 @@ async function myfunction() {
   const dados = await response.json();
  console.log(dados.numero);
  document.getElementById("concurso").innerHTML = dados.numero; 
-  document.getElementById("demo").innerHTML = dados.numero;
+  document.getElementById("demo").innerHTML = dados.listadezenas;
 }
   myfunction();
 </script>
