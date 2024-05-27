@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-  <p id="cu">Resultado da mega sena:</p>
+  <p>Resultado da mega sena do concurso</p><p id = "concurso"></p> :
 <p id="demo"></p>
 
 <script>
@@ -10,7 +10,8 @@ async function myfunction() {
   const response = await fetch("https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena");
   const dados = await response.json();
  console.log(dados.numero);
- document.getElementById("demo").innerHTML = dados.numero; 
+ document.getElementById("concurso").innerHTML = dados.numero; 
+  document.getElementById("demo").innerHTML = dados.numero;
 }
   myfunction();
 </script>
