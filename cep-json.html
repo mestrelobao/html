@@ -4,19 +4,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
 function funcao() {
-  let ano = "2024";
-  let mes = document.getElementById("mes").value;
-  let dia = document.getElementById("dia").value;
-  const data = mes+dia;
- 
-  const xmlhttp = new XMLHttpRequest();
   
+  const xmlhttp = new XMLHttpRequest();
   xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
  //  document.getElementById("linha1").innerHTML = "Data inválida!";
-    if(myObj[data]==null){
+    if(myObj) {
 console.log("deu merda");
-      else {
+      else  {
       console.log("ok");
       }
   }
@@ -30,7 +25,7 @@ xmlhttp.send();
   <h1>2024</h1>
 <form>
 Digite o CEP: 
-<select id="cep">
+<input type="text" id="cep" name="fname"><br>
  </select>
 <input type="button" onclick="funcao()" value="OK">
 </form>
