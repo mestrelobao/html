@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script> 
+validateForm();
+function validateForm() {
+fetch('https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena')
+const dados = await response.json();
+  .then(response => {
+      // valida se a requisição falhou
+      if (!response.ok) {
+        alert("requisição falhou");//return new Error('falhou a requisição') // cairá no catch da promise
+      }
+
+      // verificando pelo status
+      if (response.status === 404) {
+    alert("sem resultado");//    return new Error('não encontrou qualquer resultado')
+      }
+
+      // retorna uma promise com os dados em JSON
+    alert(dados.numero);//  return response.json()
+    })
+
+}
+</script>
+</head>
+<body>
+
+<h2>JavaScript Validation</h2>
+
+
+</body>
+</html>
