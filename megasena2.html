@@ -11,16 +11,16 @@
   
       if (!response.ok) {
         alert("requisição falhou");//return new Error('falhou a requisição') // cairá no catch da promise
-      }
+      };
 
       // verificando pelo status
       if (response.status === 404) {
     alert("sem resultado");//    return new Error('não encontrou qualquer resultado')
-      }
+      };
 
       // retorna uma promise com os dados em JSON
-    alert("ok");//  return response.json()
-    })
+    alert("ok");//  return response.json();
+ 
 
 }
 </script>
