@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <body>
-  <p id="cu">Coloque o CEP e receba o CEP na pagina e no console.</p>
+  <h1>Digite o CEP.</h1>
   <form>
   <input type="text" id="formulario" value="">
-  <input type="button" value="Digite o CEP" onclick="myfunction()">
+  <input type="button" value="Enviar" onclick="myfunction()">
 </form>
 <p id="linha1"></p>
 <p id="linha2"></p>
@@ -18,8 +18,11 @@ async function myfunction() {
   const response = await fetch("https://viacep.com.br/ws/" + cep + "/json/");
   const dados = await response.json();
  console.log(dados.cep);
- document.getElementById("linha1").innerHTML = "CEP :" + dados.cep; 
- document.getElementById("linha2").innerHTML = "Rua :" + dados.logradouro; 
+ document.getElementById("linha1").innerHTML = "CEP: " + dados.cep; 
+ document.getElementById("linha2").innerHTML = "Rua: " + dados.logradouro; 
+ document.getElementById("linha3").innerHTML = "Bairro: " + dados.bairro;
+ document.getElementById("linha4").innerHTML = "Cidade: " + dados.localidade;
+ document.getElementById("linha5").innerHTML = "Estado: " + dados.uf;
 }
 </script>
 </body>
