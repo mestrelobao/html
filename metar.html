@@ -4,7 +4,8 @@
 <h1>Acessando a API da REDEMET</h1>
 <p id="demo"></p>
 <script>
-getText("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local=sbjp&msg=metar&data_ini=2024052110&data_fim=2024052110");
+  let variavel = "10";
+getText("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local=sbjp&msg=metar&data_ini=20240521"+variavel+"&data_fim=2024052110");
 async function getText(file) {
   let myObject = await fetch(file);
   let myText = await myObject.text();
