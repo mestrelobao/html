@@ -3,25 +3,11 @@
 <head>
 <script> 
 myfunction();
-  async function myfunction() {
-//function validateForm() {
-//fetch('https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena')
-    const response = await fetch("https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena" , { mode: 'no-cors'});
-    const dados = await response.json();
-  
-      if (!response.ok) {
-        alert("requisição falhou");//return new Error('falhou a requisição') // cairá no catch da promise
-      };
-
-      // verificando pelo status
-      if (response.status === 404) {
-    alert("sem resultado");//    return new Error('não encontrou qualquer resultado')
-      };
-
-      // retorna uma promise com os dados em JSON
-    console.log("buceta");//  return response.json();
- 
-
+async function myfunction() {
+//  var cep = document.getElementById("formulario").value;
+  const response = await fetch("https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena");
+  const dados = await response.json();
+ console.log(dados.numero);
 }
 </script>
 </head>
