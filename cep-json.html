@@ -9,9 +9,10 @@ function funcao() {
   xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
  //  document.getElementById("linha1").innerHTML = "Data inválida!";
-    if(myObj) {
-console.log(myObj);
-var buceta = document.getElementById("cep").value;
+ var buceta = document.getElementById("cep").value;   
+    if(myObj==buceta) {
+console.log("caralho");
+
 console.log(buceta);      
         }
 }
