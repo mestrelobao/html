@@ -12,9 +12,9 @@ function funcao() {
  var buceta = document.getElementById("cep").value;   
     if(myObj) {
 console.log("caralho");
-
 console.log(buceta);      
-        }
+  document.getElementById("linha1").innerHTML = "CEP: " + myObj.cep;   
+    }
 }
 xmlhttp.open("GET", "cep.json");
 xmlhttp.send();
