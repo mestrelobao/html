@@ -1,13 +1,13 @@
 {
 "cep58085590":{
-"rua":"Rua do tambor",
-"bairro":"Cruz das armas",
+"rua":"Rua do Tambor",
+"bairro":"Cruz das Armas",
 "cidade":"João Pessoa",
 "estado":"Paraíba"
 },
-"58085000":{
+"cep58085000":{
 "rua":"Avenida Cruz das Armas",
-"bairro":"Cruz das armas",
+"bairro":"Cruz das Armas",
 "cidade":"João Pessoa",
 "estado":"Paraíba"
 }
