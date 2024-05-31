@@ -11,7 +11,7 @@ function funcao() {
  //  document.getElementById("linha1").innerHTML = "Data inválida!";
  var cep = document.getElementById("cep").value;
  var buceta = "cep"+cep+".rua"; 
- var priquito = obj[buceta];   
+// var priquito = obj[buceta];   
 // var priquito = JSON.parse(buceta); 
     
     if(myObj) {
@@ -19,7 +19,7 @@ function funcao() {
 console.log(buceta); 
       
  document.getElementById("linha1").innerHTML = "CEP: " + cep; 
- document.getElementById("linha2").innerHTML = "Rua: " + priquito; 
+ document.getElementById("linha2").innerHTML = "Rua: " + myObj[buceta]; 
 // document.getElementById("linha2").innerHTML = buceta; 
       
  document.getElementById("linha3").innerHTML = "Bairro: " + myObj.cep58085590.bairro; 
