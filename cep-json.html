@@ -9,14 +9,15 @@ function funcao() {
   xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
  //  document.getElementById("linha1").innerHTML = "Data inválida!";
- var buceta = document.getElementById("cep").value;   
+ var cep = document.getElementById("cep").value;
+ var buceta = "cep"+cep;   
     if(myObj) {
 console.log("caralho");
 console.log(buceta); 
 console.log("cep"+buceta);
       
- document.getElementById("linha1").innerHTML = "CEP: " + buceta; 
- document.getElementById("linha2").innerHTML = "Rua: " + myObj.cep58085590.rua; 
+ document.getElementById("linha1").innerHTML = "CEP: " + cep; 
+ document.getElementById("linha2").innerHTML = "Rua: " + myObj.buceta.rua; 
  document.getElementById("linha3").innerHTML = "Bairro: " + myObj.cep58085590.bairro; 
  document.getElementById("linha4").innerHTML = "Cidade: " + myObj.cep58085590.cidade; 
  document.getElementById("linha5").innerHTML = "Estado: " + myObj.cep58085590.estado;     
