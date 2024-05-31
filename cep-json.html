@@ -14,7 +14,11 @@ function funcao() {
 console.log("caralho");
 console.log(buceta);      
       
-  document.getElementById("linha1").innerHTML = "CEP: " + myObj.cep58085590.rua;   
+ document.getElementById("linha1").innerHTML = "CEP: " + buceta; 
+ document.getElementById("linha2").innerHTML = "Rua: " + myObj.cep58085590.rua; 
+ document.getElementById("linha3").innerHTML = "Bairro: " + myObj.cep58085590.bairro; 
+ document.getElementById("linha4").innerHTML = "Cidade: " + myObj.cep58085590.cidade; 
+ document.getElementById("linha5").innerHTML = "Estado: " + myObj.cep58085590.estado;     
     }
 }
 xmlhttp.open("GET", "cep.json");
