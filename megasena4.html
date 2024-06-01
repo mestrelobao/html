@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Digite o CEP.</h1>
+  <form>
+  <input type="text" id="formulario" value="">
+  <input type="button" value="Enviar" onclick="myfunction()">
+</form>
+<p id="linha1"></p>
+<p id="linha2"></p>
+<p id="linha3"></p>
+<p id="linha4"></p>
+<p id="linha5"></p>
+
+<script>
+async function myfunction() {
+  var cep = document.getElementById("formulario").value;
+  const response = await fetch("https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena");
+  const dados = await response.json();
+ console.log(dados.listaDezenas);
+ document.getElementById("linha1").innerHTML = "CEP: " + dados.numero; 
+
+}
+</script>
+</body>
+</html>
