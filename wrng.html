@@ -11,7 +11,9 @@ let hora = data.getHours()+3;
   console.log(dia);
   console.log(data.getHours()+3);
 getText("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local=sbjp&msg=aviso_aerodromo&data_ini=202405"+dia+hora+"&data_fim=202405"+dia+hora);
-async function getText(file) {
+//mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
+
+  async function getText(file) {
   let myObject = await fetch(file);
   let myText = await myObject.text();
   document.getElementById("demo").innerHTML = myText;
