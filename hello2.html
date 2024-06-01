@@ -10,8 +10,8 @@
 let file = "https://mestrelobao.github.io/html/hello.html"
 fetch (file)
 .then(x => x.text())
-.then(y => document.getElementById("demo").innerHTML = y);
-console.log(y);
+.then(y => console.log(y);//document.getElementById("demo").innerHTML = y);
+//console.log(y);
 </script>
 
 </body>
