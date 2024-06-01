@@ -10,20 +10,16 @@ function funcao() {
   const myObj = JSON.parse(this.responseText);
 
  var cep = document.getElementById("cep").value;
-// var buceta = ".cep"+cep+"?.rua"; 
-    var xaxa = myObj["cep"+cep]['rua']; 
-   console.log(xaxa);
+ var xaxa = myObj["cep"+cep]['rua']; 
+  console.log(xaxa);
  
     if(myObj) {
       
-    
  document.getElementById("linha1").innerHTML = "CEP: " + cep; 
- document.getElementById("linha2").innerHTML = "Rua: " + xaxa; 
-// document.getElementById("linha2").innerHTML = buceta; 
-      
- document.getElementById("linha3").innerHTML = "Bairro: " + myObj.cep58085590.bairro; 
- document.getElementById("linha4").innerHTML = "Cidade: " + myObj.cep58085590.cidade; 
- document.getElementById("linha5").innerHTML = "Estado: " + myObj.cep58085590.estado;     
+ document.getElementById("linha2").innerHTML = "Rua: " + myObj["cep"+cep]['rua'];
+ document.getElementById("linha3").innerHTML = "Bairro: " + myObj["cep"+cep]['bairro'];
+ document.getElementById("linha4").innerHTML = "Cidade: " + myObj["cep"+cep]['cidade'];
+ document.getElementById("linha5").innerHTML = "Estado: " + myObj["cep"+cep]['estado'];   
     }
 }
 xmlhttp.open("GET", "cep.json");
