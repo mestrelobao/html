@@ -10,7 +10,7 @@ function funcao() {
   const myObj = JSON.parse(this.responseText);
 
  var cep = document.getElementById("cep").value;
- 
+ console.log(myObj[58085590]['rua'];
     if(myObj) {
       
  document.getElementById("linha1").innerHTML = "CEP: " + cep; 
