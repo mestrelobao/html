@@ -8,13 +8,18 @@ async function myfunction() {
   const response = await fetch("https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena");
   const dados = await response.json();
  console.log(dados.numero);
+  document.getElementById("concurso").innerHTML = "Concurso número: " + dados.numero;
+  document.getElementById("numeros").innerHTML = dados.listaDezenas;
+  
 }
 </script>
 </head>
 <body>
 
-<h2>JavaScript Validation</h2>
-
+<h2>Resultado da MEGASENA</h2>
+  <p id ="concurso">Concurso nº </p>
+  <br>
+ <p id="numeros"></p>
 
 </body>
 </html>
