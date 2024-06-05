@@ -14,10 +14,11 @@ let dia = buceta.toString();
 let hora = data.getHours()+3;
   console.log("dia = " + dia);
   console.log(data.getHours()+3);
-var cep = document.getElementById("formulario").value;
+
 //mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
 
   async function getText(file) {
+  var cep = document.getElementById("formulario").value;  
   let myObject = await fetch(file);
   let myText = await myObject.text();
   document.getElementById("linha1").innerHTML = myText;
