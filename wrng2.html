@@ -11,17 +11,20 @@
 
 //mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
 
-  async function myfunction() {
+  
     
 let icao = document.getElementById("formulario").value;  
 let data = new Date();
-let buceta = data.getDate();
-let dia = buceta.toString();
+let mes;
+let ano;
+let dia_num = data.getDate();
+let dia = dia_num.toString();
 let hora = data.getHours()+3;
 
   console.log("dia = " + dia);
   console.log("hora = "+data.getHours()+3);
-
+  
+async function myfunction() {
   let myObject = await fetch("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local="+icao+"&msg=aviso_aerodromo&data_ini=202406"+dia+hora+"&data_fim=202406"+dia+hora);
   let myText = await myObject.text();
   document.getElementById("linha1").innerHTML = myText;
