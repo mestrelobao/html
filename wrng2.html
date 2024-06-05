@@ -4,7 +4,7 @@
   <h1>Digite o código ICAO de sua localidade.</h1>
   <form>
   <input type="text" id="formulario" value="">
-  <input type="button" value="Enviar" onclick="minha_funcao()">
+  <input type="button" value="Enviar" onclick="myfunction()">
 </form>
 <p id="linha1"></p>
 <script>
@@ -22,10 +22,7 @@ let icao = document.getElementById("formulario").value;
   let myObject = await fetch("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local="+icao+"&msg=aviso_aerodromo&data_ini=202406"+dia+hora+"&data_fim=202406"+dia+hora);
   let myText = await myObject.text();
   document.getElementById("linha1").innerHTML = myText;
-  setInterval(myfunction, 60 * 1000);
-}
-function minha_funcao() {
-setInterval(myfunction, 60 * 1000);  
+  setTimeout(myfunction, 60 * 1000);
 }
 </script>
 </body>
