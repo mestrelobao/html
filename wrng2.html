@@ -8,14 +8,17 @@
 </form>
 <p id="linha1"></p>
 <script>
-async function myfunction() {
-//mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
 let data = new Date();
 let mes;
 let ano;
 let dia_num = data.getDate();
 let dia = dia_num.toString();
 let hora = data.getHours()+3;
+
+  
+async function myfunction() {
+//mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
+
 let icao = document.getElementById("formulario").value;  
   console.log("dia = " + dia);
   console.log("hora = "+(data.getHours()+3));
