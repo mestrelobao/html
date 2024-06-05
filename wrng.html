@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
   <h1>Digite o código ICAO de sua localidade.</h1>
   <form>
@@ -11,12 +12,14 @@
 async function myfunction() {
 //mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
 let data = new Date();
-let mes;
-let ano;
+let ano = data.FullYear();
+let mes = data.getMonth();
 let dia_num = data.getDate();
 let dia = dia_num.toString();
 let hora = data.getHours()+3;
 let icao = document.getElementById("formulario").value;  
+  console.log("ano = " + ano);
+  console.log("mes = " + mes);
   console.log("dia = " + dia);
   console.log("hora = "+(data.getHours()+3));
   let myObject = await fetch("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local="+icao+"&msg=aviso_aerodromo&data_ini=202406"+dia+hora+"&data_fim=202406"+dia+hora);
