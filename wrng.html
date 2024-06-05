@@ -12,8 +12,10 @@
 async function myfunction() {
 //mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
 let data = new Date();
-let ano = data.getFullYear();
-let mes = (data.getMonth()+1);
+let ano_num = data.getFullYear();
+let ano = ano_num.toString();  
+let mes_num = (data.getMonth()+1);
+let mes = mes_num.toString();  
 let dia_num = data.getDate();
 let dia = dia_num.toString();
 let hora = data.getHours()+3;
