@@ -25,7 +25,7 @@ let icao = document.getElementById("formulario").value;
   console.log("dia = " + dia);
   console.log("hora = "+(data.getHours()+3));
 //  let myObject = await fetch("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local="+icao+"&msg=aviso_aerodromo&data_ini="ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
-  let myObject = await fetch("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local="+icao+"&msg=aviso_aerodromo&data_ini="+ano+mes+dia+hora+"&data_fim=202006"+dia+hora);
+  let myObject = await fetch("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local="+icao+"&msg=aviso_aerodromo&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
   let myText = await myObject.text();
   document.getElementById("linha1").innerHTML = myText;
 //  setTimeout(myfunction, 60 * 1000);
