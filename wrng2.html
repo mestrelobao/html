@@ -4,21 +4,21 @@
   <h1>Digite o código ICAO de sua localidade.</h1>
   <form>
   <input type="text" id="formulario" value="">
-  <input type="button" value="Enviar" onclick="setInterval(myfunction, 60 * 1000)">
+  <input type="button" value="Enviar" onclick="minha_funcao()">
 </form>
 <p id="linha1"></p>
 <script>
+function minha_funcao() {
+setInterval(myFunction, 60 * 1000);
+}
+async function myfunction() {
+//mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
 let data = new Date();
 let mes;
 let ano;
 let dia_num = data.getDate();
 let dia = dia_num.toString();
 let hora = data.getHours()+3;
-
-  
-async function myfunction() {
-//mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
-
 let icao = document.getElementById("formulario").value;  
   console.log("dia = " + dia);
   console.log("hora = "+(data.getHours()+3));
