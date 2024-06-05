@@ -4,7 +4,7 @@
   <h1>Digite o código ICAO de sua localidade.</h1>
   <form>
   <input type="text" id="formulario" value="">
-  <input type="button" value="Enviar" onclick="myfunction()">
+  <input type="button" value="Enviar" onclick="minha_funcao()">
 </form>
 <p id="linha1"></p>
 <script>
@@ -23,6 +23,9 @@ let icao = document.getElementById("formulario").value;
   let myText = await myObject.text();
   document.getElementById("linha1").innerHTML = myText;
   setInterval(myfunction, 60 * 1000);
+}
+function minha_funcao() {
+setInterval(myfunction, 60 * 1000);  
 }
 </script>
 </body>
