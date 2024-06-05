@@ -4,10 +4,15 @@
   <h1>Digite o código ICAO de sua localidade.</h1>
   <form>
   <input type="text" id="formulario" value="">
-  <input type="button" value="Enviar" onclick="getText("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local=" + icao +"&msg=aviso_aerodromo&data_ini=202406"+dia+hora+"&data_fim=202406"+dia+hora);">
+  <input type="button" value="Enviar" onclick="getText("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local=" + icao +"&msg=aviso_aerodromo&data_ini=202406"+dia+hora+"&data_fim=202406"+dia+hora)">
 </form>
 <p id="linha1"></p>
 <script>
+
+//mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
+
+  async function getText(file) {
+
 let data = new Date();
 let buceta = data.getDate();
 let dia = buceta.toString();
@@ -15,9 +20,6 @@ let hora = data.getHours()+3;
   console.log("dia = " + dia);
   console.log(data.getHours()+3);
 
-//mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
-
-  async function getText(file) {
   var icao = document.getElementById("formulario").value;  
   let myObject = await fetch(file);
   let myText = await myObject.text();
