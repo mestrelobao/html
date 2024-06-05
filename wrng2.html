@@ -20,7 +20,7 @@ let dia = buceta.toString();
 let hora = data.getHours()+3;
 
   console.log("dia = " + dia);
-  console.log(data.getHours()+3);
+  console.log("hora = "+data.getHours()+3);
 
   let myObject = await fetch("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local="+icao+"&msg=aviso_aerodromo&data_ini=202406"+dia+hora+"&data_fim=202406"+dia+hora);
   let myText = await myObject.text();
