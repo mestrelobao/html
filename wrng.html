@@ -24,7 +24,7 @@ let icao = document.getElementById("formulario").value;
   console.log("mes = " + mes);
   console.log("dia = " + dia);
   console.log("hora = "+(data.getHours()+3));
-  console.log(myText.mensagem);
+  //console.log(myText.mensagem);
   let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/"+icao+"?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini=2024060617&data_fim=2024060618");
   //let myObject = await fetch("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local="+icao+"&msg=aviso_aerodromo&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
 
