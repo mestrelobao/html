@@ -30,7 +30,7 @@ let icao = document.getElementById("formulario").value;
 
 let myText = await myObject.text();
 const guiga = JSON.parse(myText); 
- if(guiga.data.data==null){
+ if(guiga.data.data[0]==null){
 console.log("Algo errado não está certo!");
  }   
 console.log(guiga.data.data[0]["mens"]); 
