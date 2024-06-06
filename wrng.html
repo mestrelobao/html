@@ -29,7 +29,9 @@ let icao = document.getElementById("formulario").value;
   //let myObject = await fetch("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local="+icao+"&msg=aviso_aerodromo&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
   let myText = await myObject.text();
   document.getElementById("linha1").innerHTML = myText;
-  console.log(myText.message);
+ 
+  const guiga = JSON.parse(myText); 
+   console.log(guiga.message);
   setTimeout(myfunction, 60 * 1000);
 }
 </script>
