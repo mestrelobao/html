@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+<h1>Digite o código ICAO de sua localidade.</h1>
+  <form>
+  <input type="text" id="formulario" value="">
+  <input type="button" value="Enviar" onclick="myfunction()">
+</form>
+<p id="linha1"></p>
+</body>
+<script>
+function funcao() {
+  let icao = document.getElementById("formulario").value;
+ // let dia = document.getElementById("dia").value;
+ // const data = mes+dia;
+  const xmlhttp = new XMLHttpRequest();
+  
+  xmlhttp.onload = function() {
+  const myObj = JSON.parse(this.responseText);
+ 
+    if(myObj[data]==null){
+  document.getElementById("linha1").innerHTML = "Algo errando não está certo!";
+  }
+  document.getElementById("linha1").innerHTML = myObj;
+xmlhttp.open("GET", "https://api-redemet.decea.mil.br/mensagens/aviso/"+icao+"?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini=2024060510&data_fim=2024060516");
+xmlhttp.send();
+}  
+</script>  
+</html>
