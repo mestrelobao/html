@@ -28,7 +28,7 @@ let icao = document.getElementById("formulario").value;
   let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/"+icao+"?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini=2024060617&data_fim=2024060618");
   //let myObject = await fetch("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local="+icao+"&msg=aviso_aerodromo&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
   let myText = await myObject.text();
-  document.getElementById("linha1").innerHTML = myText;
+  document.getElementById("linha1").innerHTML = myText.data.data[0]["mens"];
  
   const guiga = JSON.parse(myText); 
    console.log(guiga.data.data[0]["mens"]);
