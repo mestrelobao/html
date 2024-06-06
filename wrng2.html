@@ -13,17 +13,18 @@
 <p id="linha1"></p>
 </body>
 <script>
+function funcao() {
   let icao = document.getElementById("formulario").value;
   const xmlhttp = new XMLHttpRequest();
-  
-  xmlhttp.onload = funcao() {
+  xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
- 
-    if(myObj[data]==null){
-  document.getElementById("linha1").innerHTML = "Algo errando não está certo!";
+  if(myObj[data]==null){
+  document.getElementById("linha1").innerHTML = "Algo errado não está certo!";
+     }
+    
+  document.getElementById("linha1").innerHTML = myObj[data];
   }
-  document.getElementById("linha1").innerHTML = myObj;
-xmlhttp.open("GET", "https://api-redemet.decea.mil.br/mensagens/aviso/"+icao+"?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini=2024060510&data_fim=2024060516");
+xmlhttp.open("GET", "https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini=2024060617&data_fim=2024060618");
 xmlhttp.send();
 }  
 </script>  
