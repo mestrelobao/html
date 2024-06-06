@@ -13,13 +13,10 @@
 <p id="linha1"></p>
 </body>
 <script>
-function funcao() {
   let icao = document.getElementById("formulario").value;
- // let dia = document.getElementById("dia").value;
- // const data = mes+dia;
   const xmlhttp = new XMLHttpRequest();
   
-  xmlhttp.onload = function() {
+  xmlhttp.onload = funcao() {
   const myObj = JSON.parse(this.responseText);
  
     if(myObj[data]==null){
