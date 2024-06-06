@@ -31,7 +31,7 @@ let icao = document.getElementById("formulario").value;
   document.getElementById("linha1").innerHTML = myText;
  
   const guiga = JSON.parse(myText); 
-   console.log(guiga.data.data[0][mens]);
+   console.log(guiga.data.data[0]["mens"]);
   setTimeout(myfunction, 60 * 1000);
 }
 </script>
