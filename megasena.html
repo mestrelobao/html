@@ -6,7 +6,13 @@
 myfunction();
 async function myfunction() {
 //  var cep = document.getElementById("formulario").value;
-  const response = await fetch("https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena");
+  const response = await fetch("https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena", {
+      method: "GET", // or 'PUT'
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
   const dados = await response.json();
  console.log(dados.numero);
   document.getElementById("concurso").innerHTML = "Concurso número: " + dados.numero;
