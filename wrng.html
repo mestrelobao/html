@@ -28,8 +28,8 @@ let icao = document.getElementById("formulario").value;
   let myObject = await fetch("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local="+icao+"&msg=aviso_aerodromo&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
 
 let myText = await myObject.text();
-const guiga = JSON.parse(myText); 
-console.log(guiga);
+//const guiga = JSON.parse(myText); 
+console.log(myText);
 //console.log(guiga.data.total);
 //  if(guiga.data.total=0){
 //console.log("Algo errado não está certo!");
