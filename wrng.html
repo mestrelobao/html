@@ -30,12 +30,12 @@ let icao = document.getElementById("formulario").value;
   let myObject = await fetch("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local="+icao+"&msg=aviso_aerodromo&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
 
 let myText = await myObject.text();
-const guiga = JSON.parse(myText); 
-console.log(guiga.message.tostring());
-console.log(guiga.data.total);
-  if(guiga.data.total=0){
-console.log("Algo errado não está certo!");
- }   
+//const guiga = JSON.parse(myText); 
+console.log(myText.message);
+//console.log(guiga.data.total);
+//  if(guiga.data.total=0){
+//console.log("Algo errado não está certo!");
+// }   
 //console.log(guiga.data.data[0]["mens"];
 //document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
   setTimeout(myfunction, 60 * 1000);
