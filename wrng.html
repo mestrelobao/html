@@ -33,13 +33,14 @@ const guiga = JSON.parse(myText);
 console.log(myText);
 console.log(guiga);  
 console.log(guiga.data["to"]);
-  if(guiga.data["to"]=null){
-console.log("Nenhum Aviso de Aeródromo por enquanto...");
- }   
 if (guiga.data["to"]=1){
 console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
-}   
+} 
+if(guiga.data["to"]=null){
+console.log("Nenhum Aviso de Aeródromo por enquanto...");
+ }   
+  
   setTimeout(myfunction, 60 * 1000);
 }
 </script>
