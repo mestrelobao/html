@@ -31,6 +31,7 @@ let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/"+i
 let myText = await myObject.text();
 const guiga = JSON.parse(myText); 
 console.log(myText);
+console.log(guiga);  
 //console.log(guiga.data.total);
 //  if(guiga.data.total=0){
 //console.log("Algo errado não está certo!");
