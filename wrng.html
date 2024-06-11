@@ -32,7 +32,7 @@ let myText = await myObject.text();
 const guiga = JSON.parse(myText); 
 console.log(myText);
 console.log(guiga);  
-console.log(guiga.data["to"]);
+console.log(guiga.data.data[0]);
 if (guiga.data.data[0]["mens"]){
 console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
