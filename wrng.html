@@ -36,8 +36,10 @@ console.log(guiga.data["total"]);
   if(guiga.data["total"]=0){
 console.log("Nenhum Aviso de Aeródromo por enquanto...");
  }   
+  else if (guiga.data["total"]=1){
 console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
+}   
   setTimeout(myfunction, 60 * 1000);
 }
 </script>
