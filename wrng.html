@@ -9,6 +9,9 @@
 </form>
 <p id="linha1"></p>
 <script>
+  function pad(d) {
+    return (d < 10) ? '0' + d.toString() : d.toString();
+}
 async function myfunction() {
 //mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
 let data = new Date();
