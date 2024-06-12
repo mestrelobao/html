@@ -21,10 +21,10 @@ let mes_num = (data.getMonth()+1);
 mes_num = pad (mes_num);
 let mes = mes_num.toString();  
 let dia_num = data.getDate();
-dia_num = pad ((dia_num-4));
+dia_num = pad (dia_num);
 let dia = dia_num.toString();
 let hora = data.getHours()+3;
-
+hora = pad (hora);
 let icao = document.getElementById("formulario").value;  
   console.log("ano = " + ano);
   console.log("mes = " + mes);
