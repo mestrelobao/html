@@ -21,21 +21,22 @@ let mes_num = (data.getMonth()+1);
 mes_num = pad (mes_num);
 let mes = mes_num.toString();  
 let dia_num = data.getDate();
+dia_num = pad ((dia_num-4));
 let dia = dia_num.toString();
 let hora = data.getHours()+3;
+
 let icao = document.getElementById("formulario").value;  
   console.log("ano = " + ano);
   console.log("mes = " + mes);
- // console.log("mes = " + mes_num);
-  
   console.log("dia = " + dia);
   console.log("hora = "+(data.getHours()+3));
-let priquito = "1217";
-let buceta = "2024061217";
-  
+let priquito = "17";
+
 // não tem aviso//  let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/"+icao+"?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini=2024060610&data_fim=2024060610");
 // tem aviso //  let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/"+icao+"?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini=2024060617&data_fim=2024060618");
-let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/"+icao+"?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+ano+mes+priquito+"&data_fim="+buceta);
+
+  
+let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/"+icao+"?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+ano+mes+dia+priquito+"&data_fim="+ano+mes+dia+priquito);
 
   
   
