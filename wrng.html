@@ -15,6 +15,7 @@ let data = new Date();
 let ano_num = data.getFullYear();
 let ano = ano_num.toString();  
 let mes_num = (data.getMonth()+1);
+mes_num = pad (mes_num);
 let mes = mes_num.toString();  
 let dia_num = data.getDate();
 let dia = dia_num.toString();
@@ -22,7 +23,8 @@ let hora = data.getHours()+3;
 let icao = document.getElementById("formulario").value;  
   console.log("ano = " + ano);
   console.log("mes = " + mes);
-  console.log("mes = " + mes_num);
+ // console.log("mes = " + mes_num);
+  
   console.log("dia = " + dia);
   console.log("hora = "+(data.getHours()+3));
 let priquito = "1217";
