@@ -4,7 +4,7 @@
 <body>
 
 <h2>Enviar e-mail</h2>
-<form action="funcao>
+<form action="funcao">
   <label for="fname">Enviar para: </label>
   <input type="text" id="to" size="25"><br><br>
   <label for="lname">Remetente:</label>
@@ -17,7 +17,7 @@
 </form> 
 <script>
 function funcao() {
- let id = getElementByID('id');
+ let id = getElementByID('to');
  window.open("https://recebedados.bubbleapps.io/version-test?to="+id+"&sender=mestrelobaoguilherme@gmail.com&subject=teste&body=equipe%20tecnica", "_blank");
 }
 </script>
