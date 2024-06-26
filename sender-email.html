@@ -12,16 +12,16 @@
   <input type="text" id="subject" size="28"><br><br>
   <label for="body">Corpo:</label>
   <input type="text" id="body" size="30"><br><br>
-<input type="button" onclick="funcao()" value="Click Me!">
+<input type="button" onclick="funcao()" value="Enviar">
 </form> 
 <script>
 function funcao() {
-// let id = getElementByID('to');
-// window.open("https://recebedados.bubbleapps.io/version-test?to=mestrelobaoguiga@gmail.com&sender=mestrelobaoguilherme@gmail.com&subject=teste&body=equipe%20tecnica", "_blank");
- console.log("email sent");
- //console.log(id);
+let id = getElementByID('to');
+window.open("https://recebedados.bubbleapps.io/version-test?to=mestrelobaoguiga@gmail.com&sender=mestrelobaoguilherme@gmail.com&subject=teste&body=equipe%20tecnica", "_blank");
+console.log("email sent");
+console.log(id);
 }
-  console.log("guiga");
+console.log("guiga");
 </script>
 </body>
 </html>
