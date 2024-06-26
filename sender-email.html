@@ -2,7 +2,12 @@
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
-
+<script>
+function funcao() {
+ let id = getElementByID('to');
+ window.open("https://recebedados.bubbleapps.io/version-test?to="+id+"&sender=mestrelobaoguilherme@gmail.com&subject=teste&body=equipe%20tecnica", "_blank");
+}
+</script>
 <h2>Enviar e-mail</h2>
 <form action="funcao()">
   <label for="to">Enviar para: </label>
@@ -15,11 +20,5 @@
   <input type="text" id="body" size="30"><br><br>
 <input type="submit" value="Submit">
 </form> 
-<script>
-function funcao() {
- let id = getElementByID('to');
- window.open("https://recebedados.bubbleapps.io/version-test?to="+id+"&sender=mestrelobaoguilherme@gmail.com&subject=teste&body=equipe%20tecnica", "_blank");
-}
-</script>
 </body>
 </html>
