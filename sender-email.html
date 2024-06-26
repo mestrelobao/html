@@ -9,7 +9,7 @@ function funcao() {
 }
 </script>
 <h2>Enviar e-mail</h2>
-<form action="funcao()">
+<form>
   <label for="to">Enviar para: </label>
   <input type="text" id="to" size="25"><br><br>
   <label for="sender">Remetente:</label>
@@ -18,7 +18,7 @@ function funcao() {
   <input type="text" id="subject" size="28"><br><br>
   <label for="body">Corpo:</label>
   <input type="text" id="body" size="30"><br><br>
-<input type="submit" value="Submit">
+<button onclick="funcao()">Enviar E-mail</button>
 </form> 
 </body>
 </html>
