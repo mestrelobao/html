@@ -17,11 +17,12 @@
 <script>
 function funcao() {
 let to = document.getElementById("to").value;
-window.open("https://recebedados.bubbleapps.io/version-test?to="+to+"&sender=mestrelobaoguilherme@gmail.com&subject=teste&body=equipe%20tecnica", "_blank");
-console.log("email sent");
-console.log(buceta);
+let sender = document.getElementById("sender").value;
+let subject = document.getElementById("subject").value;
+let body = document.getElementById("body").value;
+window.open("https://recebedados.bubbleapps.io/version-test?to="+to+"&sender="+sender+"&subject="+subject+"&body="+body, "_blank");
+console.log("E-mail enviado!");
 }
-console.log("guiga");
 </script>
 </body>
 </html>
