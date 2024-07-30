@@ -26,7 +26,6 @@ E-mail: <input type="text" id="formulario2" value="">
     return (d < 10) ? '0' + d.toString() : d.toString();
 }
 async function myfunction() {
-//mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
 let data = new Date();
 let ano_num = data.getFullYear();
 let ano = ano_num.toString();  
@@ -52,12 +51,23 @@ console.log(guiga.data.data[0]);
 if (guiga.data.data[0] === undefined){
 console.log("Nenhum Aviso de Aeródromo por enquanto...");
 document.getElementById("linha1").innerHTML = "Nenhum Aviso de Aeródromo por enquanto...";  
+let resultado = "Nenhum Aviso de Aeródromo por enquanto...";  
 } else {  
 console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
+let resultado =  guiga.data.data[0]["mens"]; 
 }   
-   setTimeout(myfunction, 60 * 1000);
+ //  setTimeout(myfunction, 60 * 1000);
+  return resultado;
 }
+  function minhafuncao(){
+
+  }
+function principal(){
+console.log(myfunction());
+ // setTimeout(minhafuncao,5000);
+}
+  principal
 </script>
 </body>
 </html>
