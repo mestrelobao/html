@@ -13,7 +13,7 @@
   <input type="checkbox" id="email" name="Email" value="sim-email"> Enviar E-mail
   <br>
   <br>
-E-mail: <input type="text" id="formulario2" value="">
+E-mail: <input type="text" id="to" value="">
 <br>
 <br>
 <input type="button" value="Prosseguir" onclick="myfunction()">
@@ -55,6 +55,10 @@ document.getElementById("linha1").innerHTML = "Nenhum Aviso de Aeródromo por en
 } else {  
 console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
+let to = document.getElementById("to").value;
+let body = guiga.data.data[0]["mens"];
+window.open("https://recebedados.bubbleapps.io/version-test?to="+to+"&sender=mestrelobaoguiga@gmail.com&subject=aviso_de_aerodromo&body="+body, "_blank");
+console.log("E-mail enviado!");  
 }   
    setTimeout(myfunction, 60 * 1000);
 }
