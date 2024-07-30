@@ -58,18 +58,51 @@ console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
 return  guiga.data.data[0]["mens"]; 
 }   
- //  setTimeout(myfunction, 60 * 1000);
-//  return resultado;
+let guilherme = setTimeout(minhafuncao, 60 * 1000);
+ console.log (guilherme); 
 }
-  function minhafuncao(){
-
+  async function minhafuncao(){
+let data = new Date();
+let ano_num = data.getFullYear();
+let ano = ano_num.toString();  
+let mes_num = (data.getMonth()+1);
+mes_num = pad (mes_num);
+let mes = mes_num.toString();  
+let dia_num = data.getDate();
+dia_num = pad (dia_num);
+let dia = dia_num.toString();
+let hora = data.getHours()+3;
+hora = pad (hora);
+let icao = document.getElementById("formulario").value;  
+  console.log("ano = " + ano);
+  console.log("mes = " + mes);
+  console.log("dia = " + dia);
+  console.log("hora = "+hora);
+//let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
+let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini=2024061618&data_fim=2024061618");  
+let myText = await myObject.text();
+const guiga = JSON.parse(myText); 
+console.log(myText);
+console.log(guiga);  
+console.log(guiga.data.data[0]);
+if (guiga.data.data[0] === undefined){
+console.log("Nenhum Aviso de Aeródromo por enquanto...");
+document.getElementById("linha1").innerHTML = "Nenhum Aviso de Aeródromo por enquanto...";  
+return "Nenhum Aviso de Aeródromo por enquanto...";  
+} else {  
+console.log(guiga.data.data[0]["mens"]);
+document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
+return  guiga.data.data[0]["mens"]; 
+}   
+ //  setTimeout(myfunction, 60 * 1000);
   }
-async function principal(){
+async function primeira_funcao(){
 let vagina = await myfunction();  
 console.log("o resultado é: " + vagina);
- // setTimeout(minhafuncao,5000);
+//let bunda = await minhafuncao();
+  // setTimeout(minhafuncao,5000);
 }
-  principal();
+  primeira_funcao();
 </script>
 </body>
 </html>
