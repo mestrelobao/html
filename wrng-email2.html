@@ -58,7 +58,8 @@ console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
 let lobao =  guiga.data.data[0]["mens"]; 
 }   
-setTimeout(minhafuncao(lobao), 60000*1);
+await minhafuncao(lobao);
+  //setTimeout(minhafuncao(lobao), 60000*1);
 }
   async function minhafuncao(teste){
 let data = new Date();
