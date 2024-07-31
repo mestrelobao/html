@@ -58,7 +58,7 @@ console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
 let lobao =  guiga.data.data[0]["mens"]; 
 }   
-await minhafuncao(lobao);
+minhafuncao(lobao);
   //setTimeout(minhafuncao(lobao), 60000*1);
 }
   async function minhafuncao(teste){
@@ -98,13 +98,7 @@ console.log(teste);
 }   
  //  setTimeout(myfunction, 60 * 1000);
   }
-async function primeira_funcao(){
-let vagina = await myfunction(); 
-//console.log("o resultado é: " + vagina);
-//let bunda = await minhafuncao();
-  // setTimeout(minhafuncao,5000);
-}
-  primeira_funcao();
+myfunction();
 </script>
 </body>
 </html>
