@@ -52,15 +52,15 @@ console.log(guiga.data.data[0]);
 if (guiga.data.data[0] === undefined){
 console.log("Nenhum Aviso de Aeródromo por enquanto...");
 document.getElementById("linha1").innerHTML = "Nenhum Aviso de Aeródromo por enquanto...";  
-return "Nenhum Aviso de Aeródromo por enquanto...";  
+let lobao = "Nenhum Aviso de Aeródromo por enquanto...";  
 } else {  
 console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
-return  guiga.data.data[0]["mens"]; 
+let lobao =  guiga.data.data[0]["mens"]; 
 }   
-setTimeout(minhafuncao, 5000);
+setTimeout(minhafuncao(lobao), 60000*1);
 }
-  async function minhafuncao(){
+  async function minhafuncao(teste){
 let data = new Date();
 let ano_num = data.getFullYear();
 let ano = ano_num.toString();  
@@ -87,17 +87,20 @@ console.log(guiga.data.data[0]);
 if (guiga.data.data[0] === undefined){
 console.log("Nenhum Aviso de Aeródromo por enquanto...");
 document.getElementById("linha1").innerHTML = "Nenhum Aviso de Aeródromo por enquanto...";  
-return "Nenhum Aviso de Aeródromo por enquanto...";  
+//return "Nenhum Aviso de Aeródromo por enquanto...";  
+console.log(lobao);
 } else {  
 console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
-return  guiga.data.data[0]["mens"]; 
+//return  guiga.data.data[0]["mens"]; 
+console.log(lobao);
 }   
  //  setTimeout(myfunction, 60 * 1000);
   }
 async function primeira_funcao(){
-let vagina = await myfunction();  
-console.log("o resultado é: " + vagina);
+let vagina = await myfunction(); 
+  let vagina2 = await minhafuncao(); 
+//console.log("o resultado é: " + vagina);
 //let bunda = await minhafuncao();
   // setTimeout(minhafuncao,5000);
 }
