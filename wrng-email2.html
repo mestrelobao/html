@@ -22,6 +22,7 @@ E-mail: <input type="text" id="formulario2" value="">
 <p id="linha1"></p>
 </form>
 <script>
+  var veronica = "";
   function pad(d) {
     return (d < 10) ? '0' + d.toString() : d.toString();
 }
@@ -52,13 +53,13 @@ console.log(guiga.data.data[0]);
 if (guiga.data.data[0] === undefined){
 console.log("Nenhum Aviso de Aeródromo por enquanto...");
 document.getElementById("linha1").innerHTML = "Nenhum Aviso de Aeródromo por enquanto...";  
-let lobao = "pica";  
+veronica = "pica";  
 } else {  
 console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
-let lobao =  "piroca"; 
+veronica =  "piroca"; 
 }   
-console.log(lobao);
+console.log(veronica);
   //setTimeout(minhafuncao(lobao), 60000*1);
 }
   async function minhafuncao(teste){
