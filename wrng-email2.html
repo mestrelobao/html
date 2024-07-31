@@ -23,6 +23,7 @@ E-mail: <input type="text" id="formulario2" value="">
 </form>
 <script>
   var veronica = "";
+  var normando = "";
   function pad(d) {
     return (d < 10) ? '0' + d.toString() : d.toString();
 }
@@ -59,10 +60,9 @@ console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
 veronica = guiga.data.data[0]["mens"];
 }   
-console.log(veronica);
-  //setTimeout(minhafuncao(lobao), 60000*1);
+setTimeout(minhafuncao, 60000*1);
 }
-  async function minhafuncao(teste){
+  async function minhafuncao(){
 let data = new Date();
 let ano_num = data.getFullYear();
 let ano = ano_num.toString();  
@@ -89,20 +89,17 @@ console.log(guiga.data.data[0]);
 if (guiga.data.data[0] === undefined){
 console.log("Nenhum Aviso de Aeródromo por enquanto...");
 document.getElementById("linha1").innerHTML = "Nenhum Aviso de Aeródromo por enquanto...";  
-//return "Nenhum Aviso de Aeródromo por enquanto...";  
-console.log(teste);
+normando = "Nenhum Aviso de Aeródromo por enquanto...";  
 } else {  
 console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
-//return  guiga.data.data[0]["mens"]; 
-console.log(teste);
+normando = guiga.data.data[0]["mens"]; 
 }   
  //  setTimeout(myfunction, 60 * 1000);
   }
 myfunction();
-  function buceta(teste){
-console.log(teste);
-  }
+console.log(veronica);
+  console.log(normando);
 </script>
 </body>
 </html>
