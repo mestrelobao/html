@@ -52,13 +52,13 @@ console.log(guiga.data.data[0]);
 if (guiga.data.data[0] === undefined){
 console.log("Nenhum Aviso de Aeródromo por enquanto...");
 document.getElementById("linha1").innerHTML = "Nenhum Aviso de Aeródromo por enquanto...";  
-let lobao = "Nenhum Aviso de Aeródromo por enquanto...";  
+let lobao = "pica";  
 } else {  
 console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
-let lobao =  guiga.data.data[0]["mens"]; 
+let lobao =  "piroca"; 
 }   
-//console.log(lobao);
+console.log(lobao);
   //setTimeout(minhafuncao(lobao), 60000*1);
 }
   async function minhafuncao(teste){
