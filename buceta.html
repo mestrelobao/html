@@ -4,7 +4,7 @@
 <body>
 <h2>Enviar e-mail</h2>
 <form>
-  <label for="email">Enviar para: </label>
+  <label for="to">Enviar para: </label>
   <input type="text" id="to" size="25"><br><br>
   <label for="sender">Remetente:</label>
   <input type="text" id="sender" size="26"><br><br>
@@ -16,7 +16,7 @@
 </form> 
 <script>
 function funcao() {
-let to = document.getElementById("to").value;
+let email = document.getElementById("to").value;
 let sender = document.getElementById("sender").value;
 let subject = document.getElementById("subject").value;
 let body = document.getElementById("body").value;
