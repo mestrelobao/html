@@ -71,6 +71,7 @@ let dia = dia_num.toString();
 let hora = data.getHours()+3;
 hora = pad (hora);
 let icao = document.getElementById("formulario").value;  
+let email = document.getElementById("email").value;  
   console.log("ano = " + ano);
   console.log("mes = " + mes);
   console.log("dia = " + dia);
@@ -93,11 +94,11 @@ normando = guiga.data.data[0]["mens"];
 }   
  console.log("eu gosto de buceta ");
   if(veronica === normando){
-    console.log("iguais então não vai e-mail!");
+    console.log("iguais então não vai e-mail para "+email);
   } else if (guiga.data.data[0] === undefined){
-console.log("diferentes mas não vai e-mail");
+console.log("diferentes mas não vai e-mail para "+email);
   }else{
-console.log("vai e-mail");
+console.log("vai e-mail para "+email);
   }
     veronica = normando;
     normando = "";
