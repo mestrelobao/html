@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<body>
+  <h1>Digite o código ICAO de sua localidade.</h1>
+  <form>
+  <input type="text" id="formulario" value="">
+  <input type="button" value="Enviar" onclick="myfunction()">
+</form>
+<p id="linha1"></p>
+<script>
+async function myfunction() {
+//mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
+let data = new Date();
+let ano_num = data.getFullYear();
+let ano = ano_num.toString();  
+let mes_num = (data.getMonth()+1);
+let mes = mes_num.toString();  
+let dia_num = data.getDate();
+let dia = dia_num.toString();
+let hora = data.getHours()+3;
+let icao = document.getElementById("formulario").value;  
+  console.log("ano = " + ano);
+  console.log("mes = " + mes);
+  console.log("dia = " + dia);
+  console.log("hora = "+(data.getHours()+3));
+  let myObject = await fetch("https://redemet.decea.gov.br//api/consulta_automatica/index.php?local="+icao+"&msg=metar&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
+  let myText = await myObject.text();
+  document.getElementById("linha1").innerHTML = myText;
+  setTimeout(myfunction, 60 * 1000);
+}
+</script>
+</body>
+</html>
