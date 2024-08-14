@@ -4,14 +4,15 @@
 <html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
-  <h1>Aviso de Aeródromo.</h1>
- <p id="linha1"></p>
+<h1>Aviso de Aeródromo.</h1>
+<p id="linha1"></p>
 <script>
+  var veronica = "";
+  var normando = "";
   function pad(d) {
     return (d < 10) ? '0' + d.toString() : d.toString();
 }
 async function myfunction() {
-//mensagens que podemos consultar: metar aviso_aerodromo ciclone cinzas sigwx taf winten
 let data = new Date();
 let ano_num = data.getFullYear();
 let ano = ano_num.toString();  
@@ -36,16 +37,59 @@ console.log(guiga.data.data[0]);
 if (guiga.data.data[0] === undefined){
 console.log("Nenhum Aviso de Aeródromo por enquanto...");
 document.getElementById("linha1").innerHTML = "Nenhum Aviso de Aeródromo por enquanto...";  
+veronica = "Nenhum Aviso de Aeródromo por enquanto...";   
 } else {  
 console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
-let body = guiga.data.data[0]["mens"];
-window.open("https://recebedados.bubbleapps.io/version-test?to=mestrelobaoguiga@gmail.com&sender=mestrelobaoguiga@gmail.com&subject=aviso_de_aerodromo&body="+body, "_blank");
-console.log("E-mail enviado!");  
+veronica = guiga.data.data[0]["mens"];
 }   
-   setTimeout(myfunction, 60000 * 1);
+setTimeout(minhafuncao, 60000*1);
 }
-  myfunction();
+async function minhafuncao(){
+let data = new Date();
+let ano_num = data.getFullYear();
+let ano = ano_num.toString();  
+let mes_num = (data.getMonth()+1);
+mes_num = pad (mes_num);
+let mes = mes_num.toString();  
+let dia_num = data.getDate();
+dia_num = pad (dia_num);
+let dia = dia_num.toString();
+let hora = data.getHours()+3;
+hora = pad (hora);
+console.log("ano = " + ano);
+console.log("mes = " + mes);
+console.log("dia = " + dia);
+console.log("hora = "+hora);
+let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
+let myText = await myObject.text();
+const guiga = JSON.parse(myText); 
+console.log(myText);
+console.log(guiga);  
+console.log(guiga.data.data[0]);
+if (guiga.data.data[0] === undefined){
+console.log("Nenhum Aviso de Aeródromo por enquanto...");
+document.getElementById("linha1").innerHTML = "Nenhum Aviso de Aeródromo por enquanto...";  
+normando = "Nenhum Aviso de Aeródromo por enquanto...";  
+} else {  
+console.log(guiga.data.data[0]["mens"]);
+document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
+normando = guiga.data.data[0]["mens"]; 
+}   
+ console.log("eu gosto de buceta ");
+  if(veronica === normando){
+    console.log("iguais então não vai e-mail");
+  } else if (guiga.data.data[0] === undefined){
+console.log("diferentes mas não vai e-mail");
+  }else{
+window.open("https://recebedados.bubbleapps.io/version-test?to=mestrelobaoguiga@gmail.com&sender=mestrelobaoguiga@gmail.com&subject=aviso_de_aerodromo&body="+normando, "_blank");
+console.log("vai e-mail");
+  }
+    veronica = normando;
+    normando = "";
+    setTimeout(minhafuncao, 60000*1);
+  }
+myfunction();
 </script>
 </body>
 </html>
