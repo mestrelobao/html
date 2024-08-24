@@ -18,8 +18,8 @@ async function myfunction() {
  console.log(dados); 
  console.log(dados.listaDezenas[0]); 
  
- const response = await fetch('megasena.json');
- const names = await response.json(); 
+ const responsive = await fetch('megasena.json');
+ const names = await responsive.json(); 
  
   for (const x of dados.listaDezenas) {
   if ( x == names.primeiro || x == names.segundo || x == names.terceiro || x == names.quarto || x == names.quinto || x == names.sexto){
