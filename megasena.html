@@ -3,13 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script> 
-async function loadJson() {
-  const response = await fetch('megasena.json');
-  const names = await response.json();
-  console.log(names.primeiro); 
- }
-loadJson();
- //myfunction();
+myfunction();
 async function myfunction() {
  const primeiro = 47;
  const segundo = 43;
@@ -23,8 +17,12 @@ async function myfunction() {
  console.log(dados.numero);
  console.log(dados); 
  console.log(dados.listaDezenas[0]); 
- for (const x of dados.listaDezenas) {
-  if ( x == primeiro || x == segundo || x == terceiro || x == quarto || x == quinto || x == sexto){
+ 
+ const response = await fetch('megasena.json');
+ const names = await response.json(); 
+ 
+  for (const x of dados.listaDezenas) {
+  if ( x == names.primeiro || x == names.segundo || x == names.terceiro || x == names.quarto || x == names.quinto || x == names.sexto){
  numeros++;
  } 
  }
