@@ -9,6 +9,7 @@ async function myfunction() {
   const dados = await response.json();
  console.log(dados.numero);
  console.log(dados); 
+ console.log(dados.listaDezenas[0]); 
   document.getElementById("concurso").innerHTML = "Concurso número: " + dados.numero;
   document.getElementById("numeros").innerHTML = dados.listaDezenas;
 }
