@@ -13,6 +13,11 @@ for (i = 0; i < localStorage.length; i++) {
   x = localStorage.key(i);
   document.getElementById("demo").innerHTML += x;
 }
+function myFunction() {
+  var x = localStorage.length;
+  document.getElementById("demo").innerHTML = x;
+}
+ myFunction(); 
 </script>
 
 </body>
