@@ -15,10 +15,12 @@
 <script>
 function funcao(){
   var list = document.querySelector('#list'),
-    console.log(list); 
-    
-    form = document.querySelector('form'),
+      form = document.querySelector('form'),
       item = document.querySelector('#item');
+      console.log(list);
+  console.log(form);
+  console.log(item);
+  
   
   form.addEventListener('submit',function(e){
     e.preventDefault();
@@ -44,6 +46,7 @@ function funcao(){
   function getValues() {
     var storedValues = window.localStorage.myitems;
     if(!storedValues) {
+      //list.innerHTML = '<li>Make a to do list</li>';
     }
     else {
       list.innerHTML = storedValues;
