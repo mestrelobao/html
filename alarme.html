@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-
 <h2>Alarme METAR</h2>
-
 <p>Escolha o turno de serviço:</p>
 
 <form>
@@ -16,8 +14,15 @@
 </form> 
 
 <script>
+function checar()
+{
+ var botoes = document.getElementsByName("turno");
 
-
+ for (var i = 0 in botoes) 
+        if (botoes[i].checked)
+            alert("Escolheu: " + botoes[i].value);
+}
+setTimeout(checar,5000);
 </script>
 
 </body>
