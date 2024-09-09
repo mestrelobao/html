@@ -4,14 +4,18 @@
 
 <h1>The button Element</h1>
 
-<button type="button" onclick="funcao()">Apertae</button>
+<button type="button" onclick="funcao_play()">Play</button>
+<button type="button" onclick="funcao_pause()">Pause</button>  
   
 <script>
-function funcao(){
+function funcao_play(){
 var audio = new Audio('alarm.wav');
 audio.play();
 }
-  
+function funcao_pause(){
+var audio = new Audio('alarm.wav');
+audio.pause();
+}  
 </script>
 </body>
 </html>
