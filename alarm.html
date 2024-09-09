@@ -10,14 +10,18 @@
 <button type="button" onclick="funcao_pause()">Pause</button>  
   
 <script>
+function buceta () {
 let data = new Date();
 let hora = data.getHours();
 let minuto = data.getMinutes();
 console.log(hora);
 console.log(minuto);  
 if(minuto > 5){
-console.log("buceta 59 minutos"); 
+console.log("buceta boa"); 
 }
+ setTimeout(buceta, 1000); 
+}
+
 var audio = new Audio('alarm.wav');
 function funcao_play(){
 audio.play();
@@ -26,7 +30,7 @@ function funcao_pause(){
 audio.pause();
 audio.currentTime = 0;
 } 
-  
+buceta();
 </script>
 </body>
 </html>
