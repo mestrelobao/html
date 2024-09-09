@@ -2,22 +2,24 @@
 <html>
 <body>
 
-<h1>The button Element</h1>
+<h1>Alarme do METAR</h1>
+  
+<p>14:50 15:50 16:50 17:50 18:50 19:50 20:50 21:50 22:50 23:50 00:50 01:50</p>
 
 <button type="button" onclick="funcao_play()">Play</button>
 <button type="button" onclick="funcao_pause()">Pause</button>  
   
 <script>
+ 
 var audio = new Audio('alarm.wav');
-  function funcao_play(){
-//var audio = new Audio('alarm.wav');
+function funcao_play(){
 audio.play();
 }
 function funcao_pause(){
-//var audio = new Audio('alarm.wav');
 audio.pause();
 audio.currentTime = 0;
-}  
+} 
+  
 </script>
 </body>
 </html>
