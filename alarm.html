@@ -12,9 +12,12 @@
 <script>
 let data = new Date();
 let hora = data.getHours();
-let minuto = (60-data.getMinutes());
+let minuto = data.getMinutes();
 console.log(hora);
- console.log(minuto);  
+console.log(minuto);  
+if(minuto==50){
+console.log("buceta 50 minutos"); 
+}
 var audio = new Audio('alarm.wav');
 function funcao_play(){
 audio.play();
