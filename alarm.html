@@ -21,6 +21,9 @@ let m = addZero(d.getMinutes());
 let s = addZero(d.getSeconds());
 let time = h + ":" + m + ":" + s;
 document.getElementById("demo").innerHTML = time;
+if( m >= 50 ){
+console.log("buceta");
+}
 setTimeout(foda, 1000);
 }
 var audio = new Audio('alarm.wav');
