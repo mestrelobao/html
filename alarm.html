@@ -10,7 +10,8 @@
 <button type="button" onclick="funcao_pause()">Pause</button>  
   
 <script>
-function addZero(i) {
+var audio = new Audio('alarm.wav');
+  function addZero(i) {
   if (i < 10) {i = "0" + i}
   return i;
 }
@@ -21,12 +22,13 @@ let m = addZero(d.getMinutes());
 let s = addZero(d.getSeconds());
 let time = h + ":" + m + ":" + s;
 document.getElementById("demo").innerHTML = time;
-if( m == 59 && s == 00 ){
+if( m == 12 && s == 00 ){
 console.log("buceta");
+audio.play(); 
 }
 setTimeout(foda, 1000);
 }
-var audio = new Audio('alarm.wav');
+
 function funcao_play(){
 audio.play();
 }
