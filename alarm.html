@@ -7,11 +7,6 @@
     <style>
 h1 {
   text-align: center;
-  button {
-    display: block;
-    width: 30px;
-    margin: 0 auto;
-}
 }
 p {
   color: red;
@@ -25,8 +20,9 @@ p {
 
 <h1>Alarme do METAR</h1>
 <p id="demo"></p>
+<p align="center">
 <button type="button" onclick="funcao_pause()">Parar Alarme</button>  
-  
+</p>  
 <script>
 let audio = new Audio('alarm.wav');
   function addZero(i) {
