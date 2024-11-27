@@ -21,6 +21,14 @@ const data = mes+dia;
     });
     const result = await response.json();
     console.log("Success:", result);
+
+
+         if(result==null){
+  document.getElementById("linha1").innerHTML = "Data inválida!";
+  document.getElementById("linha2").innerHTML = "";
+  document.getElementById("linha3").innerHTML = "";
+  document.getElementById("linha4").innerHTML = "";
+    }
   document.getElementById("linha1").innerHTML = result[0];
   document.getElementById("linha2").innerHTML = result[1];
   document.getElementById("linha3").innerHTML = result[2];
