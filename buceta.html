@@ -22,16 +22,16 @@ const data = mes+dia;
     const result = await response.json();
     console.log("Success:", result);
   document.getElementById("linha1").innerHTML = result[0];
-  //document.getElementById("linha2").innerHTML = myObj[data][1];
-  //document.getElementById("linha3").innerHTML = myObj[data][2];
-  //if ( myObj[data][3] ){ document.getElementById("linha4").innerHTML = myObj[data][3];}
+  document.getElementById("linha2").innerHTML = myObj[data][1];
+  document.getElementById("linha3").innerHTML = myObj[data][2];
+  if ( myObj[data][3] ){ document.getElementById("linha4").innerHTML = myObj[data][3];}
 
 }
  
 </script>
 </head>
 <body>
-  <h1>2024</h1>
+  <h1>Tábua de maré de 2024</h1>
 <form>
 Selecione o mês desejado: 
 <select id="mes">
