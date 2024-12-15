@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>One Time Pad</h1>
+<h2>Plain text: ola</h2>
+
+<p>The cypher will be:</p>
+
+<p id="demo"></p>
+
+<script>
+let codigo = "";
+let text = "ola";
+let otg = "ksslkjsdhflkjawhkjsh";
+for (let i = 0; i < text.length; i++) {
+let letra_num = text.charCodeAt(i)-96;
+let otg_num = otg.charCodeAt(i)-96;
+let cypher = letra_num + otg_num;
+if (cypher>26) cypher = cypher-26;
+console.log("texto: "+letra_num);
+console.log("otg: "+otg_num);
+console.log("cypher: "+cypher); 
+codigo += String.fromCharCode(cypher+96);
+}
+document.getElementById("demo").innerHTML = codigo;
+</script>
+</body>
+</html>
