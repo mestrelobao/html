@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>CRIPTO</h2>
+<p>Insert the On Time Pad and the text:</p>
+
+<form>
+  <label for="texto">Plain Text:</label><br>
+  <input type="text" id="texto" name="texto"><br>
+  <label for="otg">One Time Pad:</label><br>
+  <input type="text" id="otg" name="otg"><br>
+  <label for="cypher">Cypher:</label><br>
+  <input type="text" id="cypher" name="cypher"><br><br>
+           <input type="button" value="Codificar" onclick="funcao()">
+</form>
+<script>
+function funcao(){
+let codigo = "";
+var text = document.getElementById("texto").value;
+var otg = document.getElementById("otg").value;
+for (let i = 0; i < text.length; i++) {
+let letra_num = text.charCodeAt(i)-96;
+let otg_num = otg.charCodeAt(i)-96;
+let cypher = letra_num + otg_num;
+if (cypher>26) cypher = cypher-26;
+codigo += String.fromCharCode(cypher+96);
+}
+document.getElementById("cypher").value = codigo;
+console.log(codigo);
+}
+</script>
+</body>
+</html>
+
