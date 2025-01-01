@@ -4,6 +4,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+  <script>
+function funcao() {
+  let estado = document.getElementById("estado").value;
+  if (estado == "Alagoas") window.location.assign("https://mestrelobao.github.io/html/alagoas.html");
+else if (estado == "Amapá") window.location.assign("https://mestrelobao.github.io/html/amapa.html");
+else if (estado == "Bahia") window.location.assign("https://mestrelobao.github.io/html/bahia.html");
+
+
+else (estado == "Sergipe") window.location.assign("https://mestrelobao.github.io/html/sergipe.html"); 
+}  
+</script>
   <h1>Tábua de Mares do Brasil 2025</h1>
 <form>
 Selecione o Estado desejado: 
@@ -37,16 +48,6 @@ Selecione o Estado desejado:
 <p id="linha6"></p>
 <p id="linha7"></p>
 <p id="linha8"></p>
-<script>
-function funcao() {
-  let estado = document.getElementById("estado").value;
-  if (estado == "Alagoas") window.location.assign("https://mestrelobao.github.io/html/alagoas.html");
-else if (estado == "Amapá") window.location.assign("https://mestrelobao.github.io/html/amapa.html");
-else if (estado == "Bahia") window.location.assign("https://mestrelobao.github.io/html/bahia.html");
 
-
-else (estado == "Sergipe") window.location.assign("https://mestrelobao.github.io/html/sergipe.html"); 
-}  
-</script>
 </body>
 </html>
