@@ -34,13 +34,13 @@ function funcao() {
   if ( myObj[data][6] ){ document.getElementById("linha7").innerHTML = myObj[data][6];}
   if ( myObj[data][7] ){ document.getElementById("linha8").innerHTML = myObj[data][7];}  
 }
-xmlhttp.open("GET", "barra_de_paranagua_canal_galheta.json");
+xmlhttp.open("GET", "barra_de_paranagua_canal_da_galheta.json");
 xmlhttp.send();
 }  
 </script>
 </head>
 <body>
-  <h1>Barra de Paranaguá - Canal Galheta 2025</h1>
+  <h1>Barra de Paranaguá - Canal da Galheta 2025</h1>
 <form>
 Selecione o mês desejado: 
 <select id="mes">
