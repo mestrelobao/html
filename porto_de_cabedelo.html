@@ -4,11 +4,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
 function funcao() {
-  const d = new Date();
-  const dia_atual = d.getDate();
+ const months = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const d = new Date();
+let month = months[d.getMonth()];
+document.getElementById("demo").innerHTML = month;
   
- document.getElementById("diahoje").innerHTML = "buceta";
-  let ano = "2025";
   let mes = document.getElementById("mes").value;
   let dia = document.getElementById("dia").value;
   const data = " "+mes+dia+" ";
@@ -44,7 +44,7 @@ xmlhttp.send();
 </script>
 </head>
 <body> 
-  <p id="diahoje"></p> 
+  <p id="demo"></p> 
   <h1>João Pessoa, 2025</h1>
 <form>
 Selecione o mês desejado: 
