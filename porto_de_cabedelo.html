@@ -3,12 +3,12 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
-function funcao() {
- const months = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const months = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 const d = new Date();
 let month = months[d.getMonth()];
 document.getElementById("demo").innerHTML = month;
-  
+ 
+function funcao() {
   let mes = document.getElementById("mes").value;
   let dia = document.getElementById("dia").value;
   const data = " "+mes+dia+" ";
