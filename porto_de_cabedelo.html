@@ -74,10 +74,10 @@ Selecione o dia desejado:
 const months = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 const d = new Date();
 let month = months[d.getMonth()];
-let day = d.getDate;   
+let day = d.getDate();   
 document.getElementById("demo").innerHTML = month;
-document.getElementById("capeta").innerHTML = day;   
- console.log(month);
+document.getElementById("capeta").innerHTML = "day";   
+console.log(day);
 function funcao() {
   let mes = document.getElementById("mes").value;
   let dia = document.getElementById("dia").value;
