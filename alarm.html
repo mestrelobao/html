@@ -31,7 +31,7 @@ let audio = new Audio('alarm.wav');
 }
 function foda(){
 const d = new Date();
-let h = addZero(d.getHours());
+let h = addZero(d.getHours()+3);
 let m = addZero(d.getMinutes());
 let s = addZero(d.getSeconds());
 let time = h + ":" + m + ":" + s;
