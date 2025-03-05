@@ -14,17 +14,15 @@ color: red;
         input[type="checkbox"] {
             width: 40px;
             height: 30px;
-            accent-color:black;
-           border-radius: 12px;
-         
-        }
-
+         //   accent-color:black;
+         //  border-radius: 12px;
+                 }
  </style> 
    <html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
-<h1><input type="checkbox" id="aviso" name="aviso" value="vaiTocar" checked="checked">
-<label for="aviso">Alarme Aviso de Aeródromo de SBJP.</h1></label>
+<input type="checkbox" id="aviso" name="aviso" value="vaiTocar" checked="checked">
+<label for="aviso"><h1>Alarme Aviso de Aeródromo de SBJP.</h1></label>
 <p id="linha1"></p>
 <script>
   let audioAviso = new Audio('audioAviso.wav');
@@ -117,8 +115,6 @@ if(document.getElementById("aviso").checked) audioAviso.play();
     normando = "";
     setTimeout(minhafuncao, 60000*1);
   }
-var tuliana = document.getElementById("aviso").checked;
- console.log(tuliana);
 myfunction();
 
 </script>
