@@ -21,10 +21,13 @@ color: red;
    <html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
-<input type="checkbox" id="aviso" name="aviso" value="vaiTocar" checked="checked">
-<label for="aviso"><h1>Alarme Aviso de Aeródromo de SBJP.</h1></label>
+<h1><input type="checkbox" id="aviso" name="aviso" value="vaiTocar" checked="checked">
+<label for="aviso">Alarme Aviso de Aeródromo de SBJP.</label>
 <p id="linha1"></p>
-<script>
+<input type="checkbox" id="metar" name="metar" value="vaiTocar" checked="checked">
+<label for="metar">Alarme do Metar de SBJP.</h1></label>
+
+ <script>
   let audioAviso = new Audio('audioAviso.wav');
   let audioMetar = new Audio('audioMetar.wav');
   var veronica = "";
