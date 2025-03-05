@@ -26,10 +26,11 @@ color: red;
 <p id="linha1"></p>
 <h1><input type="checkbox" id="metar" name="metar" value="vaiTocar" checked="checked">
 <label for="metar">Alarme do Metar de SBJP.</h1></label>
-
+<p id="linha2"></p>
  <script>
   let audioAviso = new Audio('audioAviso.wav');
   let audioMetar = new Audio('audioMetar.wav');
+  
   var veronica = "";
   var normando = "";
   
@@ -118,6 +119,24 @@ if(document.getElementById("aviso").checked) audioAviso.play();
     normando = "";
     setTimeout(minhafuncao, 60000*1);
   }
+  function addZero(i) {
+  if (i < 10) {i = "0" + i}
+  return i;
+}
+function foda(){
+const d = new Date();
+let h = addZero(d.getHours()+3);
+let m = addZero(d.getMinutes());
+let s = addZero(d.getSeconds());
+let time = h + ":" + m + ":" + s;
+document.getElementById("linha2").innerHTML = time;
+if( m == 50 && s == 00 ){
+console.log("buceta");
+audio.play(); 
+}
+setTimeout(foda, 1000);
+}
+foda();  
 myfunction();
 
 </script>
