@@ -126,6 +126,9 @@ if(document.getElementById("aviso").checked) audioAviso.play();
 function foda(){
 const d = new Date();
 let h = addZero(d.getHours()+3);
+if(h = 24) h = addZero(0);
+if(h = 25) h = addZero(1);
+if(h = 26) h = addZero(2);
 let m = addZero(d.getMinutes());
 let s = addZero(d.getSeconds());
 let time = h + ":" + m + ":" + s;
