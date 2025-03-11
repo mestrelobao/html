@@ -5,7 +5,13 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico">
  <style>
    h1 {text-align: center;}
-   p {
+   h2 {
+     color: blue
+     font-family: verdana;
+     font-size: 20px;
+     text-align: center;
+   }
+  p {
 color: red;
      font-family: verdana;
      font-size: 30px;
@@ -14,9 +20,7 @@ color: red;
         input[type="checkbox"] {
             width: 40px;
             height: 30px;
-         //   accent-color:black;
-         //  border-radius: 12px;
-                 }
+                       }
  </style> 
    <html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,6 +31,11 @@ color: red;
 <h1><input type="checkbox" id="metar" name="metar" value="vaiTocar" checked="checked">
 <label for="metar">Alarme do Metar de SBJP.</h1></label>
 <p id="linha2"></p>
+<p id="linha3"></p>
+<br>
+<br>
+<h2>Sempre deixe essa página ativa para o alarme soar!</h2>
+ 
  <script>
   let audioAviso = new Audio('audioAviso.wav');
   let audioMetar = new Audio('audioMetar.wav');
