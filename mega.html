@@ -10,7 +10,7 @@ async function myfunction() {
  const dados = await response.json();
  console.log(dados[0]);
  //console.log(dados); 
- //console.log(dados.listaDezenas[0]); 
+ //console.log(dados.listaDezenas[0][concurso]); 
  
  document.getElementById("concurso").innerHTML = "Concurso número: " + dados.numero;
  document.getElementById("numeros").innerHTML = dados.listaDezenas;
