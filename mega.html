@@ -8,9 +8,9 @@ async function myfunction() {
  let numeros = 0;
  const response = await fetch("https://loteriascaixa-api.herokuapp.com/api/megasena");
  const dados = await response.json();
- console.log(dados[0]);
- //console.log(dados); 
- //console.log(dados.listaDezenas[0][concurso]); 
+ console.log(dados[0][concurso]);
+ //console.log(dados[0][concurso]); 
+ //console.log(dados[0][listaDezenas]); 
  
  document.getElementById("concurso").innerHTML = "Concurso número: " + dados.numero;
  document.getElementById("numeros").innerHTML = dados.listaDezenas;
