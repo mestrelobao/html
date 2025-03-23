@@ -16,8 +16,8 @@ console.log(dados[0]["dezenas"]);
 //guiga = JSON.stringify(dados);
 //console.log (guiga);
   
- document.getElementById("concurso").innerHTML = "Concurso número: " + dados.numero;
- document.getElementById("numeros").innerHTML = dados.listaDezenas;
+ document.getElementById("concurso").innerHTML = "Concurso número: " + dados[0]["concurso"];
+ document.getElementById("numeros").innerHTML = dados[0]["dezenas"];
 }
 </script>
 </head>
