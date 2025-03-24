@@ -148,12 +148,6 @@ h = addZero(2);
 h = addZero(h+3);
 }
 
-
-//console.log('buceta '+h);
-//if(h = 24) h = addZero(0);
-//if(h = 25) h = addZero(1);
-//if(h = 26) h = addZero(2);
-
 let m = addZero(d.getMinutes());
 let s = addZero(d.getSeconds());
 let time = h + ":" + m + ":" + s;
@@ -171,9 +165,9 @@ let ano_num = data.getFullYear();
 let ano = ano_num.toString();  
 let mes_num = addZero((data.getMonth()+1));
 let mes = mes_num.toString();  
-let dia_num = data.getDate();
+let dia_num = addZero(data.getDate());
 let dia = dia_num.toString();
-let hora = data.getHours()+3;
+let hora = addZero(data.getHours()+3);
   
   let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
 // let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini=2025032421&data_fim=2025032421");
