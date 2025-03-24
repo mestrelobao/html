@@ -179,6 +179,7 @@ let hora = data.getHours()+3;
   console.log("dia = " + dia);
   console.log("hora = "+(data.getHours()+3));
   let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
+ let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini=2025032420&data_fim=2025032420");
 //https://redemet.decea.gov.br//api/consulta_automatica/index.php?local=sbjp&msg=metar&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
 let myText = await myObject.text();
 const guiga = JSON.parse(myText);
