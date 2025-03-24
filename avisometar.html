@@ -181,7 +181,7 @@ let hora = data.getHours()+3;
   let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
 //https://redemet.decea.gov.br//api/consulta_automatica/index.php?local=sbjp&msg=metar&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
   let guiga = await myObject.text();
-  document.getElementById("linha3").innerHTML = guiga;
+  document.getElementById("linha3").innerHTML = guiga.data;
  console.log(guiga);
 setTimeout(metar, 60000);
 }
