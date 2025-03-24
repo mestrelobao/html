@@ -182,7 +182,7 @@ let hora = data.getHours()+3;
 //https://redemet.decea.gov.br//api/consulta_automatica/index.php?local=sbjp&msg=metar&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
   let guiga = await myObject.text();
   document.getElementById("linha3").innerHTML = guiga.data;
- console.log(guiga);
+ console.log(guiga.data.data);
 setTimeout(metar, 60000);
 }
 
