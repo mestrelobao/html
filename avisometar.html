@@ -184,14 +184,9 @@ let hora = data.getHours()+3;
 let myText = await myObject.text();
 const guiga = JSON.parse(myText);
 console.log("metar vai aqui...");
-//console.log(myText);
-//console.log(guiga);   
+console.log(ano+mes+dia+hora);
+ 
 document.getElementById("linha3").innerHTML = guiga.data.data[0].mens;
-console.log(guiga.data.data);
-console.log("cu");
-//console.log(guiga[data][data][mens]); 
-console.log(guiga['data']['data']['mens']); 
-console.log(guiga.data.data[0].mens);  
 
 setTimeout(metar, 60000);
 }
