@@ -3,16 +3,18 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script> 
- const dados;
+let buceta;
 myfunction();
 async function myfunction() {
  const response = await fetch("https://loteriascaixa-api.herokuapp.com/api/megasena");
- dados = await response.json();
-//console.log(dados[0]);
+const dados = await response.json();
+buceta = dados;
+ //console.log(dados[0]);
 //console.log(dados[0][3]); 
 //console.log(dados[0].dezenas); 
 //console.log(dados[0]['loteria']);  
 console.log(dados[0]["concurso"]);
+ console.log(buceta[0]["concurso"]);
 console.log(dados[0]["dezenas"]);
 console.log("concurso anterior: ");
 console.log(dados[1]["concurso"]);
