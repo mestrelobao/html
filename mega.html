@@ -14,7 +14,8 @@ async function myfunction() {
 console.log(dados[0]["concurso"]);
 console.log(dados[0]["dezenas"]);
 console.log("segue o fluxo");
- guiga = JSON.stringify(dados);
+
+guiga = JSON.stringify(dados);
 console.log (guiga);
   
  document.getElementById("concurso").innerHTML = "Concurso número: " + dados[0]["concurso"];
@@ -25,7 +26,9 @@ console.log (guiga);
 <body>
 
 <h2>Resultado da Mega-Sena</h2>
-  <p id ="concurso">Concurso nº </p>
+  
+<button type="button" onclick="anterior()">Anterior </button><p id ="concurso">Concurso nº ...aguardando o servidor...</p><button type="button" onclick="proximo()"> Próximo</button>
+
   <p id="numeros"></p>
  <p>Se você ganhou me manda um pix: mestrelobaoguilherme@gmail.com</p> 
   <img src="pix.jpg" alt="pode ser qualquer valor!">
