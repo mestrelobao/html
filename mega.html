@@ -13,13 +13,19 @@ async function myfunction() {
 //console.log(dados[0]['loteria']);  
 console.log(dados[0]["concurso"]);
 console.log(dados[0]["dezenas"]);
-console.log("segue o fluxo");
+console.log("concurso anterior: ");
+console.log(dados[1]["concurso"]);
 
-guiga = JSON.stringify(dados);
-console.log (guiga);
+ guiga = JSON.stringify(dados);
+
+ 
+ console.log (guiga);
   
  document.getElementById("concurso").innerHTML = "Concurso número: " + dados[0]["concurso"];
  document.getElementById("numeros").innerHTML = dados[0]["dezenas"];
+}
+anterior(){
+
 }
 </script>
 </head>
