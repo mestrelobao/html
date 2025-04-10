@@ -13,8 +13,9 @@ async function myfunction() {
 //console.log(dados[0]['loteria']);  
 console.log(dados[0]["concurso"]);
 console.log(dados[0]["dezenas"]);
-//guiga = JSON.stringify(dados);
-//console.log (guiga);
+console.log("segue o fluxo");
+ guiga = JSON.stringify(dados);
+console.log (guiga);
   
  document.getElementById("concurso").innerHTML = "Concurso número: " + dados[0]["concurso"];
  document.getElementById("numeros").innerHTML = dados[0]["dezenas"];
