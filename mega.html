@@ -24,11 +24,12 @@ console.log(dados[1]["concurso"]);
 //console.log (guiga);
   
  document.getElementById("concurso").innerHTML = "Concurso número: " + dados[piroca]["concurso"];
- document.getElementById("numeros").innerHTML = dados[0]["dezenas"];
+ document.getElementById("numeros").innerHTML = dados[piroca]["dezenas"];
 }
 function anterior(){
-document.getElementById("concurso").innerHTML = "Concurso número: " + buceta[0+1]["concurso"];
-document.getElementById("numeros").innerHTML = buceta[0+1]["dezenas"];
+piroca = piroca +1;
+document.getElementById("concurso").innerHTML = "Concurso número: " + buceta[piroca]["concurso"];
+document.getElementById("numeros").innerHTML = buceta[piroca]["dezenas"];
 }
  function proximo(){
 
