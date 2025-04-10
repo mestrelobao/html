@@ -4,27 +4,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script> 
 let buceta;
+let piroca = 0;
 myfunction();
 async function myfunction() {
  const response = await fetch("https://loteriascaixa-api.herokuapp.com/api/megasena");
 const dados = await response.json();
 buceta = dados;
- //console.log(dados[0]);
+ 
+//console.log(dados[0]);
 //console.log(dados[0][3]); 
 //console.log(dados[0].dezenas); 
 //console.log(dados[0]['loteria']);  
 console.log(dados[0]["concurso"]);
- console.log(buceta[0]["concurso"]);
+console.log(buceta[0]["concurso"]);
 console.log(dados[0]["dezenas"]);
 console.log("concurso anterior: ");
 console.log(dados[1]["concurso"]);
-
- guiga = JSON.stringify(dados);
-
- 
- console.log (guiga);
+//guiga = JSON.stringify(dados); 
+//console.log (guiga);
   
- document.getElementById("concurso").innerHTML = "Concurso número: " + dados[0]["concurso"];
+ document.getElementById("concurso").innerHTML = "Concurso número: " + dados[piroca]["concurso"];
  document.getElementById("numeros").innerHTML = dados[0]["dezenas"];
 }
 function anterior(){
