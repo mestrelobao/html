@@ -32,7 +32,9 @@ document.getElementById("concurso").innerHTML = "Concurso número: " + buceta[pi
 document.getElementById("numeros").innerHTML = buceta[piroca]["dezenas"];
 }
  function proximo(){
-
+piroca = piroca -1;
+document.getElementById("concurso").innerHTML = "Concurso número: " + buceta[piroca]["concurso"];
+document.getElementById("numeros").innerHTML = buceta[piroca]["dezenas"];
 }
 </script>
 </head>
