@@ -152,7 +152,7 @@ xmlhttp.send();
    function funcao3(eric, fernando){
    const data = " "+eric+fernando+" ";
    const xmlhttp = new XMLHttpRequest();
-  console.log("buceta"+data);
+  console.log("funcao3"+data);
   xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
  
@@ -185,6 +185,6 @@ function funcaototal(){
   console.log(mes+dia);
  funcao3(mes, dia); 
 }
-console.log("cu");   
-</script>
+funcao2();
+ </script>
 </html>
