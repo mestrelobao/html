@@ -57,7 +57,7 @@ Selecione o dia desejado:
   <option>31</option>
 </select>
 
-<input type="button" onclick="funcao_total()" value="OK">
+<input type="button" onclick="funcaototal()" value="OK">
 </form>
 
 <p id="linha1"></p>
@@ -179,7 +179,7 @@ xmlhttp.send();
 xmlhttp.open("GET", "porto_de_cabedelo.json");
 xmlhttp.send();
 }
-function funcao_total(){
+function funcaototal(){
  let mes = document.getElementById("mes").value;
  let dia = document.getElementById("dia").value;
   console.log(mes+dia);
