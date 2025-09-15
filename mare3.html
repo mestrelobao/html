@@ -112,9 +112,9 @@ function funcao() {
 xmlhttp.open("GET", "porto_de_cabedelo.json");
 xmlhttp.send();
 }  
+
 function funcao2() {
-  //const valorDesejado = month; 
-  const select_mes = document.getElementById('mes');
+   const select_mes = document.getElementById('mes');
   select_mes.value = month;
   const select_dia = document.getElementById('dia');
   select_dia.value = day;
@@ -176,11 +176,12 @@ xmlhttp.send();
   if ( myObj[data][6] ){ document.getElementById("linha7").innerHTML = myObj[data][6];}
   if ( myObj[data][7] ){ document.getElementById("linha8").innerHTML = myObj[data][7];}  
    }
-funcao2();  
+   }
 function funcao_total(){
  let mes = document.getElementById("mes").value;
  let dia = document.getElementById("dia").value;
  funcao3(mes, dia); 
 }
+funcao2();   
 </script>
 </html>
