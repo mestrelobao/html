@@ -113,11 +113,11 @@ xmlhttp.open("GET", "porto_de_cabedelo.json");
 xmlhttp.send();
 }  
 function funcao2() {
-  const valorDesejado = month; 
-  const mess = document.getElementById('mes');
-  mess.value = valorDesejado;
-  const select = document.getElementById('dia');
-  select.value = day;
+  //const valorDesejado = month; 
+  const select_mes = document.getElementById('mes');
+  select_mes.value = month;
+  const select_dia = document.getElementById('dia');
+  select_dia.value = day;
   
   const data = " "+month+day+" ";
  
