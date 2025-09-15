@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body> 
-  <h1>João Pessoa, <a id="capeta"></a> de <a id="demo"></a> de 2025</h1>
+  <h1>JOÃO PESSOA, <a id="capeta"></a> DE <a id="demo"></a> de 2025</h1>
 <form>
 Selecione o mês desejado: 
 <select id="mes">
@@ -113,7 +113,10 @@ xmlhttp.open("GET", "porto_de_cabedelo.json");
 xmlhttp.send();
 }  
 function funcao2() {
-
+const valorDesejado = 'SETEMBRO'; 
+const select = document.getElementById('mes');
+  select.value = valorDesejado;
+  
   const data = " "+month+day+" ";
  
   const xmlhttp = new XMLHttpRequest();
