@@ -175,8 +175,10 @@ xmlhttp.send();
   if ( myObj[data][5] ){ document.getElementById("linha6").innerHTML = myObj[data][5];}
   if ( myObj[data][6] ){ document.getElementById("linha7").innerHTML = myObj[data][6];}
   if ( myObj[data][7] ){ document.getElementById("linha8").innerHTML = myObj[data][7];}  
-   }
-   }
+}
+xmlhttp.open("GET", "porto_de_cabedelo.json");
+xmlhttp.send();
+}
 function funcao_total(){
  let mes = document.getElementById("mes").value;
  let dia = document.getElementById("dia").value;
