@@ -72,7 +72,7 @@ Selecione o dia desejado:
 </body>
  <script>
 
-const months = ["JANEIRO","FEVEREIRO","março","abril","maio","junho","julho","agosto","SETEMBRO","outubro","novembro","dezembro"];
+const months = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 const d = new Date();
 let month = months[d.getMonth()];
 let day = d.getDate();   
@@ -113,7 +113,9 @@ xmlhttp.open("GET", "porto_de_cabedelo.json");
 xmlhttp.send();
 }  
 function funcao2() {
-
+ document.getElementById("linha1").innerHTML = month;
+ document.getElementById("linha2").innerHTML = day;
 }
+funcao2();   
 </script>
 </html>
