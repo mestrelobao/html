@@ -78,24 +78,21 @@ let month = months[d.getMonth()];
 let day = d.getDate();   
 document.getElementById("demo").innerHTML = month;
 document.getElementById("capeta").innerHTML = day;   
-
+const select_mes = document.getElementById('mes');
+select_mes.value = month;
+const select_dia = document.getElementById('dia');
+select_dia.value = day;
+funcao3(month,day);
+   
 function funcao() {
   let mes = document.getElementById("mes").value;
   let dia = document.getElementById("dia").value;
  funcao3(mes,dia);
  }  
 
-function funcao2() {
-  const select_mes = document.getElementById('mes');
-  select_mes.value = month;
-  const select_dia = document.getElementById('dia');
-  select_dia.value = day;
-  funcao3(month,day);
-  }
-   function funcao3(eric, fernando){
-   const data = " "+eric+fernando+" ";
-   const xmlhttp = new XMLHttpRequest();
-//  console.log("funcao3"+data);
+  function funcao3(eric, fernando){
+  const data = " "+eric+fernando+" ";
+  const xmlhttp = new XMLHttpRequest();
   xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
  
@@ -122,6 +119,5 @@ function funcao2() {
 xmlhttp.open("GET", "porto_de_cabedelo.json");
 xmlhttp.send();
 }
-funcao2();
  </script>
 </html>
