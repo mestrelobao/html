@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Code Generator</title>
+  <script src="qrcode.min.js"></script>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    input { padding: 8px; width: 250px; font-size: 1rem; }
+    button { padding: 8px 12px; margin-left: 6px; font-size: 1rem; }
+    #qrcode { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h2>QR Code Generator</h2>
+  <input id="text" type="text" value="Hello, world!">
+  <button onclick="generateQR()">Generate</button>
+
+  <div id="qrcode"></div>
+
+  <script>
+    function generateQR() {
+      const container = document.getElementById("qrcode");
+      container.innerHTML = ""; // clear old QR
+      const text = document.getElementById("text").value;
+      new QRCode(container, {
+        text: text,
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+
+    // Generate one at startup
+    generateQR();
+  </script>
+</body>
+</html>
