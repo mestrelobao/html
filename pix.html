@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CRC-16-CCITT Calculator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 400px;
+      margin: 40px auto;
+      line-height: 1.5;
+    }
+    input, button {
+      padding: 8px;
+      font-size: 1rem;
+    }
+    #result {
+      margin-top: 12px;
+      font-weight: bold;
+      color: #0a6;
+    }
+  </style>
+</head>
+<body>
+  <h2>CRC-16-CCITT (poly 0x1021)</h2>
+
+  <label for="inputData">Enter text:</label><br>
+  <input id="inputData" type="text" value="123456789" size="30">
+  <button onclick="calcCRC()">Calculate CRC</button>
+
+  <div id="result"></div>
+
+  <script>
+    function crc16_ccitt(data, poly = 0x1021, init = 0xFFFF) {
+      let crc = init;
+      for (let i = 0; i < data.length; i++) {
+        crc ^= (data[i] << 8);
+        for (let bit = 0; bit < 8; bit++) {
+          if (crc & 0x8000)
+            crc = ((crc << 1) ^ poly) & 0xFFFF;
+          else
+            crc = (crc << 1) & 0xFFFF;
+        }
+      }
+      return crc & 0xFFFF;
+    }
+
+    function calcCRC() {
+      const text = document.getElementById("inputData").value;
+      const bytes = new TextEncoder().encode(text);
+      const crc = crc16_ccitt(bytes);
+      document.getElementById("result").textContent =
+        "CRC-16-CCITT-FALSE = 0x" + crc.toString(16).toUpperCase().padStart(4, "0");
+    }
+  </script>
+</body>
+</html>
