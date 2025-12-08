@@ -28,7 +28,7 @@
     background: #2c2c2c;
     border-radius: 4px;
     cursor: pointer;
-    transition: background 0.1s;
+    transition: background 0.1s, box-shadow 0.1s;
   }
 
   .cell.active {
@@ -133,13 +133,16 @@ function scheduleStep(step, time) {
   }
 }
 
-// loop do scheduler
+// loop do scheduler (agora para quando Stop é clicado)
 function scheduler() {
+  if (!isPlaying) return; // <--- crucial fix
+
   while (nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
     scheduleStep(currentStep, nextNoteTime);
     highlightStep(currentStep);
     nextStep();
   }
+
   requestAnimationFrame(scheduler);
 }
 
@@ -147,12 +150,9 @@ function scheduler() {
    VISUAL (cursor de passo)
 ------------------------------------------------------- */
 function highlightStep(step) {
-  // remove highlights anteriores
-  document.querySelectorAll(".current").forEach(cell =>
-    cell.classList.remove("current")
-  );
+  document.querySelectorAll(".current")
+    .forEach(cell => cell.classList.remove("current"));
 
-  // adiciona highlight às células da coluna atual
   for (let r = 0; r < rows; r++) {
     cells[r][step].classList.add("current");
   }
@@ -161,23 +161,26 @@ function highlightStep(step) {
 /* -------------------------------------------------------
    PLAY BUTTON
 ------------------------------------------------------- */
-document.getElementById("play").onclick = async () => {
+const playButton = document.getElementById("play");
+
+playButton.onclick = async () => {
   if (audioCtx.state === "suspended") await audioCtx.resume();
 
   if (!isPlaying) {
     isPlaying = true;
-    document.getElementById("play").innerText = "Stop";
+    playButton.innerText = "Stop";
 
     currentStep = 0;
     nextNoteTime = audioCtx.currentTime + 0.05;
 
-    scheduler();
+    scheduler();  // start loop
   } else {
     isPlaying = false;
-    document.getElementById("play").innerText = "Play";
+    playButton.innerText = "Play";
 
-    // remove cursor
-    document.querySelectorAll(".current").forEach(c => c.classList.remove("current"));
+    // remove cursor visual
+    document.querySelectorAll(".current")
+      .forEach(c => c.classList.remove("current"));
   }
 };
 </script>
