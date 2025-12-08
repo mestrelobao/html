@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Online Sequencer</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #121212;
+    color: white;
+    text-align: center;
+    padding-bottom: 100px;
+  }
+
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(16, 32px);
+    grid-gap: 4px;
+    margin: 20px auto;
+    width: fit-content;
+    position: relative;
+  }
+
+  .cell {
+    width: 32px;
+    height: 32px;
+    background: #2c2c2c;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.1s, box-shadow 0.1s;
+  }
+
+  .cell.active {
+    background: #00d4ff;
+  }
+
+  /* highlight do passo atual */
+  .cell.current {
+    box-shadow: 0 0 10px #ff006a, 0 0 4px #ff006a inset;
+  }
+
+  button {
+    padding: 10px 25px;
+    font-size: 17px;
+    margin-top: 20px;
+    border: none;
+    background: #00aaff;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    filter: brightness(1.15);
+  }
+</style>
+</head>
+
+<body>
+<h1>Online Sequencer</h1>
+<p>Click cells to activate notes. Press Play.</p>
+
+<div id="grid"></div>
+<button id="play">Play</button>
+
+<script>
+/* -------------------------------------------------------
+   CONFIG
+------------------------------------------------------- */
+const rows = 8;
+const cols = 16;
+let tempo = 120;                    // BPM
+const noteLength = 0.25;           // 16th note
+
+/* -------------------------------------------------------
+   AUDIO
+------------------------------------------------------- */
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const freqs = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
+
+/* -------------------------------------------------------
+   GRID CREATION
+------------------------------------------------------- */
+const grid = document.getElementById("grid");
+let cells = [];
+
+for (let r = 0; r < rows; r++) {
+  cells[r] = [];
+  for (let c = 0; c < cols; c++) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.dataset.row = r;
+    cell.dataset.col = c;
+
+    cell.onclick = () => cell.classList.toggle("active");
+
+    grid.appendChild(cell);
+    cells[r][c] = cell;
+  }
+}
+
+/* -------------------------------------------------------
+   PLAYBACK (Scheduler preciso)
+------------------------------------------------------- */
+let isPlaying = false;
+let currentStep = 0;
+let nextNoteTime = 0;
+const scheduleAheadTime = 0.1; // 100ms look-ahead
+
+// avança o passo musical
+function nextStep() {
+  const secondsPerBeat = 60 / tempo;
+  nextNoteTime += secondsPerBeat * noteLength;
+  currentStep = (currentStep + 1) % cols;
+}
+
+// toca as notas do passo atual
+function scheduleStep(step, time) {
+  for (let r = 0; r < rows; r++) {
+    if (cells[r][step].classList.contains("active")) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.frequency.value = freqs[r];
+
+      gain.gain.setValueAtTime(0.25, time);
+      gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.3);
+
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(time);
+      osc.stop(time + 0.3);
+    }
+  }
+}
+
+// loop do scheduler (agora para quando Stop é clicado)
+function scheduler() {
+  if (!isPlaying) return; // <--- crucial fix
+
+  while (nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
+    scheduleStep(currentStep, nextNoteTime);
+    highlightStep(currentStep);
+    nextStep();
+  }
+
+  requestAnimationFrame(scheduler);
+}
+
+/* -------------------------------------------------------
+   VISUAL (cursor de passo)
+------------------------------------------------------- */
+function highlightStep(step) {
+  document.querySelectorAll(".current")
+    .forEach(cell => cell.classList.remove("current"));
+
+  for (let r = 0; r < rows; r++) {
+    cells[r][step].classList.add("current");
+  }
+}
+
+/* -------------------------------------------------------
+   PLAY BUTTON
+------------------------------------------------------- */
+const playButton = document.getElementById("play");
+
+playButton.onclick = async () => {
+  if (audioCtx.state === "suspended") await audioCtx.resume();
+
+  if (!isPlaying) {
+    isPlaying = true;
+    playButton.innerText = "Stop";
+
+    currentStep = 0;
+    nextNoteTime = audioCtx.currentTime + 0.05;
+
+    scheduler();  // start loop
+  } else {
+    isPlaying = false;
+    playButton.innerText = "Play";
+
+    // remove cursor visual
+    document.querySelectorAll(".current")
+      .forEach(c => c.classList.remove("current"));
+  }
+};
+</script>
+
+</body>
+</html>
