@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Online Sequencer Pro</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #121212;
+    color: white;
+    text-align: center;
+    padding-bottom: 150px;
+  }
+
+  h1 {
+    margin-top: 20px;
+    font-size: 32px;
+    color: #ffffff;
+  }
+
+  #controls {
+    margin-top: 20px;
+  }
+
+  #controls button {
+    padding: 10px 25px;
+    margin: 8px;
+    font-size: 17px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #00aaff;
+    color: white;
+  }
+
+  #controls button:hover {
+    filter: brightness(1.12);
+  }
+
+  #tempoControl {
+    margin-top: 10px;
+  }
+
+  #tempoControl input {
+    width: 250px;
+  }
+
+  #gridContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+    gap: 25px;
+  }
+
+  /* Left side: instrument + volume */
+  #volumes {
+    display: grid;
+    grid-template-rows: repeat(8, 40px);
+    grid-gap: 10px;
+    width: 180px;
+  }
+
+  .volRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    background: #1f1f1f;
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
+
+  .volRow select {
+    background: #2c2c2c;
+    color: white;
+    border: none;
+    padding: 4px;
+    border-radius: 4px;
+  }
+
+  /* Right side: step grid */
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(16, 32px);
+    grid-gap: 4px;
+  }
+
+  .cell {
+    width: 32px;
+    height: 32px;
+    background: #2c2c2c;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.1s, box-shadow 0.1s;
+  }
+
+  .cell.active {
+    filter: brightness(1.25);
+  }
+
+  .cell.current {
+    box-shadow: 0 0 12px #ff00cc, 0 0 5px #ff0095 inset;
+  }
+
+  /* Export bar style */
+  #exportBar {
+    margin-top: 25px;
+  }
+
+  #exportBar button {
+    padding: 10px 25px;
+    margin: 8px;
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    background: #ff4bcb;
+    color: white;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Online Sequencer Pro</h1>
+<p>808 Real Drum Kit + Synth Instruments</p>
+
+<div id="controls">
+  <button id="play">Play</button>
+  <button id="save">Save</button>
+  <button id="load">Load</button>
+</div>
+
+<div id="tempoControl">
+  <label for="tempo">Tempo: <span id="tempoValue">120</span> BPM</label><br>
+  <input type="range" id="tempo" min="40" max="240" value="120">
+</div>
+
+<div id="gridContainer">
+  <div id="volumes"></div>
+  <div id="grid"></div>
+</div>
+
+<div id="exportBar">
+  <button id="export">Export WAV</button>
+  <button id="exportJson">Export JSON</button>
+</div>
+
+
+<script>
+/* -------------------------------------------------------
+   CORE SETTINGS
+------------------------------------------------------- */
+const rows = 8;
+const cols = 16;
+let tempo = 120;
+const noteLength = 0.25;
+
+/* Row colors */
+const rowColors = [
+  "#ff7675", "#74b9ff", "#55efc4", "#ffeaa7",
+  "#a29bfe", "#fab1a0", "#81ecec", "#fd79a8"
+];
+
+/* Frequencies for synth (bass/lead rows) */
+const freqs = [
+  60,62,65,67,69,72,74,76
+].map(n => 440 * Math.pow(2, (n - 69) / 12));
+
+/* -------------------------------------------------------
+   AUDIO SETUP
+------------------------------------------------------- */
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+const masterGain = audioCtx.createGain();
+masterGain.gain.value = 1;
+masterGain.connect(audioCtx.destination);
+
+/* Volume per row */
+const rowGains = [...Array(rows)].map(() => {
+  const g = audioCtx.createGain();
+  g.gain.value = 1;
+  g.connect(masterGain);
+  return g;
+});
+
+/* -------------------------------------------------------
+   LOAD REAL 808 DRUM SAMPLES
+------------------------------------------------------- */
+const sampleURLs = {
+  kick:  "https://raw.githubusercontent.com/joshwcomeau/web-audio-samples/main/808/kick.wav",
+  snare: "https://raw.githubusercontent.com/joshwcomeau/web-audio-samples/main/808/snare.wav",
+  hihat: "https://raw.githubusercontent.com/joshwcomeau/web-audio-samples/main/808/hihat.wav",
+  clap:  "https://raw.githubusercontent.com/joshwcomeau/web-audio-samples/main/808/clap.wav"
+};
+
+let drumBuffers = {};
+
+async function loadSamples() {
+  for (const key in sampleURLs) {
+    const res  = await fetch(sampleURLs[key]);
+    const arr  = await res.arrayBuffer();
+    drumBuffers[key] = await audioCtx.decodeAudioData(arr);
+  }
+  console.log("808 Drum samples loaded ✔");
+}
+loadSamples();
+
+/* -------------------------------------------------------
+   INSTRUMENT PLAYERS
+------------------------------------------------------- */
+
+/* Playback for real drum samples */
+function playSample(name, time, row) {
+  const buf = drumBuffers[name];
+  if (!buf) return;
+  const src = audioCtx.createBufferSource();
+  src.buffer = buf;
+  src.connect(rowGains[row]);
+  src.start(time);
+}
+
+/* Wrappers */
+function playKick(time, r)  { playSample("kick",  time, r); }
+function playSnare(time, r) { playSample("snare", time, r); }
+function playHihat(time, r) { playSample("hihat", time, r); }
+function playClap(time, r)  { playSample("clap",  time, r); }
+
+/* Synth instruments */
+function playBass(freq, time, row) {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = "sawtooth";
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0.4, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.35);
+  osc.connect(gain).connect(rowGains[row]);
+  osc.start(time);
+  osc.stop(time + 0.35);
+}
+
+function playLead(freq, time, row) {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = "square";
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0.25, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.4);
+  osc.connect(gain).connect(rowGains[row]);
+  osc.start(time);
+  osc.stop(time + 0.4);
+}
+
+/* -------------------------------------------------------
+   INSTRUMENT SELECTOR PER ROW
+------------------------------------------------------- */
+
+const instrumentTypes = [
+  "Kick", "Snare", "HiHat", "Clap", "Bass", "Bass", "Lead", "Lead"
+];
+
+/* Will be replaced live by UI selectors */
+let rowInstrument = [...instrumentTypes];
+
+function getInstrumentFunction(name) {
+  switch(name) {
+    case "Kick":  return playKick;
+    case "Snare": return playSnare;
+    case "HiHat": return playHihat;
+    case "Clap":  return playClap;
+    case "Bass":  return (t,r) => playBass(freqs[r], t, r);
+    case "Lead":  return (t,r) => playLead(freqs[r], t, r);
+  }
+}
+
+/* -------------------------------------------------------
+   GRID CREATION
+------------------------------------------------------- */
+const grid = document.getElementById("grid");
+let cells = [];
+
+for (let r = 0; r < rows; r++) {
+  cells[r] = [];
+  for (let c = 0; c < cols; c++) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.style.background = "#2c2c2c";
+    cell.onclick = () => {
+      cell.classList.toggle("active");
+      cell.style.background = cell.classList.contains("active")
+        ? rowColors[r]
+        : "#2c2c2c";
+    };
+    grid.appendChild(cell);
+    cells[r][c] = cell;
+  }
+}
+
+/* -------------------------------------------------------
+   VOLUME SLIDERS
+------------------------------------------------------- */
+const volumes = document.getElementById("volumes");
+
+for (let r = 0; r < rows; r++) {
+  const wrap = document.createElement("div");
+  wrap.className = "volRow";
+
+  wrap.innerHTML = `
+    <select data-type="${r}">
+      <option>Kick</option>
+      <option>Snare</option>
+      <option>HiHat</option>
+      <option>Clap</option>
+      <option>Bass</option>
+      <option>Lead</option>
+    </select>
+
+    <input type="range" min="0" max="100" value="100" data-row="${r}">
+  `;
+
+  volumes.appendChild(wrap);
+
+  /* Set default instrument */
+  wrap.querySelector("select").value = instrumentTypes[r];
+
+  wrap.querySelector("select").onchange = e => {
+    rowInstrument[r] = e.target.value;
+  };
+
+  wrap.querySelector("input").oninput = e => {
+    const row = e.target.dataset.row;
+    rowGains[row].gain.value = e.target.value / 100;
+  };
+}
+
+/* -------------------------------------------------------
+   PLAYBACK SCHEDULER
+------------------------------------------------------- */
+
+let isPlaying = false;
+let currentStep = 0;
+let nextNoteTime = 0;
+const scheduleAhead = 0.1;
+
+function scheduleStep(step, time) {
+  for (let r = 0; r < rows; r++) {
+    if (!cells[r][step].classList.contains("active")) continue;
+
+    const type = rowInstrument[r];
+    const fn   = getInstrumentFunction(type);
+
+    if (type === "Bass" || type === "Lead")
+      fn(time, r);
+    else
+      fn(time, r);
+  }
+}
+
+function nextStep() {
+  nextNoteTime += (60 / tempo) * noteLength;
+  currentStep = (currentStep + 1) % cols;
+}
+
+function highlightStep(step) {
+  document.querySelectorAll(".current")
+    .forEach(c => c.classList.remove("current"));
+
+  for (let r = 0; r < rows; r++)
+    cells[r][step].classList.add("current");
+}
+
+function scheduler() {
+  if (!isPlaying) return;
+
+  while (nextNoteTime < audioCtx.currentTime + scheduleAhead) {
+    scheduleStep(currentStep, nextNoteTime);
+    highlightStep(currentStep);
+    nextStep();
+  }
+
+  requestAnimationFrame(scheduler);
+}
+
+/* -------------------------------------------------------
+   TEMPO CONTROL
+------------------------------------------------------- */
+const tempoSlider = document.getElementById("tempo");
+const tempoValue  = document.getElementById("tempoValue");
+
+tempoSlider.oninput = () => {
+  tempo = Number(tempoSlider.value);
+  tempoValue.textContent = tempo;
+};
+
+/* -------------------------------------------------------
+   PLAY / STOP
+------------------------------------------------------- */
+document.getElementById("play").onclick = async () => {
+  if (audioCtx.state === "suspended")
+    await audioCtx.resume();
+
+  if (!isPlaying) {
+    isPlaying = true;
+    document.getElementById("play").innerText = "Stop";
+    currentStep = 0;
+    nextNoteTime = audioCtx.currentTime + 0.05;
+    scheduler();
+  } else {
+    isPlaying = false;
+    document.getElementById("play").innerText = "Play";
+    document.querySelectorAll(".current")
+      .forEach(c => c.classList.remove("current"));
+  }
+};
+
+/* -------------------------------------------------------
+   SAVE / LOAD (LocalStorage)
+------------------------------------------------------- */
+
+document.getElementById("save").onclick = () => {
+  const data = {
+    tempo,
+    instruments: rowInstrument,
+    volumes: rowGains.map(g => g.gain.value),
+    grid: cells.map(row => row.map(c => c.classList.contains("active")))
+  };
+  localStorage.setItem("pattern", JSON.stringify(data));
+  alert("Saved!");
+};
+
+document.getElementById("load").onclick = () => {
+  const data = JSON.parse(localStorage.getItem("pattern"));
+  if (!data) return alert("No saved pattern!");
+
+  tempo = data.tempo;
+  tempoValue.textContent = tempo;
+  tempoSlider.value = tempo;
+
+  rowInstrument = [...data.instruments];
+  volumes.querySelectorAll("select").forEach((s, i) => {
+    s.value = rowInstrument[i];
+  });
+
+  data.volumes.forEach((v, r) => {
+    rowGains[r].gain.value = v;
+    volumes.querySelectorAll("input")[r].value = v * 100;
+  });
+
+  data.grid.forEach((row, r) =>
+    row.forEach((active, c) => {
+      const cell = cells[r][c];
+      cell.classList.toggle("active", active);
+      cell.style.background = active ? rowColors[r] : "#2c2c2c";
+    })
+  );
+
+  alert("Loaded!");
+};
+<script>
+/* -------------------------------------------------------
+   EXPORT PATTERN AS JSON
+------------------------------------------------------- */
+document.getElementById("exportJson").onclick = () => {
+  const pattern = {
+    tempo,
+    instruments: rowInstrument,
+    volumes: rowGains.map(g => g.gain.value),
+    grid: cells.map(row => row.map(c => c.classList.contains("active")))
+  };
+  const blob = new Blob([JSON.stringify(pattern, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "pattern.json";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+/* -------------------------------------------------------
+   EXPORT WAV (offline)
+------------------------------------------------------- */
+document.getElementById("export").onclick = async () => {
+  if (!confirm("Export 4 bars as WAV (~8 seconds)?")) return;
+
+  const offlineCtx = new OfflineAudioContext(2, audioCtx.sampleRate * 8, audioCtx.sampleRate);
+
+  const offlineGains = [...Array(rows)].map(() => {
+    const g = offlineCtx.createGain();
+    g.connect(offlineCtx.destination);
+    return g;
+  });
+
+  const offlinePlay = (type, freq, row, time) => {
+    switch(type) {
+      case "Kick":  { const buf = drumBuffers.kick; const src = offlineCtx.createBufferSource(); src.buffer = buf; src.connect(offlineGains[row]); src.start(time); break; }
+      case "Snare": { const buf = drumBuffers.snare; const src = offlineCtx.createBufferSource(); src.buffer = buf; src.connect(offlineGains[row]); src.start(time); break; }
+      case "HiHat": { const buf = drumBuffers.hihat; const src = offlineCtx.createBufferSource(); src.buffer = buf; src.connect(offlineGains[row]); src.start(time); break; }
+      case "Clap":  { const buf = drumBuffers.clap; const src = offlineCtx.createBufferSource(); src.buffer = buf; src.connect(offlineGains[row]); src.start(time); break; }
+      case "Bass":  { const osc = offlineCtx.createOscillator(); const g = offlineCtx.createGain(); osc.type = "sawtooth"; osc.frequency.value = freq; g.gain.setValueAtTime(0.4, time); g.gain.exponentialRampToValueAtTime(0.001, time + 0.35); osc.connect(g).connect(offlineGains[row]); osc.start(time); osc.stop(time + 0.35); break; }
+      case "Lead":  { const osc = offlineCtx.createOscillator(); const g = offlineCtx.createGain(); osc.type = "square"; osc.frequency.value = freq; g.gain.setValueAtTime(0.25, time); g.gain.exponentialRampToValueAtTime(0.001, time + 0.4); osc.connect(g).connect(offlineGains[row]); osc.start(time); osc.stop(time + 0.4); break; }
+    }
+  };
+
+  const steps = 16 * 4; // 4 bars
+  const noteDur = 60 / tempo * 0.25;
+
+  for (let step = 0; step < steps; step++) {
+    const time = step * noteDur;
+    const col = step % 16;
+
+    for (let r = 0; r < rows; r++) {
+      if (!cells[r][col].classList.contains("active")) continue;
+      const type = rowInstrument[r];
+      const freq = freqs[r];
+      offlinePlay(type, freq, r, time);
+    }
+  }
+
+  const rendered = await offlineCtx.startRendering();
+  const buffer = rendered;
+
+  // Convert to WAV
+  const wav = audioBufferToWav(buffer);
+  const blob = new Blob([new DataView(wav)], { type: "audio/wav" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "sequence.wav";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+/* -------------------------------------------------------
+   WAV UTILITY
+------------------------------------------------------- */
+function audioBufferToWav(buffer, opt) {
+  opt = opt || {};
+
+  const numChannels = buffer.numberOfChannels;
+  const sampleRate = buffer.sampleRate;
+  const format = 1; // PCM
+  const bitDepth = 16;
+
+  const result;
+  const samples = [];
+  for (let i = 0; i < numChannels; i++) {
+    samples.push(buffer.getChannelData(i));
+  }
+
+  const bytesPerSample = bitDepth / 8;
+  const blockAlign = numChannels * bytesPerSample;
+  const byteLength = buffer.length * blockAlign + 44;
+  const arrayBuffer = new ArrayBuffer(byteLength);
+  const view = new DataView(arrayBuffer);
+
+  /* RIFF header */
+  writeString(view, 0, 'RIFF');
+  view.setUint32(4, 36 + buffer.length * blockAlign, true);
+  writeString(view, 8, 'WAVE');
+  writeString(view, 12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, format, true);
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * blockAlign, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, bitDepth, true);
+  writeString(view, 36, 'data');
+  view.setUint32(40, buffer.length * blockAlign, true);
+
+  let offset = 44;
+  for (let i = 0; i < buffer.length; i++) {
+    for (let ch = 0; ch < numChannels; ch++) {
+      let sample = Math.max(-1, Math.min(1, samples[ch][i]));
+      sample = sample < 0 ? sample * 0x8000 : sample * 0x7fff;
+      view.setInt16(offset, sample, true);
+      offset += 2;
+    }
+  }
+
+  return arrayBuffer;
+}
+
+function writeString(view, offset, string) {
+  for (let i = 0; i < string.length; i++) {
+    view.setUint8(offset + i, string.charCodeAt(i));
+  }
+}
+
+</script>
+</body>
+</html>
