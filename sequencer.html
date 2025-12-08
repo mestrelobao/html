@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8" />
-<title>Online Sequencer</title>
+<title>Online Sequencer Pro</title>
 
 <style>
   body {
@@ -10,27 +10,55 @@
     background: #121212;
     color: white;
     text-align: center;
-    padding-bottom: 100px;
+    padding-bottom: 200px;
+  }
+
+  #controls {
+    margin-top: 20px;
+  }
+
+  #tempoControl {
+    margin-top: 10px;
+  }
+
+  #gridContainer {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 25px;
+  }
+
+  #volumes {
+    display: grid;
+    grid-template-rows: repeat(8, 32px);
+    grid-gap: 5px;
+    margin-top: 5px;
+  }
+
+  .volRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 140px;
   }
 
   #grid {
     display: grid;
     grid-template-columns: repeat(16, 32px);
     grid-gap: 4px;
-    margin: 20px auto;
-    width: fit-content;
   }
 
   .cell {
     width: 32px;
     height: 32px;
+    background: #2c2c2c;
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.1s, box-shadow 0.1s;
   }
 
   .cell.active {
-    filter: brightness(1.3);
+    filter: brightness(1.25);
   }
 
   .cell.current {
@@ -40,7 +68,7 @@
   button {
     padding: 10px 25px;
     font-size: 17px;
-    margin-top: 20px;
+    margin: 10px;
     border: none;
     background: #00aaff;
     color: white;
@@ -51,25 +79,32 @@
   button:hover {
     filter: brightness(1.15);
   }
-
-  #tempoControl {
-    margin-top: 25px;
-  }
 </style>
 </head>
 
 <body>
-<h1>Online Sequencer</h1>
+
+<h1>Online Sequencer Pro</h1>
 <p>Click cells to activate notes. Press Play.</p>
 
-<!-- TEMPO SLIDER -->
-<div id="tempoControl">
-  <label for="tempo">Tempo: <span id="tempoValue">120</span> BPM</label><br>
-  <input type="range" id="tempo" min="40" max="240" value="120">
+<div id="controls">
+  <button id="play">Play</button>
+  <button id="save">Save</button>
+  <button id="load">Load</button>
+  <button id="export">Export WAV</button>
+
+  <!-- TEMPO SLIDER -->
+  <div id="tempoControl">
+    <label for="tempo">Tempo: <span id="tempoValue">120</span> BPM</label><br>
+    <input type="range" id="tempo" min="40" max="240" value="120">
+  </div>
 </div>
 
-<div id="grid"></div>
-<button id="play">Play</button>
+<!-- GRID + VOLUME SLIDERS SIDE BY SIDE -->
+<div id="gridContainer">
+  <div id="volumes"></div>
+  <div id="grid"></div>
+</div>
 
 <script>
 /* -------------------------------------------------------
@@ -77,10 +112,10 @@
 ------------------------------------------------------- */
 const rows = 8;
 const cols = 16;
-let tempo = 120;          // BPM
-const noteLength = 0.25;  // 16th note
+let tempo = 120;
+const noteLength = 0.25; 
 
-/* Row colors */
+/* Row active colors */
 const rowColors = [
   "#ff7675",
   "#74b9ff",
@@ -92,14 +127,129 @@ const rowColors = [
   "#fd79a8"
 ];
 
+/* Frequencies for melodic rows */
+const freqs = [
+  60, 62, 65, 67, 69, 72, 74, 76
+].map(n => 440 * Math.pow(2, (n - 69) / 12));
+
 /* -------------------------------------------------------
    AUDIO
 ------------------------------------------------------- */
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const freqs = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
+
+/* Master gain */
+const masterGain = audioCtx.createGain();
+masterGain.gain.value = 1;
+masterGain.connect(audioCtx.destination);
+
+/* Per-row gain sliders */
+const rowGains = Array.from({ length: rows }, () => {
+  const g = audioCtx.createGain();
+  g.gain.value = 1;
+  g.connect(masterGain);
+  return g;
+});
 
 /* -------------------------------------------------------
-   GRID CREATION
+   INSTRUMENTS
+------------------------------------------------------- */
+
+function playKick(time, row) {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(150, time);
+  osc.frequency.exponentialRampToValueAtTime(50, time + 0.15);
+
+  gain.gain.setValueAtTime(1, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
+
+  osc.connect(gain).connect(rowGains[row]);
+  osc.start(time);
+  osc.stop(time + 0.15);
+}
+
+function playSnare(time, row) {
+  const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.2, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+
+  const src = audioCtx.createBufferSource();
+  src.buffer = buffer;
+
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0.6, time);
+  gain.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
+
+  src.connect(gain).connect(rowGains[row]);
+  src.start(time);
+}
+
+function playHihat(time, row) {
+  const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.05, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+
+  const src = audioCtx.createBufferSource();
+  src.buffer = buffer;
+
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = "highpass";
+  filter.frequency.value = 5000;
+
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0.8, time);
+  gain.gain.exponentialRampToValueAtTime(0.01, time + 0.05);
+
+  src.connect(filter).connect(gain).connect(rowGains[row]);
+  src.start(time);
+}
+
+function playBass(freq, time, row) {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = "sawtooth";
+  osc.frequency.value = freq;
+
+  gain.gain.setValueAtTime(0.4, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.35);
+
+  osc.connect(gain).connect(rowGains[row]);
+  osc.start(time);
+  osc.stop(time + 0.35);
+}
+
+function playLead(freq, time, row) {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = "square";
+  osc.frequency.value = freq;
+
+  gain.gain.setValueAtTime(0.25, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.4);
+
+  osc.connect(gain).connect(rowGains[row]);
+  osc.start(time);
+  osc.stop(time + 0.4);
+}
+
+/* instrument assignment per row */
+const instruments = [
+  playKick,
+  playSnare,
+  playHihat,
+  playBass,
+  playBass,
+  playLead,
+  playLead,
+  playHihat
+];
+
+/* -------------------------------------------------------
+   GRID
 ------------------------------------------------------- */
 const grid = document.getElementById("grid");
 let cells = [];
@@ -112,10 +262,12 @@ for (let r = 0; r < rows; r++) {
     cell.dataset.row = r;
     cell.dataset.col = c;
 
-    /* set unique color per row */
-    cell.style.background = rowColors[r];
-
-    cell.onclick = () => cell.classList.toggle("active");
+    cell.onclick = () => {
+      cell.classList.toggle("active");
+      cell.style.background = cell.classList.contains("active")
+        ? rowColors[r]
+        : "#2c2c2c";
+    };
 
     grid.appendChild(cell);
     cells[r][c] = cell;
@@ -123,39 +275,64 @@ for (let r = 0; r < rows; r++) {
 }
 
 /* -------------------------------------------------------
-   PLAYBACK (Scheduler preciso)
+   VOLUME SLIDERS
+------------------------------------------------------- */
+const volumes = document.getElementById("volumes");
+
+for (let r = 0; r < rows; r++) {
+  const div = document.createElement("div");
+  div.className = "volRow";
+
+  div.innerHTML = `
+    <span>Row ${r + 1}</span>
+    <input type="range" min="0" max="100" value="100" data-row="${r}">
+  `;
+
+  volumes.appendChild(div);
+}
+
+volumes.oninput = e => {
+  if (!e.target.dataset.row) return;
+  const r = Number(e.target.dataset.row);
+  rowGains[r].gain.value = e.target.value / 100;
+};
+
+/* -------------------------------------------------------
+   SCHEDULER
 ------------------------------------------------------- */
 let isPlaying = false;
 let currentStep = 0;
 let nextNoteTime = 0;
 const scheduleAheadTime = 0.1;
 
-// avança o passo musical
-function nextStep() {
-  const secondsPerBeat = 60 / tempo;
-  nextNoteTime += secondsPerBeat * noteLength;
-  currentStep = (currentStep + 1) % cols;
-}
-
-// toca notas
 function scheduleStep(step, time) {
   for (let r = 0; r < rows; r++) {
     if (cells[r][step].classList.contains("active")) {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.frequency.value = freqs[r];
+      const f = freqs[r];
+      const instr = instruments[r];
 
-      gain.gain.setValueAtTime(0.25, time);
-      gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.3);
-
-      osc.connect(gain).connect(audioCtx.destination);
-      osc.start(time);
-      osc.stop(time + 0.3);
+      if (instr === playBass || instr === playLead)
+        instr(f, time, r);
+      else
+        instr(time, r);
     }
   }
 }
 
-// scheduler
+function nextStep() {
+  const secBeat = 60 / tempo;
+  nextNoteTime += secBeat * noteLength;
+  currentStep = (currentStep + 1) % cols;
+}
+
+function highlightStep(step) {
+  document.querySelectorAll(".current")
+      .forEach(c => c.classList.remove("current"));
+
+  for (let r = 0; r < rows; r++)
+    cells[r][step].classList.add("current");
+}
+
 function scheduler() {
   if (!isPlaying) return;
 
@@ -169,19 +346,7 @@ function scheduler() {
 }
 
 /* -------------------------------------------------------
-   VISUAL (cursor)
-------------------------------------------------------- */
-function highlightStep(step) {
-  document.querySelectorAll(".current")
-    .forEach(cell => cell.classList.remove("current"));
-
-  for (let r = 0; r < rows; r++) {
-    cells[r][step].classList.add("current");
-  }
-}
-
-/* -------------------------------------------------------
-   TEMPO SLIDER
+   TEMPO CONTROL
 ------------------------------------------------------- */
 const tempoSlider = document.getElementById("tempo");
 const tempoValue = document.getElementById("tempoValue");
@@ -192,7 +357,7 @@ tempoSlider.oninput = () => {
 };
 
 /* -------------------------------------------------------
-   PLAY BUTTON
+   PLAY / STOP
 ------------------------------------------------------- */
 const playButton = document.getElementById("play");
 
@@ -210,10 +375,139 @@ playButton.onclick = async () => {
   } else {
     isPlaying = false;
     playButton.innerText = "Play";
-
     document.querySelectorAll(".current")
       .forEach(c => c.classList.remove("current"));
   }
+};
+
+/* -------------------------------------------------------
+   SAVE / LOAD
+------------------------------------------------------- */
+document.getElementById("save").onclick = () => {
+  const pattern = {
+    tempo,
+    volumes: rowGains.map(g => g.gain.value),
+    grid: cells.map(row => row.map(c => c.classList.contains("active")))
+  };
+
+  localStorage.setItem("seqPattern", JSON.stringify(pattern));
+  alert("Saved!");
+};
+
+document.getElementById("load").onclick = () => {
+  const data = JSON.parse(localStorage.getItem("seqPattern"));
+  if (!data) return alert("No pattern saved!");
+
+  tempo = data.tempo;
+  tempoSlider.value = tempo;
+  tempoValue.textContent = tempo;
+
+  data.volumes.forEach((v, r) => {
+    rowGains[r].gain.value = v;
+    volumes.querySelectorAll("input")[r].value = v * 100;
+  });
+
+  data.grid.forEach((row, r) => {
+    row.forEach((active, c) => {
+      const cell = cells[r][c];
+      if (active) cell.classList.add("active");
+      else cell.classList.remove("active");
+      cell.style.background = active ? rowColors[r] : "#2c2c2c";
+    });
+  });
+
+  alert("Loaded!");
+};
+
+/* -------------------------------------------------------
+   EXPORT WAV
+------------------------------------------------------- */
+document.getElementById("export").onclick = async () => {
+  const duration = (cols * noteLength) * (60 / tempo);
+  const offline = new OfflineAudioContext(2, audioCtx.sampleRate * duration, audioCtx.sampleRate);
+
+  const offMaster = offline.createGain();
+  offMaster.gain.value = 1;
+  offMaster.connect(offline.destination);
+
+  const offGains = rowGains.map(g => {
+    const ng = offline.createGain();
+    ng.gain.value = g.gain.value;
+    ng.connect(offMaster);
+    return ng;
+  });
+
+  function playInstr(r, t, freq) {
+    /* For brevity, drums become simple blips in offline version */
+
+    const osc = offline.createOscillator();
+    const gain = offline.createGain();
+
+    osc.type = "sine";
+    osc.frequency.value = freq || 200;
+
+    gain.gain.setValueAtTime(0.5, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+
+    osc.connect(gain).connect(offGains[r]);
+    osc.start(t);
+    osc.stop(t + 0.2);
+  }
+
+  let t = 0;
+  const secBeat = 60 / tempo;
+  for (let step = 0; step < cols; step++) {
+    for (let r = 0; r < rows; r++) {
+      if (cells[r][step].classList.contains("active")) {
+        playInstr(r, t, freqs[r]);
+      }
+    }
+    t += noteLength * secBeat;
+  }
+
+  const rendered = await offline.startRendering();
+
+  function wav(buffer) {
+    const n = buffer.length;
+    const ch = buffer.numberOfChannels;
+    const rate = buffer.sampleRate;
+    const samples = new Float32Array(n * ch);
+
+    for (let c = 0; c < ch; c++)
+      samples.set(buffer.getChannelData(c), c * n);
+
+    const block = new ArrayBuffer(44 + samples.length * 2);
+    const view = new DataView(block);
+
+    const str = (o, s) => { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); };
+
+    str(0, "RIFF");
+    view.setUint32(4, 36 + samples.length * 2, true);
+    str(8, "WAVE");
+    str(12, "fmt ");
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, ch, true);
+    view.setUint32(24, rate, true);
+    view.setUint32(28, rate * ch * 2, true);
+    view.setUint16(32, ch * 2, true);
+    view.setUint16(34, 16, true);
+    str(36, "data");
+    view.setUint32(40, samples.length * 2, true);
+
+    let offset = 44;
+    for (let i = 0; i < samples.length; i++, offset += 2)
+      view.setInt16(offset, samples[i] * 0x7fff, true);
+
+    return new Blob([block], { type: "audio/wav" });
+  }
+
+  const wavFile = wav(rendered);
+
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(wavFile);
+  a.download = "sequence.wav";
+  a.click();
 };
 </script>
 
