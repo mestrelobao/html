@@ -31,8 +31,11 @@
     transition: background 0.1s, box-shadow 0.1s;
   }
 
-  .cell.active {
+  .cell.linha1 {
     background: #00d4ff;
+  }
+    .cell.linha2 {
+    background: #ff7675;
   }
 
   /* highlight do passo atual */
@@ -68,7 +71,7 @@
 /* -------------------------------------------------------
    CONFIG
 ------------------------------------------------------- */
-const rows = 8;
+const rows = 2;
 const cols = 16;
 let tempo = 120;                    // BPM
 const noteLength = 0.25;           // 16th note
@@ -93,7 +96,7 @@ for (let r = 0; r < rows; r++) {
     cell.dataset.row = r;
     cell.dataset.col = c;
 
-    cell.onclick = () => cell.classList.toggle("active");
+    cell.onclick = () => cell.classList.toggle("linha1");
 
     grid.appendChild(cell);
     cells[r][c] = cell;
