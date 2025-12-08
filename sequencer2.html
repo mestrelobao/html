@@ -19,28 +19,19 @@
     grid-gap: 4px;
     margin: 20px auto;
     width: fit-content;
-    position: relative;
   }
 
   .cell {
     width: 32px;
     height: 32px;
-    background: #2c2c2c;
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.1s, box-shadow 0.1s;
+    background: #2c2c2c;         /* <-- INACTIVE COLOR */
   }
 
-  .cell1.active {
-    background: #74b9ff;
-  }
-    .cell2.active {
-    background: #ff7675;
-  }
-
-  /* highlight do passo atual */
   .cell.current {
-    box-shadow: 0 0 10px #ff006a, 0 0 4px #ff006a inset;
+    box-shadow: 0 0 12px #ff4ebd, 0 0 5px #ff006a inset;
   }
 
   button {
@@ -57,12 +48,22 @@
   button:hover {
     filter: brightness(1.15);
   }
+
+  #tempoControl {
+    margin-top: 25px;
+  }
 </style>
 </head>
 
 <body>
 <h1>Online Sequencer</h1>
 <p>Click cells to activate notes. Press Play.</p>
+
+<!-- TEMPO SLIDER -->
+<div id="tempoControl">
+  <label for="tempo">Tempo: <span id="tempoValue">120</span> BPM</label><br>
+  <input type="range" id="tempo" min="40" max="240" value="120">
+</div>
 
 <div id="grid"></div>
 <button id="play">Play</button>
@@ -71,10 +72,22 @@
 /* -------------------------------------------------------
    CONFIG
 ------------------------------------------------------- */
-const rows = 2;
+const rows = 8;
 const cols = 16;
-let tempo = 120;                    // BPM
-const noteLength = 0.25;           // 16th note
+let tempo = 120;
+const noteLength = 0.25;
+
+/* Row colors for ACTIVE cells only */
+const rowColors = [
+  "#ff7675",
+  "#74b9ff",
+  "#55efc4",
+  "#ffeaa7",
+  "#a29bfe",
+  "#fab1a0",
+  "#81ecec",
+  "#fd79a8"
+];
 
 /* -------------------------------------------------------
    AUDIO
@@ -83,7 +96,7 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 const freqs = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
 
 /* -------------------------------------------------------
-   GRID CREATION
+   GRID
 ------------------------------------------------------- */
 const grid = document.getElementById("grid");
 let cells = [];
@@ -91,12 +104,18 @@ let cells = [];
 for (let r = 0; r < rows; r++) {
   cells[r] = [];
   for (let c = 0; c < cols; c++) {
-    const cell1 = document.createElement("div");
+    const cell = document.createElement("div");
     cell.className = "cell";
     cell.dataset.row = r;
     cell.dataset.col = c;
 
-    cell1.onclick = () => cell.classList.toggle("active");
+    /* ACTIVE / INACTIVE COLOR SWITCH */
+    cell.onclick = () => {
+      cell.classList.toggle("active");
+      cell.style.background = cell.classList.contains("active")
+        ? rowColors[r]
+        : "#2c2c2c";
+    };
 
     grid.appendChild(cell);
     cells[r][c] = cell;
@@ -104,28 +123,26 @@ for (let r = 0; r < rows; r++) {
 }
 
 /* -------------------------------------------------------
-   PLAYBACK (Scheduler preciso)
+   PLAYBACK SCHEDULER
 ------------------------------------------------------- */
 let isPlaying = false;
 let currentStep = 0;
 let nextNoteTime = 0;
-const scheduleAheadTime = 0.1; // 100ms look-ahead
+const scheduleAheadTime = 0.1;
 
-// avança o passo musical
 function nextStep() {
-  const secondsPerBeat = 60 / tempo;
-  nextNoteTime += secondsPerBeat * noteLength;
+  const secPerBeat = 60 / tempo;
+  nextNoteTime += secPerBeat * noteLength;
   currentStep = (currentStep + 1) % cols;
 }
 
-// toca as notas do passo atual
 function scheduleStep(step, time) {
   for (let r = 0; r < rows; r++) {
     if (cells[r][step].classList.contains("active")) {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-      osc.frequency.value = freqs[r];
 
+      osc.frequency.value = freqs[r];
       gain.gain.setValueAtTime(0.25, time);
       gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.3);
 
@@ -136,9 +153,8 @@ function scheduleStep(step, time) {
   }
 }
 
-// loop do scheduler (agora para quando Stop é clicado)
 function scheduler() {
-  if (!isPlaying) return; // <--- crucial fix
+  if (!isPlaying) return;
 
   while (nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
     scheduleStep(currentStep, nextNoteTime);
@@ -150,11 +166,11 @@ function scheduler() {
 }
 
 /* -------------------------------------------------------
-   VISUAL (cursor de passo)
+   VISUAL CURSOR
 ------------------------------------------------------- */
 function highlightStep(step) {
   document.querySelectorAll(".current")
-    .forEach(cell => cell.classList.remove("current"));
+    .forEach(c => c.classList.remove("current"));
 
   for (let r = 0; r < rows; r++) {
     cells[r][step].classList.add("current");
@@ -162,7 +178,18 @@ function highlightStep(step) {
 }
 
 /* -------------------------------------------------------
-   PLAY BUTTON
+   TEMPO SLIDER
+------------------------------------------------------- */
+const tempoSlider = document.getElementById("tempo");
+const tempoValue = document.getElementById("tempoValue");
+
+tempoSlider.oninput = () => {
+  tempo = Number(tempoSlider.value);
+  tempoValue.textContent = tempo;
+};
+
+/* -------------------------------------------------------
+   PLAY / STOP BUTTON
 ------------------------------------------------------- */
 const playButton = document.getElementById("play");
 
@@ -176,12 +203,11 @@ playButton.onclick = async () => {
     currentStep = 0;
     nextNoteTime = audioCtx.currentTime + 0.05;
 
-    scheduler();  // start loop
+    scheduler();
   } else {
     isPlaying = false;
     playButton.innerText = "Play";
 
-    // remove cursor visual
     document.querySelectorAll(".current")
       .forEach(c => c.classList.remove("current"));
   }
