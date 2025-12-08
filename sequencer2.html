@@ -31,10 +31,10 @@
     transition: background 0.1s, box-shadow 0.1s;
   }
 
-  .cell.linha1 {
+  .cell1.active {
     background: #74b9ff;
   }
-    .cell.linha2 {
+    .cell2.active {
     background: #ff7675;
   }
 
@@ -96,7 +96,7 @@ for (let r = 0; r < rows; r++) {
     cell.dataset.row = r;
     cell.dataset.col = c;
 
-    cell1.onclick = () => cell.classList.toggle("linha1");
+    cell1.onclick = () => cell.classList.toggle("active");
 
     grid.appendChild(cell);
     cells[r][c] = cell;
