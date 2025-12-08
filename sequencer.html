@@ -3,110 +3,46 @@
 <head>
 <meta charset="UTF-8" />
 <title>Online Sequencer</title>
+
 <style>
   body {
     font-family: Arial, sans-serif;
     background: #121212;
     color: white;
     text-align: center;
+    padding-bottom: 100px;
   }
+
   #grid {
     display: grid;
     grid-template-columns: repeat(16, 32px);
     grid-gap: 4px;
     margin: 20px auto;
     width: fit-content;
+    position: relative;
   }
+
   .cell {
     width: 32px;
     height: 32px;
     background: #2c2c2c;
     border-radius: 4px;
     cursor: pointer;
+    transition: background 0.1s;
   }
+
   .cell.active {
     background: #00d4ff;
   }
+
+  /* highlight do passo atual */
+  .cell.current {
+    box-shadow: 0 0 10px #ff006a, 0 0 4px #ff006a inset;
+  }
+
   button {
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 10px 25px;
+    font-size: 17px;
     margin-top: 20px;
     border: none;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-</style>
-</head>
-
-<body>
-<h1>Online Sequencer</h1>
-<p>Click cells to activate notes. Press Play.</p>
-
-<div id="grid"></div>
-<button id="play">Play</button>
-
-<script>
-const rows = 8;          // number of pitches
-const cols = 16;         // steps
-const tempo = 120;       // BPM
-const grid = document.getElementById("grid");
-
-// Create WebAudio context
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-// Frequency list (C-major scale)
-const freqs = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
-
-let cells = [];
-for (let r = 0; r < rows; r++) {
-  cells[r] = [];
-  for (let c = 0; c < cols; c++) {
-    const cell = document.createElement("div");
-    cell.className = "cell";
-    cell.dataset.row = r;
-    cell.dataset.col = c;
-
-    cell.onclick = () => cell.classList.toggle("active");
-
-    grid.appendChild(cell);
-    cells[r][c] = cell;
-  }
-}
-
-let isPlaying = false;
-let step = 0;
-
-function playStep() {
-  for (let r = 0; r < rows; r++) {
-    if (cells[r][step].classList.contains("active")) {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.frequency.value = freqs[r];
-      osc.type = "sine";
-      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-      osc.connect(gain).connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.3);
-    }
-  }
-  step = (step + 1) % cols;
-}
-
-document.getElementById("play").onclick = () => {
-  if (!isPlaying) {
-    isPlaying = true;
-    document.getElementById("play").innerText = "Stop";
-    step = 0;
-    const interval = (60 / tempo) / 4 * 1000; // 16th notes
-    window.seqInterval = setInterval(playStep, interval);
-  } else {
-    isPlaying = false;
-    document.getElementById("play").innerText = "Play";
-    clearInterval(window.seqInterval);
-  }
-};
-</script>
-
-</body>
-</html>
+    background:
