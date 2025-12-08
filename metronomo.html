@@ -84,6 +84,10 @@ const stopBtn = document.getElementById("stopBtn");
 bpmSlider.oninput = () => {
     bpm = bpmSlider.value;
     bpmDisplay.textContent = bpm + " BPM";
+     if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = setInterval(playClick, 60000 / bpm);
+    }
 };
 
 function playClick() {
