@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Simple 2-Row Sequencer</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #121212;
+    color: white;
+    text-align: center;
+    padding: 20px;
+  }
+  h1 { margin-bottom: 20px; }
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(16, 40px);
+    grid-gap: 4px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .cell {
+    width: 40px;
+    height: 40px;
+    background: #2c2c2c;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .cell.active {
+    background: #00d4ff;
+  }
+  .cell.current {
+    border: 2px solid #ff0;
+  }
+  #controls { margin-top: 20px; }
+  button { padding: 10px 20px; margin: 5px; font-size: 16px; }
+</style>
+</head>
+<body>
+
+<h1>2-Row Sequencer</h1>
+
+<div id="grid"></div>
+
+<div id="controls">
+  <button id="play">Play</button>
+  <button id="stop">Stop</button>
+  <label>Tempo: <input type="number" id="tempo" value="120" min="40" max="240"></label>
+</div>
+
+<script>
+const rows = 2;
+const cols = 16;
+let currentStep = 0;
+let intervalId = null;
+
+const grid = document.getElementById('grid');
+const tempoInput = document.getElementById('tempo');
+const playBtn = document.getElementById('play');
+const stopBtn = document.getElementById('stop');
+
+// Create grid
+let cells = [];
+for (let r = 0; r < rows; r++) {
+  cells[r] = [];
+  for (let c = 0; c < cols; c++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.onclick = () => cell.classList.toggle('active');
+    grid.appendChild(cell);
+    cells[r][c] = cell;
+  }
+}
+
+// Load audio files
+const kick = new Audio('kick.mp3');
+const snare = new Audio('snare.mp3');
+
+function playStep() {
+  // Highlight current column
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      cells[r][c].classList.toggle('current', c === currentStep);
+    }
+  }
+
+  // Play sounds
+  if (cells[0][currentStep].classList.contains('active')) {
+    kick.currentTime = 0;
+    kick.play();
+  }
+  if (cells[1][currentStep].classList.contains('active')) {
+    snare.currentTime = 0;
+    snare.play();
+  }
+
+  currentStep = (currentStep + 1) % cols;
+}
+
+playBtn.onclick = () => {
+  if (intervalId) return;
+  const interval = (60 / tempoInput.value) * 1000; // 1 beat per step
+  intervalId = setInterval(playStep, interval);
+};
+
+stopBtn.onclick = () => {
+  clearInterval(intervalId);
+  intervalId = null;
+  currentStep = 0;
+  // remove highlight
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++)
+      cells[r][c].classList.remove('current');
+};
+</script>
+
+</body>
+</html>
