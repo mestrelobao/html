@@ -84,16 +84,12 @@
 
 <body>
 
-<h1>Online Sequencer Pro</h1>
-<p>808 Real Drum Kit + Synth Instruments</p>
+<h1>Online Sequencer</h1>
+<p>Real Drum Kit</p>
 
 <div id="controls">
   <button id="play">Play</button>
-  <button id="save">Save</button>
-  <button id="load">Load</button>
-  <button id="export">Export WAV</button>
-
-  <div id="tempoControl">
+    <div id="tempoControl">
     <label for="tempo">Tempo: <span id="tempoValue">120</span> BPM</label><br>
     <input type="range" id="tempo" min="40" max="240" value="120">
   </div>
@@ -145,7 +141,7 @@ const rowGains = [...Array(rows)].map(() => {
 ------------------------------------------------------- */
 const sampleURLs = {
   kick:  "kick.mp3",
-  snare: "https://raw.githubusercontent.com/joshwcomeau/web-audio-samples/main/808/snare.wav",
+  snare: "snare.mp3",
   hihat: "https://raw.githubusercontent.com/joshwcomeau/web-audio-samples/main/808/hihat.wav",
   clap:  "https://raw.githubusercontent.com/joshwcomeau/web-audio-samples/main/808/clap.wav"
 };
@@ -179,40 +175,13 @@ function playSnare(time, row) { playSample("snare", time, row); }
 function playHihat(time, row) { playSample("hihat", time, row); }
 function playClap(time, row)  { playSample("clap",  time, row); }
 
-function playBass(freq, time, row) {
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.type = "sawtooth";
-  osc.frequency.value = freq;
-  gain.gain.setValueAtTime(0.4, time);
-  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.35);
-  osc.connect(gain).connect(rowGains[row]);
-  osc.start(time);
-  osc.stop(time + 0.35);
-}
-
-function playLead(freq, time, row) {
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.type = "square";
-  osc.frequency.value = freq;
-  gain.gain.setValueAtTime(0.25, time);
-  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.4);
-  osc.connect(gain).connect(rowGains[row]);
-  osc.start(time);
-  osc.stop(time + 0.4);
-}
 
 /* Instrument per row */
 const instruments = [
   playKick,
   playSnare,
   playHihat,
-  playClap,
-  playBass,
-  playBass,
-  playLead,
-  playLead
+  playClap
 ];
 
 /* -------------------------------------------------------
@@ -310,22 +279,23 @@ tempoSlider.oninput = () => {
 /* -------------------------------------------------------
    PLAY / STOP
 ------------------------------------------------------- */
-document.getElementById("play").onclick = async () => {
+document.getElementById("play").onclick = async function () {
   if (audioCtx.state === "suspended") await audioCtx.resume();
 
   if (!isPlaying) {
     isPlaying = true;
-    this.innerText = "Stop";
+    this.innerText = "Stop";  // works now
     currentStep = 0;
     nextNoteTime = audioCtx.currentTime + 0.05;
     scheduler();
   } else {
     isPlaying = false;
-    this.innerText = "Play";
+    this.innerText = "Play";  // works now
     document.querySelectorAll(".current")
       .forEach(c => c.classList.remove("current"));
   }
 };
+
 
 /* -------------------------------------------------------
    SAVE / LOAD
@@ -360,98 +330,8 @@ document.getElementById("load").onclick = () => {
       cell.style.background = active ? rowColors[r] : "#2c2c2c";
     })
   );
-
   alert("Loaded!");
 };
-
-/* -------------------------------------------------------
-   EXPORT WAV (simple synth drums)
-------------------------------------------------------- */
-document.getElementById("export").onclick = async () => {
-  const duration = cols * noteLength * (60 / tempo);
-  const offline = new OfflineAudioContext(
-    2,
-    audioCtx.sampleRate * duration,
-    audioCtx.sampleRate
-  );
-
-  const offMaster = offline.createGain();
-  offMaster.connect(offline.destination);
-
-  const offGains = rowGains.map(g => {
-    const ng = offline.createGain();
-    ng.gain.value = g.gain.value;
-    ng.connect(offMaster);
-    return ng;
-  });
-
-  // Simple tone fallback for offline export
-  function playOffline(r, t, freq) {
-    const osc = offline.createOscillator();
-    const gain = offline.createGain();
-    osc.frequency.value = freq || 200;
-    gain.gain.setValueAtTime(0.5, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
-    osc.connect(gain).connect(offGains[r]);
-    osc.start(t);
-    osc.stop(t + 0.15);
-  }
-
-  let t = 0;
-  const beat = 60 / tempo;
-
-  for (let step = 0; step < cols; step++) {
-    for (let r = 0; r < rows; r++) {
-      if (cells[r][step].classList.contains("active"))
-        playOffline(r, t, freqs[r]);
-    }
-    t += beat * noteLength;
-  }
-
-  const rendered = await offline.startRendering();
-
-  function toWav(buffer) {
-    const n = buffer.length;
-    const ch = buffer.numberOfChannels;
-    const sr = buffer.sampleRate;
-
-    const samples = new Float32Array(n * ch);
-    for (let c = 0; c < ch; c++)
-      samples.set(buffer.getChannelData(c), c * n);
-
-    const block = new ArrayBuffer(44 + samples.length * 2);
-    const view = new DataView(block);
-
-    const write = (o, s) => [...s].forEach((c,i) => view.setUint8(o+i, c.charCodeAt(0)));
-
-    write(0, "RIFF");
-    view.setUint32(4, 36 + samples.length * 2, true);
-    write(8, "WAVE");
-    write(12, "fmt ");
-    view.setUint32(16, 16, true);
-    view.setUint16(20, 1, true);
-    view.setUint16(22, ch, true);
-    view.setUint32(24, sr, true);
-    view.setUint32(28, sr * ch * 2, true);
-    view.setUint16(32, ch * 2, true);
-    view.setUint16(34, 16, true);
-    write(36, "data");
-    view.setUint32(40, samples.length * 2, true);
-
-    let offset = 44;
-    for (let i = 0; i < samples.length; i++, offset += 2)
-      view.setInt16(offset, samples[i] * 0x7fff, true);
-
-    return new Blob([block], { type: "audio/wav" });
-  }
-
-  const wav = toWav(rendered);
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(wav);
-  a.download = "sequence.wav";
-  a.click();
-};
 </script>
-
 </body>
 </html>
