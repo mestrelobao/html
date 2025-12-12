@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8" />
-<title>Online Sequencer(Real Drums)</title>
+<title>Online Sequencer (Real Drums)</title>
 
 <style>
   body {
@@ -89,7 +89,7 @@
 
 <div id="controls">
   <button id="play">Play</button>
-    <div id="tempoControl">
+  <div id="tempoControl">
     <label for="tempo">Tempo: <span id="tempoValue">120</span> BPM</label><br>
     <input type="range" id="tempo" min="40" max="240" value="120">
   </div>
@@ -109,15 +109,7 @@ const cols = 16;
 let tempo = 120;
 const noteLength = 0.25;
 
-/* Row colors */
-const rowColors = [
-  "#ff7675", "#74b9ff", "#55efc4", "#fd79a8"
-];
-
-/* Frequencies (used for bass & lead rows) */
-const freqs = [
-  60,62,65,67,69,72,74,76
-].map(n => 440 * Math.pow(2, (n - 69) / 12));
+const rowColors = ["#ff7675", "#74b9ff", "#55efc4", "#fd79a8"];
 
 /* -------------------------------------------------------
    AUDIO SETUP
@@ -128,6 +120,7 @@ const masterGain = audioCtx.createGain();
 masterGain.gain.value = 1;
 masterGain.connect(audioCtx.destination);
 
+// Volume per row
 const rowGains = [...Array(rows)].map(() => {
   const g = audioCtx.createGain();
   g.gain.value = 1;
@@ -136,7 +129,7 @@ const rowGains = [...Array(rows)].map(() => {
 });
 
 /* -------------------------------------------------------
-   808 DRUM SAMPLE LOADER
+   DRUM SAMPLE LOADER
 ------------------------------------------------------- */
 const sampleURLs = {
   kick:  "kick.mp3",
@@ -158,9 +151,8 @@ async function loadSamples() {
 loadSamples();
 
 /* -------------------------------------------------------
-   INSTRUMENT PLAYERS
+   SAMPLE PLAYERS
 ------------------------------------------------------- */
-
 function playSample(name, time, row) {
   if (!drumBuffers[name]) return;
   const src = audioCtx.createBufferSource();
@@ -174,8 +166,7 @@ function playSnare(time, row) { playSample("snare", time, row); }
 function playHihat(time, row) { playSample("hihat", time, row); }
 function playClap(time, row)  { playSample("clap",  time, row); }
 
-
-/* Instrument per row */
+/* Instruments used per row */
 const instruments = [
   playKick,
   playSnare,
@@ -237,9 +228,7 @@ function scheduleStep(step, time) {
   for (let r = 0; r < rows; r++) {
     if (cells[r][step].classList.contains("active")) {
       const fn = instruments[r];
-      const f = freqs[r];
-      if (fn === playBass || fn === playLead) fn(f, time, r);
-      else fn(time, r);
+      fn(time, r);   // ✅ FIXED — no missing functions
     }
   }
 }
@@ -276,20 +265,20 @@ tempoSlider.oninput = () => {
 };
 
 /* -------------------------------------------------------
-   PLAY / STOP
+   PLAY / STOP BUTTON
 ------------------------------------------------------- */
 document.getElementById("play").onclick = async function () {
   if (audioCtx.state === "suspended") await audioCtx.resume();
 
   if (!isPlaying) {
     isPlaying = true;
-    this.innerText = "Stop";  // works now
+    this.innerText = "Stop";
     currentStep = 0;
     nextNoteTime = audioCtx.currentTime + 0.05;
     scheduler();
   } else {
     isPlaying = false;
-    this.innerText = "Play";  // works now
+    this.innerText = "Play";
     document.querySelectorAll(".current")
       .forEach(c => c.classList.remove("current"));
   }
