@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8" />
-<title>Online Sequencer Pro (Real Drums)</title>
+<title>Online Sequencer(Real Drums)</title>
 
 <style>
   body {
@@ -104,7 +104,7 @@
 /* -------------------------------------------------------
    SETTINGS
 ------------------------------------------------------- */
-const rows = 8;
+const rows = 4;
 const cols = 16;
 let tempo = 120;
 const noteLength = 0.25;
@@ -294,43 +294,6 @@ document.getElementById("play").onclick = async function () {
     document.querySelectorAll(".current")
       .forEach(c => c.classList.remove("current"));
   }
-};
-
-
-/* -------------------------------------------------------
-   SAVE / LOAD
-------------------------------------------------------- */
-document.getElementById("save").onclick = () => {
-  const pattern = {
-    tempo,
-    volumes: rowGains.map(g => g.gain.value),
-    grid: cells.map(row => row.map(c => c.classList.contains("active")))
-  };
-  localStorage.setItem("seqPattern", JSON.stringify(pattern));
-  alert("Saved!");
-};
-
-document.getElementById("load").onclick = () => {
-  const data = JSON.parse(localStorage.getItem("seqPattern"));
-  if (!data) return alert("No pattern saved!");
-
-  tempo = data.tempo;
-  tempoSlider.value = tempo;
-  tempoValue.textContent = tempo;
-
-  data.volumes.forEach((v, r) => {
-    rowGains[r].gain.value = v;
-    volumes.querySelectorAll("input")[r].value = v * 100;
-  });
-
-  data.grid.forEach((row, r) =>
-    row.forEach((active, c) => {
-      const cell = cells[r][c];
-      cell.classList.toggle("active", active);
-      cell.style.background = active ? rowColors[r] : "#2c2c2c";
-    })
-  );
-  alert("Loaded!");
 };
 </script>
 </body>
