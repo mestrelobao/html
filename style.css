@@ -1,0 +1,39 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: sans-serif;
+}
+
+/* Background image */
+body {
+  background-image: url("background.jpg"); /* ← your image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Grid of squares */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 100px);
+  gap: 12px;
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Square buttons */
+button {
+  width: 100px;
+  height: 100px;
+  background: rgba(0, 200, 255, 0.8);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: rgba(0, 200, 255, 1);
+}
