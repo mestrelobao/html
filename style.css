@@ -1,46 +1,49 @@
 html, body {
   margin: 0;
-  padding: 0;
+  background: #111;
+  display: grid;
+  place-items: center;
   height: 100%;
 }
 
-/* Background image */
-body {
-  background: url("background.jpg") center / cover no-repeat;
+/* UI container keeps image aspect ratio */
+.ui {
+  position: relative;
+  width: min(95vw, 420px);
 }
 
-/* Responsive grid container */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 1.5vw;
-
- /* width: min(90vw, 500px);*/
-  aspect-ratio: 1 / 1;
-
-  position: absolute;
-  bottom: 5vh;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* Square pads */
-.grid button {
-  aspect-ratio: 1 / 1;
+.ui img {
   width: 100%;
+  display: block;
+}
 
-  background: rgba(0, 200, 255, 0.85);
+/* PAD OVERLAY */
+.pads {
+  position: absolute;
+
+  /* 🔥 TUNE THESE VALUES TO MATCH IMAGE EXACTLY */
+  left: 6%;
+  right: 6%;
+  bottom: 6%;
+  height: 46%;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 6%;
+}
+
+/* Invisible buttons */
+.pads button {
+  background: rgba(0, 255, 255, 0.0);
   border: none;
-  border-radius: 12%;
+  border-radius: 10%;
   cursor: pointer;
-  transition: transform 0.1s, background 0.1s;
 }
 
-/* Interaction */
-.grid button:hover {
-  background: rgba(0, 220, 255, 1);
+/* Debug mode (optional) */
+/*
+.pads button {
+  background: rgba(0, 255, 255, 0.35);
 }
-
-.grid button:active {
-  transform: scale(0.95);
-}
+*/
