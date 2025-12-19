@@ -2,28 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sample Pad</title>
+  <title>Sampler UI</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div class="grid">
-    <button onclick="play(1)"></button>
-    <button onclick="play(2)"></button>
-    <button onclick="play(3)"></button>
-    <button onclick="play(4)"></button>
-    <button onclick="play(5)"></button>
-    <button onclick="play(6)"></button>
-    <button onclick="play(7)"></button>
-    <button onclick="play(8)"></button>
-    <button onclick="play(9)"></button>
-    <button onclick="play(10)"></button>
-    <button onclick="play(11)"></button>
-    <button onclick="play(12)"></button>
-    <button onclick="play(13)"></button>
-    <button onclick="play(14)"></button>
-    <button onclick="play(15)"></button>
-    <button onclick="play(16)"></button>
+  <div class="ui">
+    <img src="background.jpg" alt="UI">
+
+    <div class="pads">
+      <button style="--x:0; --y:0" onclick="play(1)"></button>
+      <button style="--x:1; --y:0" onclick="play(2)"></button>
+      <button style="--x:2; --y:0" onclick="play(3)"></button>
+      <button style="--x:3; --y:0" onclick="play(4)"></button>
+
+      <button style="--x:0; --y:1" onclick="play(5)"></button>
+      <button style="--x:1; --y:1" onclick="play(6)"></button>
+      <button style="--x:2; --y:1" onclick="play(7)"></button>
+      <button style="--x:3; --y:1" onclick="play(8)"></button>
+
+      <button style="--x:0; --y:2" onclick="play(9)"></button>
+      <button style="--x:1; --y:2" onclick="play(10)"></button>
+      <button style="--x:2; --y:2" onclick="play(11)"></button>
+      <button style="--x:3; --y:2" onclick="play(12)"></button>
+
+      <button style="--x:0; --y:3" onclick="play(13)"></button>
+      <button style="--x:1; --y:3" onclick="play(14)"></button>
+      <button style="--x:2; --y:3" onclick="play(15)"></button>
+      <button style="--x:3; --y:3" onclick="play(16)"></button>
+    </div>
   </div>
 
   <script src="script.js"></script>
