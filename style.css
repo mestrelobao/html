@@ -15,7 +15,7 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   gap: 1.5vw;
 
-  width: min(90vw, 500px);
+ /* width: min(90vw, 500px);*/
   aspect-ratio: 1 / 1;
 
   position: absolute;
