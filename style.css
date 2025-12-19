@@ -2,38 +2,45 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: sans-serif;
 }
 
 /* Background image */
 body {
-  background-image: url("background.jpg"); /* ← your image */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: url("background.jpg") center / cover no-repeat;
 }
 
-/* Grid of squares */
+/* Responsive grid container */
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 100px);
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 1.5vw;
+
+  width: min(90vw, 500px);
+  aspect-ratio: 1 / 1;
+
   position: absolute;
-  bottom: 40px;
+  bottom: 5vh;
   left: 50%;
   transform: translateX(-50%);
 }
 
-/* Square buttons */
-button {
-  width: 100px;
-  height: 100px;
-  background: rgba(0, 200, 255, 0.8);
+/* Square pads */
+.grid button {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+
+  background: rgba(0, 200, 255, 0.85);
   border: none;
-  border-radius: 10px;
+  border-radius: 12%;
   cursor: pointer;
+  transition: transform 0.1s, background 0.1s;
 }
 
-button:hover {
-  background: rgba(0, 200, 255, 1);
+/* Interaction */
+.grid button:hover {
+  background: rgba(0, 220, 255, 1);
+}
+
+.grid button:active {
+  transform: scale(0.95);
 }
