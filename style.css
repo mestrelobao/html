@@ -1,49 +1,33 @@
 html, body {
   margin: 0;
-  background: #111;
+  height: 100%;
   display: grid;
   place-items: center;
-  height: 100%;
+  background: #111;
 }
 
-/* UI container keeps image aspect ratio */
-.ui {
-  position: relative;
-  width: min(95vw, 420px);
-}
-
-.ui img {
-  width: 100%;
-  display: block;
-}
-
-/* PAD OVERLAY */
-.pads {
-  position: absolute;
-
-  /* 🔥 TUNE THESE VALUES TO MATCH IMAGE EXACTLY */
-  left: 6%;
-  right: 6%;
-  bottom: 6%;
-  height: 46%;
-
+/* Responsive 4x4 grid */
+.grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 6%;
+  gap: 2vmin;
+
+  width: min(90vmin, 500px);
+  aspect-ratio: 1 / 1;
 }
 
-/* Invisible buttons */
-.pads button {
-  background: rgba(0, 255, 255, 0.0);
+/* Square buttons */
+.grid button {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+
+  font-size: clamp(14px, 4vw, 24px);
+  background: #00c8ff;
   border: none;
-  border-radius: 10%;
+  border-radius: 12%;
   cursor: pointer;
 }
 
-/* Debug mode (optional) */
-/*
-.pads button {
-  background: rgba(0, 255, 255, 0.35);
+.grid button:active {
+  transform: scale(0.95);
 }
-*/
