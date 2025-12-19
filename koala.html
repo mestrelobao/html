@@ -2,37 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sampler UI</title>
+  <title>Resizable Grid</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div class="ui">
-    <img src="background.jpg" alt="UI">
-
-    <div class="pads">
-      <button style="--x:0; --y:0" onclick="play(1)"></button>
-      <button style="--x:1; --y:0" onclick="play(2)"></button>
-      <button style="--x:2; --y:0" onclick="play(3)"></button>
-      <button style="--x:3; --y:0" onclick="play(4)"></button>
-
-      <button style="--x:0; --y:1" onclick="play(5)"></button>
-      <button style="--x:1; --y:1" onclick="play(6)"></button>
-      <button style="--x:2; --y:1" onclick="play(7)"></button>
-      <button style="--x:3; --y:1" onclick="play(8)"></button>
-
-      <button style="--x:0; --y:2" onclick="play(9)"></button>
-      <button style="--x:1; --y:2" onclick="play(10)"></button>
-      <button style="--x:2; --y:2" onclick="play(11)"></button>
-      <button style="--x:3; --y:2" onclick="play(12)"></button>
-
-      <button style="--x:0; --y:3" onclick="play(13)"></button>
-      <button style="--x:1; --y:3" onclick="play(14)"></button>
-      <button style="--x:2; --y:3" onclick="play(15)"></button>
-      <button style="--x:3; --y:3" onclick="play(16)"></button>
-    </div>
+  <div class="grid">
+    <button onclick="play(1)">1</button>
+    <button onclick="play(2)">2</button>
+    <button onclick="play(3)">3</button>
+    <button onclick="play(4)">4</button>
+    <button onclick="play(5)">5</button>
+    <button onclick="play(6)">6</button>
+    <button onclick="play(7)">7</button>
+    <button onclick="play(8)">8</button>
+    <button onclick="play(9)">9</button>
+    <button onclick="play(10)">10</button>
+    <button onclick="play(11)">11</button>
+    <button onclick="play(12)">12</button>
+    <button onclick="play(13)">13</button>
+    <button onclick="play(14)">14</button>
+    <button onclick="play(15)">15</button>
+    <button onclick="play(16)">16</button>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    function play(n) {
+      console.log("Button", n);
+    }
+  </script>
+
 </body>
 </html>
