@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>4x4 Icon Grid</title>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f2f2f2;
+    }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+
+      width: 90vw;
+      max-width: 400px;
+    }
+
+    .icon-grid button {
+      aspect-ratio: 1 / 1;   /* keeps buttons square */
+      font-size: 24px;
+      border: none;
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      transition: transform 0.1s, background 0.2s;
+    }
+
+    .icon-grid button:hover {
+      background: #e6e6e6;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="icon-grid">
+    <button><i class="fa-solid fa-house"></i></button>
+    <button><i class="fa-solid fa-user"></i></button>
+    <button><i class="fa-solid fa-gear"></i></button>
+    <button><i class="fa-solid fa-envelope"></i></button>
+
+    <button><i class="fa-solid fa-heart"></i></button>
+    <button><i class="fa-solid fa-star"></i></button>
+    <button><i class="fa-solid fa-music"></i></button>
+    <button><i class="fa-solid fa-camera"></i></button>
+
+    <button><i class="fa-solid fa-lock"></i></button>
+    <button><i class="fa-solid fa-cloud"></i></button>
+    <button><i class="fa-solid fa-bell"></i></button>
+    <button><i class="fa-solid fa-trash"></i></button>
+
+    <button><i class="fa-solid fa-play"></i></button>
+    <button><i class="fa-solid fa-pause"></i></button>
+    <button><i class="fa-solid fa-forward"></i></button>
+    <button><i class="fa-solid fa-stop"></i></button>
+  </div>
+
+</body>
+</html>
