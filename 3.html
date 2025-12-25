@@ -103,4 +103,11 @@
   <div class="card2">Baião</div>
 </div>
 </body>
+  <script>
+  document.querySelectorAll('.card1, .card2').forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('active');
+    });
+  });
+</script>
 </html>
