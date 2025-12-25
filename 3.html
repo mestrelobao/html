@@ -108,9 +108,16 @@
 </div>
 </body>
   <script>
-  document.querySelectorAll('.card1, .card2').forEach(card => {
+  document.querySelectorAll('.card1').forEach(card => {
     card.addEventListener('click', () => {
       card.classList.toggle('active');
+          });
+  });
+  const cards = document.querySelectorAll('.card2');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      cards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
     });
   });
 </script>
