@@ -6,51 +6,49 @@
   /* CSS styles to apply when in portrait mode */
   body {
     background-color: lightyellow;
+ 
   .container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 275px;
+  grid-gap: 10px; 
   background-color: red;
   border: 1px solid #bbb;
   padding: 10px;
 }
 .card {
+   display: grid;            /* new */
+  align-items: center;      /* new */
+  justify-items: center;    /* new */
+  font-size: 50px;
   background-color: purple;
   border: 1px solid #ccc;
 }
   }
-
    }
   @media screen and (orientation: landscape) {
   /* CSS styles to apply when in landscape mode */
-    .container {
-       display: grid;
+  .container {
+  display: grid;
   grid-template-rows: 100px 100px;
   grid-auto-columns: 275px;
   grid-gap: 10px;
-      
+  
   background-color: lightyellow;
   border: 1px solid #bbb;
   padding: 10px;
 }
 .card {
+   display: grid;            /* new */
+  align-items: center;      /* new */
+  justify-items: center;    /* new */
+  font-size: 50px;
   background-color: lightgreen;
   border: 1px solid #ccc;
 }
   body {
     background-color: lightblue;
   }
-}
-
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-auto-rows: 275px;
-  grid-gap: 10px;
-}
-
-.card {
-  display: grid;            /* new */
-  align-items: center;      /* new */
-  justify-items: center;    /* new */
-  font-size: 50px;
 }
 </style>
 </head>
