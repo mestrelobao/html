@@ -2,6 +2,22 @@
 <html>
 <head>
 <style>
+  #playPauseBtn {
+  font-size: 24px;
+  padding: 10px 20px;
+  margin: 20px 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background-color: #4f393c;
+  color: #f0e999;
+}
+
+#playPauseBtn.playing {
+  background-color: #c46564;
+}
+
+  
   @media screen and (orientation: portrait) {
   body {
   background-color: #b8c99d; 
@@ -95,9 +111,8 @@
 </style>
 </head>
 <body>
-<h1>This is a heading</h1>
-<p>This is a paragraph.</p>
-
+<button id="playPauseBtn">▶️ Play</button>
+  <br>
 <div class="container1">
   <div class="card1" data-sound="bumbo.mp3">Bumbo</div>
   <div class="card1" data-sound="caixa.mp3">Caixa</div>
@@ -130,50 +145,65 @@
       card.classList.add('active');
     });
   });
-  const drumCards = document.querySelectorAll('.card1');
+
+   const drumCards = document.querySelectorAll('.card1');
   const rhythmCards = document.querySelectorAll('.card2');
+  const playPauseBtn = document.getElementById('playPauseBtn');
 
   let currentLoop = null;
   let currentLoopCard = null;
+  let isPlaying = false;
 
-  // DRUMS: play once
+  // DRUMS: one-shot
   drumCards.forEach(card => {
     const audio = new Audio(card.dataset.sound);
-
     card.addEventListener('click', () => {
       audio.currentTime = 0;
       audio.play();
     });
   });
 
-  // RHYTHMS: looping
+  // RHYTHMS: select loop (but don't auto-play)
   rhythmCards.forEach(card => {
     const audio = new Audio(card.dataset.sound);
     audio.loop = true;
 
     card.addEventListener('click', () => {
 
-      // stop current loop if another is playing
+      // stop previous loop
       if (currentLoop && currentLoop !== audio) {
         currentLoop.pause();
         currentLoop.currentTime = 0;
         currentLoopCard.classList.remove('looping');
+        isPlaying = false;
       }
 
-      // toggle same loop
-      if (audio === currentLoop) {
-        audio.pause();
-        audio.currentTime = 0;
-        card.classList.remove('looping');
-        currentLoop = null;
-        currentLoopCard = null;
-      } else {
-        audio.play();
-        card.classList.add('looping');
-        currentLoop = audio;
-        currentLoopCard = card;
-      }
+      currentLoop = audio;
+      currentLoopCard = card;
+
+      rhythmCards.forEach(c => c.classList.remove('looping'));
+      card.classList.add('looping');
+
+      playPauseBtn.textContent = '▶️ Play';
+      playPauseBtn.classList.remove('playing');
     });
   });
+
+  // PLAY / PAUSE BUTTON
+  playPauseBtn.addEventListener('click', () => {
+    if (!currentLoop) return;
+
+    if (isPlaying) {
+      currentLoop.pause();
+      playPauseBtn.textContent = '▶️ Play';
+      playPauseBtn.classList.remove('playing');
+    } else {
+      currentLoop.play();
+      playPauseBtn.textContent = '⏸ Pause';
+      playPauseBtn.classList.add('playing');
+    }
+
+    isPlaying = !isPlaying;
+  })
 </script>
 </html>
