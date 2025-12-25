@@ -99,21 +99,23 @@
 <p>This is a paragraph.</p>
 
 <div class="container1">
-  <div class="card1">Bumbo</div>
-  <div class="card1">Caixa</div>
-  <div class="card1">Tom 2</div>
-  <div class="card1">Chimbau</div>
-  <div class="card1">Ride</div>
-  <div class="card1">Crash</div>
+  <div class="card1" data-sound="bumbo.mp3">Bumbo</div>
+  <div class="card1" data-sound="caixa.mp3">Caixa</div>
+  <div class="card1" data-sound="tom2.mp3">Tom 2</div>
+  <div class="card1" data-sound="chimbau.mp3">Chimbau</div>
+  <div class="card1" data-sound="ride.mp3">Ride</div>
+  <div class="card1" data-sound="crash.mp3">Crash</div>
 </div>
-  <div class="container2">
-  <div class="card2 active">Frevo</div>
-  <div class="card2">Choro</div>
-  <div class="card2">Samba</div>
-  <div class="card2">Xote</div>
-  <div class="card2">Xaxado</div>
-  <div class="card2">Baião</div>
+
+<div class="container2">
+  <div class="card2 active" data-sound="frevo.mp3">Frevo</div>
+  <div class="card2" data-sound="choro.mp3">Choro</div>
+  <div class="card2" data-sound="samba.mp3">Samba</div>
+  <div class="card2" data-sound="xote.mp3">Xote</div>
+  <div class="card2" data-sound="xaxado.mp3">Xaxado</div>
+  <div class="card2" data-sound="baiao.mp3">Baião</div>
 </div>
+
 </body>
   <script>
   document.querySelectorAll('.card1').forEach(card => {
@@ -126,6 +128,51 @@
     card.addEventListener('click', () => {
       cards.forEach(c => c.classList.remove('active'));
       card.classList.add('active');
+    });
+  });
+  const drumCards = document.querySelectorAll('.card1');
+  const rhythmCards = document.querySelectorAll('.card2');
+
+  let currentLoop = null;
+  let currentLoopCard = null;
+
+  // DRUMS: play once
+  drumCards.forEach(card => {
+    const audio = new Audio(card.dataset.sound);
+
+    card.addEventListener('click', () => {
+      audio.currentTime = 0;
+      audio.play();
+    });
+  });
+
+  // RHYTHMS: looping
+  rhythmCards.forEach(card => {
+    const audio = new Audio(card.dataset.sound);
+    audio.loop = true;
+
+    card.addEventListener('click', () => {
+
+      // stop current loop if another is playing
+      if (currentLoop && currentLoop !== audio) {
+        currentLoop.pause();
+        currentLoop.currentTime = 0;
+        currentLoopCard.classList.remove('looping');
+      }
+
+      // toggle same loop
+      if (audio === currentLoop) {
+        audio.pause();
+        audio.currentTime = 0;
+        card.classList.remove('looping');
+        currentLoop = null;
+        currentLoopCard = null;
+      } else {
+        audio.play();
+        card.classList.add('looping');
+        currentLoop = audio;
+        currentLoopCard = card;
+      }
     });
   });
 </script>
