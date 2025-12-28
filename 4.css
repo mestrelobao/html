@@ -1,0 +1,106 @@
+  #playPauseBtn {
+  font-size: 24px;
+  padding: 10px 20px;
+  margin: 20px 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background-color: #4f393c;
+  color: #f0e999;
+}
+
+#playPauseBtn.playing {
+  background-color: #c46564;
+}
+
+  
+  @media screen and (orientation: portrait) {
+  body {
+  background-color: #b8c99d; 
+    }
+  .container1 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 275px;
+  grid-gap: 10px; 
+  background-color: #4f393c; /*gap*/
+  padding: 10px;
+}
+    .card1.active {
+  background-color: #c46564;
+  color: #f0e999;
+}
+    .card2.active {
+  background-color: #4f393c;
+  color: #f0e999;
+}
+.card1 {
+  display: grid;           
+  align-items: center;      
+  justify-items: center;    
+  font-size: 80px;
+  background-color: #f0e999; /*item back*/
+  color: #c46564; /*letra*/
+}
+  .container2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 275px;
+  grid-gap: 10px; 
+  background-color: #f4eb9e; /*gap*/
+  padding: 10px;
+}
+.card2 {
+   display: grid;           
+  align-items: center;      
+  justify-items: center;    
+  font-size: 80px;
+  background-color:  #696f84; /*item back*/
+  color: #f0e999;
+}
+  }
+  @media screen and (orientation: landscape) {
+  body {
+  background-color: #8ea88d; 
+    }
+     .card1.active {
+  background-color: #c46564;
+  color: #f0e999;
+}
+    .card2.active {
+  background-color: #4f393c;
+  color: #f0e999;
+}  
+  .container1 {
+  background-color: #a8947a;/*gap*/
+  color: #4f393c;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-rows: 100px;
+  grid-gap: 10px; 
+  padding: 10px;
+}
+.card1 {
+   display: grid;            
+  align-items: center;      
+  justify-items: center;    
+  font-size: 50px;
+  background-color: #b5f09a;
+}
+  .container2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-rows: 100px;
+  grid-gap: 10px; 
+  background-color: #4f393c; /*gap*/
+  padding: 10px;
+}
+.card2 {
+   display: grid;           
+  align-items: center;      
+  justify-items: center;    
+  font-size: 50px;
+  background-color:  #dadc77; /*item back*/
+  color: #4f393c;
+}
+  }
