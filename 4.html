@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<button id="playPauseBtn">▶️ Play</button>
+  <br>
+<div class="container1">
+  <div class="card1" data-sound="bumbo.mp3">Bumbo</div>
+  <div class="card1" data-sound="caixa.mp3">Caixa</div>
+  <div class="card1" data-sound="tom2.mp3">Tom 2</div>
+  <div class="card1" data-sound="chimbau.mp3">Chimbau</div>
+  <div class="card1" data-sound="ride.mp3">Ride</div>
+  <div class="card1" data-sound="crash.mp3">Crash</div>
+</div>
+
+<div class="container2">
+  <div class="card2 active" data-sound="oquesobroudoceu.wav">Rappa</div>
+  <div class="card2" data-sound="choro.mp3">Choro</div>
+  <div class="card2" data-sound="samba.mp3">Samba</div>
+  <div class="card2" data-sound="xote.mp3">Xote</div>
+  <div class="card2" data-sound="xaxado.mp3">Xaxado</div>
+  <div class="card2" data-sound="baiao.mp3">Baião</div>
+</div>
+
+</body>
+  <script>
+  document.querySelectorAll('.card1').forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('active');
+          });
+  });
+  const cards = document.querySelectorAll('.card2');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      cards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+    });
+  });
+
+   const drumCards = document.querySelectorAll('.card1');
+  const rhythmCards = document.querySelectorAll('.card2');
+  const playPauseBtn = document.getElementById('playPauseBtn');
+
+  let currentLoop = null;
+  let currentLoopCard = null;
+  let isPlaying = false;
+
+  // DRUMS: one-shot
+  drumCards.forEach(card => {
+    const audio = new Audio(card.dataset.sound);
+    card.addEventListener('click', () => {
+      audio.currentTime = 0;
+      audio.play();
+    });
+  });
+
+  // RHYTHMS: select loop (but don't auto-play)
+  rhythmCards.forEach(card => {
+    const audio = new Audio(card.dataset.sound);
+    audio.loop = true;
+
+    card.addEventListener('click', () => {
+
+      // stop previous loop
+      if (currentLoop && currentLoop !== audio) {
+        currentLoop.pause();
+        currentLoop.currentTime = 0;
+        currentLoopCard.classList.remove('looping');
+        isPlaying = false;
+      }
+
+      currentLoop = audio;
+      currentLoopCard = card;
+
+      rhythmCards.forEach(c => c.classList.remove('looping'));
+      card.classList.add('looping');
+
+      playPauseBtn.textContent = '▶️ Play';
+      playPauseBtn.classList.remove('playing');
+    });
+  });
+
+  // PLAY / PAUSE BUTTON
+  playPauseBtn.addEventListener('click', () => {
+    if (!currentLoop) return;
+
+    if (isPlaying) {
+      currentLoop.pause();
+      playPauseBtn.textContent = '▶️ Play';
+      playPauseBtn.classList.remove('playing');
+    } else {
+      currentLoop.play();
+      playPauseBtn.textContent = '⏸ Pause';
+      playPauseBtn.classList.add('playing');
+    }
+
+    isPlaying = !isPlaying;
+  })
+</script>
+</html>
