@@ -18,7 +18,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td id="dias"></td>
+                    <td id="dias">1</td>
                     <td><input type="text" id="textbox" placeholder="Digite algo..."></td>
                     <td>
                         <select id="listbox">
@@ -32,13 +32,6 @@
         </table>
     </div>
     <script>
-// Preenchendo os dias do mês (1 a 31) na primeira célula da tabela
-const diasContainer = document.getElementById('dias');
-for (let i = 1; i <= 31; i++) {
-    const dia = document.createElement('div');
-    dia.textContent = `Dia ${i}`;
-    diasContainer.appendChild(dia);
-}
  </script>
 </body>
 </html>
