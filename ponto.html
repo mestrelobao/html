@@ -85,10 +85,12 @@
                 <td>${dia}</td>
                 <td>
                     <input type="text" placeholder="HH:MM"
-                           oninput="calcular()">
+                           data-dia="${dia}"
+                           oninput="salvarDados(); calcular()">
                 </td>
                 <td>
-                    <select onchange="calcular()">
+                    <select data-dia="${dia}"
+                            onchange="salvarDados(); calcular()">
                         <option value="A">A</option>
                         <option value="B">B</option>
                         <option value="C">C</option>
@@ -99,6 +101,40 @@
 
             tabela.appendChild(tr);
         }
+
+        carregarDados();
+    }
+
+    function salvarDados() {
+        const dados = {};
+
+        document.querySelectorAll("#tabelaDias tr").forEach(linha => {
+            const dia = linha.querySelector("input").dataset.dia;
+            const hora = linha.querySelector("input").value;
+            const turno = linha.querySelector("select").value;
+
+            dados[dia] = { hora, turno };
+        });
+
+        localStorage.setItem("pontoDados", JSON.stringify(dados));
+    }
+
+    function carregarDados() {
+        const dados = JSON.parse(localStorage.getItem("pontoDados"));
+        if (!dados) return;
+
+        document.querySelectorAll("#tabelaDias tr").forEach(linha => {
+            const input = linha.querySelector("input");
+            const select = linha.querySelector("select");
+            const dia = input.dataset.dia;
+
+            if (dados[dia]) {
+                input.value = dados[dia].hora;
+                select.value = dados[dia].turno;
+            }
+        });
+
+        calcular();
     }
 
     function calcular() {
@@ -106,45 +142,7 @@
 
         document.querySelectorAll("#tabelaDias tr").forEach(linha => {
             const input = linha.querySelector("input");
-            const select = linha.querySelector("select");
-            const resultado = linha.querySelector(".resultado");
-
-            linha.classList.remove("atraso", "ok");
-
-            if (!input.value.match(/^\d{2}:\d{2}$/)) {
-                resultado.textContent = "—";
-                return;
-            }
-
-            const [h, m] = input.value.split(":").map(Number);
-            const chegadaMin = h * 60 + m;
-
-            const base = TURNOS[select.value];
-
-            let atraso = chegadaMin - base;
-            atraso = atraso > 0 ? atraso : 0;
-
-            const atrasoFinal = Math.max(0, atraso - TOLERANCIA_DIA);
-
-            resultado.textContent = atrasoFinal;
-
-            if (atrasoFinal > 0) {
-                linha.classList.add("atraso");
-                totalAtraso += atrasoFinal;
-            } else {
-                linha.classList.add("ok");
-            }
-        });
-
-        if (totalAtraso > TOLERANCIA_MES) {
-            totalAtraso = "SE FUDEU!" //TOLERANCIA_MES;
-        }
-
-        totalDiv.textContent = `Total de atraso: ${totalAtraso} minutos`;
-    }
-
-    criarDias();
-</script>
-
+            const select = linha.querySelecto
+                </script>
 </body>
 </html>
