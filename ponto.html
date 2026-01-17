@@ -3,40 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Site Responsivo</title>
+    <title>Site Responsivo com Tabela</title>
     <link rel="stylesheet" href="ponto.css">
 </head>
 <body>
     <div class="container">
-        <div class="column">
-            <h2>Dias do Mês</h2>
-            <ul id="dias">
-                <!-- Dias do mês serão gerados aqui -->
-            </ul>
-        </div>
-        <div class="column">
-            <h2>Texto</h2>
-            <input type="text" id="textbox" placeholder="Digite algo...">
-        </div>
-        <div class="column">
-            <h2>Lista</h2>
-            <select id="listbox">
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-            </select>
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Dias do Mês</th>
+                    <th>Texto</th>
+                    <th>Lista</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="dias"></td>
+                    <td><input type="text" id="textbox" placeholder="Digite algo..."></td>
+                    <td>
+                        <select id="listbox">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-
     <script>
-   // Preenchendo os dias do mês (1 a 31) na primeira coluna
+// Preenchendo os dias do mês (1 a 31) na primeira célula da tabela
 const diasContainer = document.getElementById('dias');
 for (let i = 1; i <= 31; i++) {
-    const li = document.createElement('li');
-    li.textContent = `Dia ${i}`;
-    diasContainer.appendChild(li);
+    const dia = document.createElement('div');
+    dia.textContent = `Dia ${i}`;
+    diasContainer.appendChild(dia);
 }
-   
-   </script>
+ </script>
 </body>
 </html>
