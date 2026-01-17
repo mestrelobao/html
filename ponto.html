@@ -6,15 +6,11 @@
     <title>Cálculo de Tolerância do Ponto</title>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
+        body { font-family: Arial; padding: 20px; }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
         }
 
         th, td {
@@ -23,32 +19,17 @@
             text-align: center;
         }
 
-        input[type="text"] {
-            width: 70px;
-            text-align: center;
-        }
+        input { width: 70px; text-align: center; }
+        select { width: 60px; }
 
-        select {
-            width: 60px;
-        }
-
-        .atraso {
-            background-color: #f8d7da;
-        }
-
-        .ok {
-            background-color: #d4edda;
-        }
-
-        #total {
-            font-weight: bold;
-        }
+        .atraso { background: #f8d7da; }
+        .ok { background: #d4edda; }
     </style>
 </head>
 
 <body>
 
-<h2  style="text-align: center;">Cálculo de Tolerância do Ponto</h2>
+<h2>Cálculo de Tolerância do Ponto</h2>
 
 <table>
     <thead>
@@ -72,25 +53,21 @@
     const TOLERANCIA_MES = 120;
 
     const TURNOS = {
-        A: 21 * 60 + 15, // 21:15
-        B: 6 * 60,      // 06:00
-        C: 13 * 60      // 13:00
+        A: 21 * 60 + 15,
+        B: 6 * 60,
+        C: 13 * 60
     };
 
     function criarDias() {
         for (let dia = 1; dia <= 31; dia++) {
             const tr = document.createElement("tr");
-
             tr.innerHTML = `
                 <td>${dia}</td>
                 <td>
-                    <input type="text" placeholder="HH:MM"
-                           data-dia="${dia}"
-                           oninput="salvarDados(); calcular()">
+                    <input data-dia="${dia}" placeholder="HH:MM">
                 </td>
                 <td>
-                    <select data-dia="${dia}"
-                            onchange="salvarDados(); calcular()">
+                    <select data-dia="${dia}">
                         <option value="A">A</option>
                         <option value="B">B</option>
                         <option value="C">C</option>
@@ -98,22 +75,33 @@
                 </td>
                 <td class="resultado">0</td>
             `;
-
             tabela.appendChild(tr);
         }
 
         carregarDados();
+
+        tabela.addEventListener("input", () => {
+            salvarDados();
+            calcular();
+        });
+
+        tabela.addEventListener("change", () => {
+            salvarDados();
+            calcular();
+        });
     }
 
     function salvarDados() {
         const dados = {};
 
         document.querySelectorAll("#tabelaDias tr").forEach(linha => {
-            const dia = linha.querySelector("input").dataset.dia;
-            const hora = linha.querySelector("input").value;
-            const turno = linha.querySelector("select").value;
+            const input = linha.querySelector("input");
+            const select = linha.querySelector("select");
 
-            dados[dia] = { hora, turno };
+            dados[input.dataset.dia] = {
+                hora: input.value,
+                turno: select.value
+            };
         });
 
         localStorage.setItem("pontoDados", JSON.stringify(dados));
@@ -138,11 +126,41 @@
     }
 
     function calcular() {
-        let totalAtraso = 0;
+        let total = 0;
 
         document.querySelectorAll("#tabelaDias tr").forEach(linha => {
             const input = linha.querySelector("input");
-            const select = linha.querySelecto
-                </script>
+            const select = linha.querySelector("select");
+            const res = linha.querySelector(".resultado");
+
+            linha.classList.remove("atraso", "ok");
+
+            if (!/^\d{2}:\d{2}$/.test(input.value)) {
+                res.textContent = "—";
+                return;
+            }
+
+            const [h, m] = input.value.split(":").map(Number);
+            const chegada = h * 60 + m;
+            const base = TURNOS[select.value];
+
+            let atraso = Math.max(0, chegada - base - TOLERANCIA_DIA);
+            res.textContent = atraso;
+
+            if (atraso > 0) {
+                linha.classList.add("atraso");
+                total += atraso;
+            } else {
+                linha.classList.add("ok");
+            }
+        });
+
+        totalDiv.textContent =
+            `Total de atraso: ${Math.min(total, TOLERANCIA_MES)} minutos`;
+    }
+
+    criarDias();
+</script>
+
 </body>
 </html>
