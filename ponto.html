@@ -3,23 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculo do Tempo de Tolerancia do Ponto(2 horas - total 15 minutos por dia)</title>
- 
+    <title>Cálculo do Tempo de Tolerância do Ponto</title>
+
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 70px;
+            height: 32px;
+            text-align: center;
+        }
+
+        select {
+            width: 70px;
+            height: 32px;
+        }
+    </style>
 </head>
+
 <body>
     <div class="container">
         <table>
             <thead>
                 <tr>
-                    <th>Dias do Mês</th>
+                    <th>Dia</th>
                     <th>Chegada</th>
                     <th>Turno</th>
                 </tr>
             </thead>
+
             <tbody>
                 <tr>
                     <td>1</td>
-                     <td><input type="text" id="hora1" size="5"></td>
+                    <td><input type="text" id="hora1" placeholder="HH:MM"></td>
                     <td>
                         <select id="turno1">
                             <option value="A">A</option>
@@ -27,8 +52,11 @@
                             <option value="C">C</option>
                         </select>
                     </td>
+                </tr>
+
+                <tr>
                     <td>2</td>
-                     <td><input type="text" id="hora2" size="5"></td>
+                    <td><input type="text" id="hora2" placeholder="HH:MM"></td>
                     <td>
                         <select id="turno2">
                             <option value="A">A</option>
@@ -40,7 +68,5 @@
             </tbody>
         </table>
     </div>
-    <script>
- </script>
 </body>
 </html>
