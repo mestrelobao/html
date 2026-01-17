@@ -68,9 +68,14 @@
     const tabela = document.getElementById("tabelaDias");
     const totalDiv = document.getElementById("total");
 
-    const HORA_BASE = 8 * 60;        // 08:00 em minutos
     const TOLERANCIA_DIA = 15;
     const TOLERANCIA_MES = 120;
+
+    const TURNOS = {
+        A: 21 * 60 + 15, // 21:15
+        B: 6 * 60,      // 06:00
+        C: 13 * 60      // 13:00
+    };
 
     function criarDias() {
         for (let dia = 1; dia <= 31; dia++) {
@@ -79,10 +84,11 @@
             tr.innerHTML = `
                 <td>${dia}</td>
                 <td>
-                    <input type="text" placeholder="HH:MM" onblur="calcular()">
+                    <input type="text" placeholder="HH:MM"
+                           oninput="calcular()">
                 </td>
                 <td>
-                    <select>
+                    <select onchange="calcular()">
                         <option value="A">A</option>
                         <option value="B">B</option>
                         <option value="C">C</option>
@@ -100,7 +106,9 @@
 
         document.querySelectorAll("#tabelaDias tr").forEach(linha => {
             const input = linha.querySelector("input");
+            const select = linha.querySelector("select");
             const resultado = linha.querySelector(".resultado");
+
             linha.classList.remove("atraso", "ok");
 
             if (!input.value.match(/^\d{2}:\d{2}$/)) {
@@ -109,18 +117,20 @@
             }
 
             const [h, m] = input.value.split(":").map(Number);
-            const minutosChegada = h * 60 + m;
+            const chegadaMin = h * 60 + m;
 
-            let atraso = minutosChegada - HORA_BASE;
+            const base = TURNOS[select.value];
+
+            let atraso = chegadaMin - base;
             atraso = atraso > 0 ? atraso : 0;
 
-            const atrasoConsiderado = Math.max(0, atraso - TOLERANCIA_DIA);
+            const atrasoFinal = Math.max(0, atraso - TOLERANCIA_DIA);
 
-            resultado.textContent = atrasoConsiderado;
+            resultado.textContent = atrasoFinal;
 
-            if (atrasoConsiderado > 0) {
+            if (atrasoFinal > 0) {
                 linha.classList.add("atraso");
-                totalAtraso += atrasoConsiderado;
+                totalAtraso += atrasoFinal;
             } else {
                 linha.classList.add("ok");
             }
