@@ -3,46 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cálculo do Tempo de Tolerância do Ponto</title>
- </head>
+    <title>Cálculo de Tolerância do Ponto</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 6px;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 70px;
+            text-align: center;
+        }
+
+        select {
+            width: 60px;
+        }
+
+        .atraso {
+            background-color: #f8d7da;
+        }
+
+        .ok {
+            background-color: #d4edda;
+        }
+
+        #total {
+            font-weight: bold;
+        }
+    </style>
+</head>
 
 <body>
-    <div class="container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Dia</th>
-                    <th>Chegada</th>
-                    <th>Turno</th>
-                </tr>
-            </thead>
 
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td><input type="text" id="hora1" placeholder="HH:MM"></td>
-                    <td>
-                        <select id="turno1">
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                        </select>
-                    </td>
-                </tr>
+<h2>Cálculo de Tolerância do Ponto</h2>
 
-                <tr>
-                    <td>2</td>
-                    <td><input type="text" id="hora2" placeholder="HH:MM"></td>
-                    <td>
-                        <select id="turno2">
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                        </select>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<table>
+    <thead>
+        <tr>
+            <th>Dia</th>
+            <th>Chegada</th>
+            <th>Turno</th>
+            <th>Atraso (min)</th>
+        </tr>
+    </thead>
+    <tbody id="tabelaDias"></tbody>
+</table>
+
+<div id="total">Total de atraso: 0 minutos</div>
+
+<script>
+    const tabela = document.getElementById("tabelaDias");
+    const totalDiv = document.getElementById("total");
+
+    const HORA_BASE = 8 * 60;        // 08:00 em minutos
+    const TOLERANCIA_DIA = 15;
+    const TOLERANCIA_MES = 120;
+
+    function criarDias() {
+        for (let dia = 1; dia <= 31; dia++) {
+            const tr = document.createElement("tr");
+
+            tr.innerHTML = `
+                <td>${dia}</td>
+                <td>
+                    <input type="text" placeholder="HH:MM" onblur="calcular()">
+                </td>
+                <td>
+                    <select>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                    </select>
+                </td>
+                <td class="resultado">0</td>
+            `;
+
+            tabela.appendChild(tr);
+        }
+    }
+
+    function calcular() {
+        let totalAtraso = 0;
+
+        document.querySelectorAll("#tabelaDias tr").forEach(linha => {
+            const input = linha.querySelector("input");
+            const resultado = linha.querySelector(".resultado");
+            linha.classList.remove("atraso", "ok");
+
+            if (!input.value.match(/^\d{2}:\d{2}$/)) {
+                resultado.textContent = "—";
+                return;
+            }
+
+            const [h, m] = input.value.split(":").map(Number);
+            const minutosChegada = h * 60 + m;
+
+            let atraso = minutosChegada - HORA_BASE;
+            atraso = atraso > 0 ? atraso : 0;
+
+            const atrasoConsiderado = Math.max(0, atraso - TOLERANCIA_DIA);
+
+            resultado.textContent = atrasoConsiderado;
+
+            if (atrasoConsiderado > 0) {
+                linha.classList.add("atraso");
+                totalAtraso += atrasoConsiderado;
+            } else {
+                linha.classList.add("ok");
+            }
+        });
+
+        if (totalAtraso > TOLERANCIA_MES) {
+            totalAtraso = TOLERANCIA_MES;
+        }
+
+        totalDiv.textContent = `Total de atraso: ${totalAtraso} minutos`;
+    }
+
+    criarDias();
+</script>
+
 </body>
 </html>
