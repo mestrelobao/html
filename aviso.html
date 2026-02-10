@@ -135,53 +135,14 @@ if(document.getElementById("aviso").checked) audioAviso.play();
   }
     veronica = normando;
     normando = "";
-metalizar (buceta);
     setTimeout(minhafuncao, 60000*1);
   }
   function addZero(i) {
   if (i < 10) {i = "0" + i}
   return i;
 }
-function horario_zulu(){
-const d = new Date();
 
-
-let h = d.getHours();
-if (h == 21) {
-h = addZero(0);
-} else if (h == 22) {
-h = addZero(1);
-} else if (h == 23) {
-h = addZero(2);
-} else {
-h = addZero(h+3);
-}
-
-let m = addZero(d.getMinutes());
-let s = addZero(d.getSeconds());
-let time = h + ":" + m + ":" + s;
-document.getElementById("linha2").innerHTML = time;
-if( m == 50 && s == 00 ){
-console.log("alarme ativado");
-if(document.getElementById("metar").checked) audioMetar.play();
-}
-setTimeout(horario_zulu, 1000);
-}
-
-async function metalizar(hora) {
-let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+hora+"&data_fim="+hora);
-let myText = await myObject.text();
-const guiga = JSON.parse(myText);
-
- console.log("que buceta é essa?");
- console.log(hora);
- console.log(guiga.data.data[0].mens);
- 
-document.getElementById("linha3").innerHTML = guiga.data.data[0].mens;
-}
-
-horario_zulu();  //alarm.html
-myfunction(); //wrng.html
+  myfunction(); //wrng.html
 
 </script>
 </body>
