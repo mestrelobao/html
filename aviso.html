@@ -45,7 +45,6 @@ color: blue;
 }
  
 async function myfunction() {
-console.log("myfunction()");
 let data = new Date();
 let ano_num = data.getFullYear();
 let ano = ano_num.toString();  
@@ -58,6 +57,7 @@ let dia = dia_num.toString();
 let hora = data.getHours()+3;
 hora = pad (hora);
 
+console.log("myfunction()");
 console.log("ano = " + ano);
 console.log("mes = " + mes);
 console.log("dia = " + dia);
