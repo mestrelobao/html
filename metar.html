@@ -56,7 +56,7 @@ let hora = data.getHours()+3;
 hora = pad (hora);
 buceta = ano+mes+dia+hora;
 //let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbdb?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini=2026021401&data_fim=2026021401");
-let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbca?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+buceta+"&data_fim="+buceta);
+let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+buceta+"&data_fim="+buceta);
 let myText = await myObject.text();
 const guiga = JSON.parse(myText);
 console.log(buceta);
