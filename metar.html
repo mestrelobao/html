@@ -1,6 +1,6 @@
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Aviso de Aeródromo de SBJP</title>  
-<link rel="icon" type="image/x-icon" href="https://mestrelobao.github.io/html/gato.ico">
+<link rel="icon" type="image/x-icon" href="https://mestrelobao.github.io/html/favicon.ico">
  <style>
    h1 {text-align: center;}
    p {
@@ -62,7 +62,7 @@ console.log("mes = " + mes);
 console.log("dia = " + dia);
 console.log("hora = "+hora);
 
-let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+hora+"&data_fim="+hora);
+let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+buceta+"&data_fim="+buceta);
 let myText = await myObject.text();
 const guiga = JSON.parse(myText);
 
