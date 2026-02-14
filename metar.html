@@ -56,7 +56,7 @@ let hora = data.getHours()+3;
 hora = pad (hora);
 buceta = ano+mes+dia+hora;
 
-let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+buceta+"&data_fim="+buceta);
+let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbdb?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+buceta+"&data_fim="+buceta);
 let myText = await myObject.text();
 const guiga = JSON.parse(myText);
 console.log(buceta);
@@ -64,11 +64,10 @@ console.log(myText);
 console.log(guiga);  
 console.log(guiga.data.data[0].mens);
 document.getElementById("linha1").innerHTML = guiga.data.data[0].mens;
-if (guiga.data.data[1].mens)  {
-console.log("bucetao");
+
 document.getElementById("linha2").innerHTML = guiga.data.data[1].mens;  
 //document.getElementById("linha3").innerHTML = guiga.data.data[2].mens;
-}  
+
 setTimeout(metar, 60000);
 }
 //display hora e toca o metar aos 50
