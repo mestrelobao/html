@@ -54,13 +54,7 @@ dia_num = pad (dia_num);
 let dia = dia_num.toString();
 let hora = data.getHours()+3;
 hora = pad (hora);
-
 buceta = ano+mes+dia+hora;
-console.log("metar");
-console.log("ano = " + ano);
-console.log("mes = " + mes);
-console.log("dia = " + dia);
-console.log("hora = "+hora);
 
 let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+buceta+"&data_fim="+buceta);
 let myText = await myObject.text();
@@ -77,70 +71,8 @@ document.getElementById("linha3").innerHTML = guiga.data.data[2].mens;
 setTimeout(metar, 60000*1);
 }
 
-async function minhafuncao(){
-console.log("minha funcao()");
-let data = new Date();
-let ano_num = data.getFullYear();
-let ano = ano_num.toString();  
-let mes_num = (data.getMonth()+1);
-mes_num = pad (mes_num);
-let mes = mes_num.toString();  
-let dia_num = data.getDate();
-dia_num = pad (dia_num);
-let dia = dia_num.toString();
-let hora = data.getHours()+3;
-hora = pad (hora);
-
-buceta = ano+mes+dia+hora;
-
-console.log("ano = " + ano);
-console.log("mes = " + mes);
-console.log("dia = " + dia);
-console.log("hora = "+hora);
-
-console.log(buceta);
-
-let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
-let myText = await myObject.text();
-const guiga = JSON.parse(myText);
-console.log(myText);
-console.log(guiga);  
-console.log(guiga.data.data[0]);
-if (guiga.data.data[0] === undefined){
-console.log("Nenhum Aviso de Aeródromo por enquanto...");
-document.getElementById("linha1").innerHTML = "Nenhum Aviso de Aeródromo por enquanto...";  
-normando = "Nenhum Aviso de Aeródromo por enquanto...";  
-} else {  
-console.log(guiga.data.data[0]["mens"]);
-document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
-normando = guiga.data.data[0]["mens"];
-}  
-console.log("eu gosto de buceta ");
-console.log(veronica);
-console.log(normando);
-console.log("eu tambem...");  
-  if(veronica === normando){
-    console.log("iguais então não vai e-mail");
-  } else if (guiga.data.data[0] === undefined){
-console.log("diferentes mas não vai e-mail");
-  }else{
-console.log("vai e-mail");
-if(document.getElementById("aviso").checked) audioAviso.play();
-  }
-    veronica = normando;
-    normando = "";
-metalizar (buceta);
-    setTimeout(minhafuncao, 60000*1);
-  }
-  function addZero(i) {
-  if (i < 10) {i = "0" + i}
-  return i;
-}
-////////////////////////////////////////////////////
-   function horario_zulu(){
+function tocametar(){
 const d = new Date();
-
-
 let h = d.getHours();
 if (h == 21) {
 h = addZero(0);
@@ -151,7 +83,6 @@ h = addZero(2);
 } else {
 h = addZero(h+3);
 }
-
 let m = addZero(d.getMinutes());
 let s = addZero(d.getSeconds());
 let time = h + ":" + m + ":" + s;
@@ -160,7 +91,7 @@ if( m == 50 && s == 00 ){
 console.log("alarme ativado");
 if(document.getElementById("metar").checked) audioMetar.play();
 }
-setTimeout(horario_zulu, 1000);
+setTimeout(tocametar, 1000);
 }
 
 async function metalizar(hora) {
@@ -174,8 +105,7 @@ const guiga = JSON.parse(myText);
  
 document.getElementById("linha3").innerHTML = guiga.data.data[0].mens;
 }
-
-horario_zulu();  //alarm.html
+//tocametar();  //alarme.html
 metar(); 
 
 </script>
