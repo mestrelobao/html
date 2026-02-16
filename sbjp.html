@@ -31,8 +31,8 @@ color: blue;
 <label for="metar">Alarme do Metar de SBJP.</label></h1>
 <p id="linha2">Aguardando resposta do Servidor...</p>
 <p id="linha3">Aguardando resposta do Servidor...</p>
-<br>
-<br>
+<p id="linha4"></p>
+<p id="linha5"></p>
 <h2>Sempre deixe essa página ativa para o alarme soar!</h2>
 
  <script>
@@ -168,7 +168,7 @@ console.log(hora);
 console.log(guiga.data.data[0].mens);
 document.getElementById("linha3").innerHTML = guiga.data.data[0]["mens"];
 if (guiga.data.total > 1){
-//document.getElementById("linha4").innerHTML = guiga.data.data[1].mens;  
+document.getElementById("linha4").innerHTML = guiga.data.data[1]"[mens]";  
 console.log(guiga.data.data[1].mens);
 }
 if (guiga.data.total > 2){
