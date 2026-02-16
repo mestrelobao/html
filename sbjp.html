@@ -167,13 +167,14 @@ const guiga = JSON.parse(myText);
 console.log("metalizar");
 console.log(hora);
 console.log(guiga.data.data[0].mens);
+console.log(guiga.data.total);   
 document.getElementById("linha3").innerHTML = guiga.data.data[0]["mens"];
-if (guiga.data.total > 1){
-document.getElementById("linha4").innerHTML = guiga.data.data[1].["mens"];  
-}
-if (guiga.data.total > 2){
-document.getElementById("linha5").innerHTML = guiga.data.data[2].["mens"];  
-}   
+//if (guiga.data.total > 1){
+//document.getElementById("linha4").innerHTML = guiga.data.data[1].["mens"];  
+//}
+//if (guiga.data.total > 2){
+//document.getElementById("linha5").innerHTML = guiga.data.data[2].["mens"];  
+//}   
 }
 
 horario_zulu();  //alarme do metar
