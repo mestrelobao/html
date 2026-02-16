@@ -159,7 +159,8 @@ setTimeout(horario_zulu, 1000);
 }
 
 async function metalizar(hora) {
-let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+hora+"&data_fim="+hora);
+let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sble?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+hora+"&data_fim="+hora);
+//let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+hora+"&data_fim="+hora);
 let myText = await myObject.text();
 const guiga = JSON.parse(myText);
 console.log("metalizar");
