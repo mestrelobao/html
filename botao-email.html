@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enviar Email</title>
+</head>
+<body>
+
+<button onclick="enviarEmail()">Enviar Email</button>
+
+<script src="email.min.js"></script>
+
+<script>
+  (function(){
+    emailjs.init("SEU_USER_ID");
+  })();
+
+  function enviarEmail() {
+emailjs.send("service_95kve89","template_qlihq4c").then(function(response) {
+      alert("Email enviado!");
+    }, function(error) {
+      alert("Erro ao enviar");
+    });
+  }
+</script>
+
+</body>
+</html>
