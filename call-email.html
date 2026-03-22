@@ -8,6 +8,17 @@
     window.addEventListener('load', funcao());
     function funcao(){
     console.log('Página carregada!');
+          (function(){
+    emailjs.init("QF3f-0AvMZuUXCk8R");
+  })();
+
+  function enviarEmail() {
+emailjs.send("service_95kve89","template_qlihq4c").then(function(response) {
+      alert("Email enviado!");
+    }, function(error) {
+      alert("Erro ao enviar");
+    });
+  }
 }
 </script>
 </html>
