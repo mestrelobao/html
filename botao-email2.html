@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enviar Email</title>
+</head>
+<body>
+
+<button onclick="enviarEmail()">Enviar Email</button>
+
+<script src="email.min.js"></script>
+
+<script>
+  (function(){
+    emailjs.init("QF3f-0AvMZuUXCk8R");
+  })();
+
+  function enviarEmail() {
+var templateParams = {
+  name: 'James',
+  notes: 'Check this out!',
+};
+    emailjs.send("service_6q42y6q","template_uw7iu5l, templateParams").then(function(response) {
+      alert("Email enviado!");
+    }, function(error) {
+      alert("Erro ao enviar");
+    });
+  }
+</script>
+
+</body>
+</html>
