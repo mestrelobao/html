@@ -14,10 +14,7 @@ guiga = dados[0]["dezenas"];
 console.log(guiga);
 } 
         
-var templateParams = {
-  concurso: 'James',
-  dezenas: guiga
-};    
+   
         
  (function(){
     emailjs.init("z_G1yUu766UM1SfCt");
@@ -25,6 +22,10 @@ var templateParams = {
 
   function enviarEmail() {
 myfunction();
+var templateParams = {
+  concurso: 'James',
+  dezenas: guiga
+};       
       emailjs.send("service_6q42y6q","template_megasena", templateParams).then(function(response) {
       alert("Email enviado!");
     }, function(error) {
