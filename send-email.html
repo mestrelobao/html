@@ -21,8 +21,8 @@ const params = new URLSearchParams(window.location.search);
 const email = params.get('email');
     
     var templateParams = {
-  name: email,
-  notes: 'Check this out!'
+  concurso: email,
+  dezenas: 'Check this out!'
 };
     emailjs.send("service_6q42y6q","template_megasena",templateParams).then(function(response) {
       alert("Email enviado!");
