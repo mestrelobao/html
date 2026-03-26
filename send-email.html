@@ -24,7 +24,7 @@ const email = params.get('email');
   concurso: email,
   dezenas: 'Check this out!'
 };
-    emailjs.send("service_6q42y6q","template_megasena",templateParams).then(function(response) {
+    emailjs.send("service_6q42y6q","template_send_email",templateParams).then(function(response) {
       alert("Email enviado!");
     }, function(error) {
       alert("Erro ao enviar");
