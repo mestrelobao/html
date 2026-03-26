@@ -17,8 +17,9 @@ var templateParams = {
   dezenas: 'Check this out!'
 };    
         
-    emailjs.init("QF3f-0AvMZuUXCk8R");
-//  })();
+ (function(){
+    emailjs.init("z_G1yUu766UM1SfCt");
+  })();
 
   function enviarEmail() {
 emailjs.send("service_95kve89","template_megasena", templateParams).then(function(response) {
