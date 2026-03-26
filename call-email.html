@@ -7,11 +7,11 @@
     <script src="email.min.js"></script>
     <script>
 var guiga;
+
 async function myfunction() {
 const response = await fetch("https://loteriascaixa-api.herokuapp.com/api/megasena");
 const dados = await response.json();
-guiga = dados[0]["dezenas"];
-console.log(guiga);
+return dados[0]["dezenas"];
 } 
         
    
@@ -20,11 +20,11 @@ console.log(guiga);
     emailjs.init("z_G1yUu766UM1SfCt");
   })();
 
-  function enviarEmail() {
-myfunction();
+async function enviarEmail() {
+const guiga = await myfunction();
 var templateParams = {
   concurso: 'James',
-  dezenas: guiga
+  dezenas: guiga.join(", ")
 };       
       emailjs.send("service_6q42y6q","template_megasena", templateParams).then(function(response) {
       alert("Email enviado!");
