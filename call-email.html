@@ -6,10 +6,12 @@
 </body>
     <script src="email.min.js"></script>
     <script>
+var guiga;
 async function myfunction() {
 const response = await fetch("https://loteriascaixa-api.herokuapp.com/api/megasena");
 const dados = await response.json();
-console.log(dados[0]["dezenas"]);
+guiga = dados[0]["dezenas"];
+console.log(guiga);
 } 
         
 var templateParams = {
