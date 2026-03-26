@@ -22,7 +22,7 @@ const params = new URLSearchParams(window.location.search);
 const email = params.get('email');
     
     var templateParams = {
-  concurso: email,
+  email: email,
   dezenas: 'Check this out!'
 };
     emailjs.send("service_6q42y6q","template_send_email",templateParams).then(function(response) {
