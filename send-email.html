@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>manda e-mail</title>
+</head>
+<body>
+<h1>mestrelobaoguilherme@gmail.com vai enviar um E-mail para o email que estiver na url exemplo: https://mestrelobao.github.io/html/send-email.html?email=mestrelobaoguilherme@gmail.com</h1>
+
+<button onclick="enviarEmail()">Enviar Email</button>
+
+<script src="email.min.js"></script>
+
+<script>
+  (function(){
+    emailjs.init("z_G1yUu766UM1SfCt");
+  })();
+
+  function enviarEmail() {
+
+const params = new URLSearchParams(windows.location.search);
+const email = params.get('email');
+    
+    var templateParams = {
+  name: email,
+  notes: 'Check this out!'
+};
+    emailjs.send("service_6q42y6q","template_uw7iu5l",templateParams).then(function(response) {
+      alert("Email enviado!");
+    }, function(error) {
+      alert("Erro ao enviar");
+    });
+  }
+</script>
+
+</body>
+</html>
