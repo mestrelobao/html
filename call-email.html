@@ -22,7 +22,7 @@ vera =  dados[0]["concurso"];
 async function enviarEmail() {
 const buceta = await myfunction();
 var templateParams = {
-  concurso: vera.join(", "),
+  concurso: vera,
   dezenas: guiga.join(", ")
 };       
       emailjs.send("service_6q42y6q","template_megasena", templateParams).then(function(response) {
