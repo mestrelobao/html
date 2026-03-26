@@ -24,7 +24,7 @@ const email = params.get('email');
   name: email,
   notes: 'Check this out!'
 };
-    emailjs.send("service_6q42y6q","template_uw7iu5l",templateParams).then(function(response) {
+    emailjs.send("service_6q42y6q","template_megasena",templateParams).then(function(response) {
       alert("Email enviado!");
     }, function(error) {
       alert("Erro ao enviar");
