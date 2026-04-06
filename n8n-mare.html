@@ -22,13 +22,13 @@ const dia = parametros.get('dia');
 console.log(dia);
 const mes = parametros.get('mes');
 console.log(mes);   
-const data = " "+dia+mes+" ";
+const data = " "+mes+dia+" ";
 console.log(data);
    
 const xmlhttp = new XMLHttpRequest();
 xmlhttp.onload = function() {
 const myObj = JSON.parse(this.responseText);
-const primeiro = myObj JANEIRO1;
+const primeiro = myObj.JANEIRO1;
 const segundo = myObj[data][1];
 const terceiro = myObj[data][2];
 const quarto = myObj[data][3];
