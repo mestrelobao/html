@@ -76,59 +76,25 @@ const dia = parametros.get('dia');
 console.log(dia);
 const mes = parametros.get('mes');
 console.log(mes);   
-
-   
-const months = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
-const d = new Date();
-let month = months[d.getMonth()];
-let day = d.getDate();   
-document.getElementById("demo").innerHTML = month;
-document.getElementById("capeta").innerHTML = day;   
-const select_mes = document.getElementById('mes');
-select_mes.value = month;
-const select_dia = document.getElementById('dia');
-select_dia.value = day;
-
-funcao3(month,day);
-   
-function funcao() {
-  let mes = document.getElementById("mes").value;
-  let dia = document.getElementById("dia").value;
- funcao3(mes,dia);
- }  
-
-  function funcao3(eric, fernando){
-  console.log(eric);
-  console.log(fernando);
-
-  const data = " "+eric+fernando+" ";
-console.log(data);  
-  const xmlhttp = new XMLHttpRequest();
-  xmlhttp.onload = function() {
-  const myObj = JSON.parse(this.responseText);
- 
-    if(myObj[data]==null){
-  document.getElementById("linha1").innerHTML = "Data inválida!";
-  document.getElementById("linha2").innerHTML = "";
-  document.getElementById("linha3").innerHTML = "";
-  document.getElementById("linha4").innerHTML = "";
-  document.getElementById("linha5").innerHTML = "";
-  document.getElementById("linha6").innerHTML = "";
-  document.getElementById("linha7").innerHTML = "";
-  document.getElementById("linha8").innerHTML = "";
-    }
-    
-  document.getElementById("linha1").innerHTML = myObj[data][0];
-  document.getElementById("linha2").innerHTML = myObj[data][1];
-  document.getElementById("linha3").innerHTML = myObj[data][2];
-  if ( myObj[data][3] ){ document.getElementById("linha4").innerHTML = myObj[data][3];}
-  if ( myObj[data][4] ){ document.getElementById("linha5").innerHTML = myObj[data][4];}
-  if ( myObj[data][5] ){ document.getElementById("linha6").innerHTML = myObj[data][5];}
-  if ( myObj[data][6] ){ document.getElementById("linha7").innerHTML = myObj[data][6];}
-  if ( myObj[data][7] ){ document.getElementById("linha8").innerHTML = myObj[data][7];}  
-}
+const data = " "+dia+mes+" ";
+const xmlhttp = new XMLHttpRequest();
+xmlhttp.onload = function() {
+const myObj = JSON.parse(this.responseText);
+const primeiro = myObj[data][0];
+const segundo = myObj[data][1];
+const terceiro = myObj[data][2];
+const quarto = myObj[data][3];
+const quinto = myObj[data][4];
+const sexto = myObj[data][5];
+ console.log(primeiro); 
+ console.log(segundo);
+ console.log(terceiro);
+ console.log(quarto);
+ console.log(quinto); 
+ console.log(sexto); 
 xmlhttp.open("GET", "mare2026.json");
 xmlhttp.send();
 }
+
  </script>
 </html>
