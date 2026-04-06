@@ -32,38 +32,27 @@ async function pegadados() {
     // Parse the JSON data
     const data = await response.json();
     console.log('User Data:', data);
-    
-  } catch (error) {
-    console.error('There was an error fetching the data:', error);
-  }
-}
-   
-const parametros = new URLSearchParams(window.location.search);
+   const parametros = new URLSearchParams(window.location.search);
 const dia = parametros.get('dia');
 console.log(dia);
 const mes = parametros.get('mes');
 console.log(mes);   
 const data = " "+mes+dia+" ";
-console.log(data);
+console.log(datas);
    
-const xmlhttp = new XMLHttpRequest();
-xmlhttp.onload = function() {
-const myObj = JSON.parse(this.responseText);
-const primeiro = myObj;
-const segundo = myObj[data][1];
-const terceiro = myObj[data][2];
-const quarto = myObj[data][3];
-const quinto = myObj[data][4];
-const sexto = myObj[data][5];
- console.log(primeiro); 
- console.log(segundo);
- console.log(terceiro);
- console.log(quarto);
- console.log(quinto); 
- console.log(sexto); 
-xmlhttp.open("GET", "mare2026.json");
-xmlhttp.send();
+const primeiro = data.datas;const parametros = new URLSearchParams(window.location.search);
+const dia = parametros.get('dia');
+console.log(dia);
+const mes = parametros.get('mes');
+console.log(mes);   
+const data = " "+mes+dia+" ";
+console.log(datas);
+const primeiro = data.datas;
+console.log(primeiro);    
+  } catch (error) {
+    console.error('There was an error fetching the data:', error);
+  }
 }
-
+   }   
  </script>
 </html>
