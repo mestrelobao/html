@@ -32,7 +32,8 @@ async function pegadados() {
     // Parse the JSON data
     const data = await response.json();
     console.log('User Data:', data);
-   const parametros = new URLSearchParams(window.location.search);
+
+const parametros = new URLSearchParams(window.location.search);
 const dia = parametros.get('dia');
 console.log(dia);
 const mes = parametros.get('mes');
@@ -40,15 +41,6 @@ console.log(mes);
 const datas = " "+mes+dia+" ";
 console.log(datas);
    
-const primeiro = data.datas;const parametros = new URLSearchParams(window.location.search);
-const dia = parametros.get('dia');
-console.log(dia);
-const mes = parametros.get('mes');
-console.log(mes);   
-const data = " "+mes+dia+" ";
-console.log(datas);
-const primeiro = data.datas;
-console.log(primeiro);    
   } catch (error) {
     console.error('There was an error fetching the data:', error);
   }
