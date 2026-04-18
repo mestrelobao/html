@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Camera + Video Sync Record</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: black;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* LADO A LADO */
+.videos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+
+/* MESMO TAMANHO */
+.player {
+  position: relative;
+}
+
+video {
+  width: 45vw;
+  max-height: 70vh;
+  object-fit: contain;
+  background: black;
+  display: block;
+}
+
+/* CONTROLES */
+.controls {
+  margin-top: 50px;
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  padding: 10px 18px;
+  font-size: 16px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <div class="videos">
+
+    <!-- CAMERA (substitui o video 1) -->
+    <div class="player">
+      <video id="cam" autoplay playsinline muted></video>
+    </div>
+
+    <!-- VIDEO 2 -->
+    <div class="player">
+      <video id="v2" src="video2.mp4" preload="auto" loop></video>
+    </div>
+
+  </div>
+
+  <div class="controls">
+    <button onclick="startRecord()">🎥 Gravar</button>
+    <button onclick="stopRecord()">⏹ Parar</button>
+  </div>
+
+</div>
+
+<script>
+const cam = document.getElementById("cam");
+const v2 = document.getElementById("v2");
+
+let recorder;
+let recordedChunks = [];
+
+/* 🎥 iniciar câmera */
+async function initCamera() {
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true
+  });
+
+  cam.srcObject = stream;
+  return stream;
+}
+
+/* ⏺ iniciar gravação sincronizada */
+async function startRecord() {
+
+  recordedChunks = [];
+
+  const camStream = await initCamera();
+
+  await v2.load();
+
+  // cria stream combinado (camera + video)
+  const canvas = document.createElement("canvas");
+  canvas.width = 1280;
+  canvas.height = 720;
+
+  const ctx = canvas.getContext("2d");
+
+  const draw = () => {
+    ctx.drawImage(cam, 0, 0, canvas.width / 2, canvas.height);
+    ctx.drawImage(v2, canvas.width / 2, 0, canvas.width / 2, canvas.height);
+    requestAnimationFrame(draw);
+  };
+
+  draw();
+
+  const combinedStream = canvas.captureStream(30);
+
+  recorder = new MediaRecorder(combinedStream);
+
+  recorder.ondataavailable = e => {
+    if (e.data.size > 0) recordedChunks.push(e.data);
+  };
+
+  recorder.onstop = () => {
+    const blob = new Blob(recordedChunks, { type: "video/webm" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "gravacao.webm";
+    a.click();
+  };
+
+  /* 🔥 sincronização exata */
+  v2.currentTime = 0;
+
+  await v2.play();
+
+  recorder.start();
+
+}
+
+/* ⏹ parar gravação */
+function stopRecord() {
+  if (recorder && recorder.state !== "inactive") {
+    recorder.stop();
+  }
+
+  cam.srcObject?.getTracks().forEach(t => t.stop());
+  v2.pause();
+}
+</script>
+
+</body>
+</html>
