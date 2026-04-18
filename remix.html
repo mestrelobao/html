@@ -1,54 +1,36 @@
-<!DOCTYPE html>
-<html>
-<body>
-
-<h3>Vídeo</h3>
-<video id="video" src="video.mp4" controls loop width="400"></video>
-
-<h3>Câmera</h3>
-<video id="cam" autoplay muted width="200"></video>
-
-<br><br>
-<button id="start">Gravar Remix</button>
-<button id="stop">Parar</button>
-
-<canvas id="canvas" width="800" height="400" style="display:none;"></canvas>
-
 <script>
-const video = document.getElementById("video");
-const cam = document.getElementById("cam");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+let audioContext;
+let destination;
 
-let recorder, chunks = [];
+document.getElementById("start").onclick = async () => {
+  // 🎥 stream do canvas
+  const canvasStream = canvas.captureStream(30);
 
-// 📷 iniciar câmera
-async function initCam() {
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video: true,
-    audio: true
-  });
-  cam.srcObject = stream;
-}
-initCam();
+  // 🎤 pegar áudio do microfone
+  const micStream = cam.srcObject;
 
-// 🎨 desenhar lado a lado
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // 🎧 criar contexto de áudio
+  audioContext = new AudioContext();
+  destination = audioContext.createMediaStreamDestination();
 
-  // esquerda: vídeo
-  ctx.drawImage(video, 0, 0, canvas.width / 2, canvas.height);
+  // 🎤 microfone
+  const micSource = audioContext.createMediaStreamSource(micStream);
+  micSource.connect(destination);
 
-  // direita: câmera
-  ctx.drawImage(cam, canvas.width / 2, 0, canvas.width / 2, canvas.height);
+  // 🎬 áudio do vídeo
+  const videoSource = audioContext.createMediaElementSource(video);
+  videoSource.connect(destination);
 
-  requestAnimationFrame(draw);
-}
+  // (opcional) ouvir no output
+  videoSource.connect(audioContext.destination);
 
-document.getElementById("start").onclick = () => {
-  const stream = canvas.captureStream(30);
+  // 🔗 juntar tudo
+  const finalStream = new MediaStream([
+    ...canvasStream.getVideoTracks(),
+    ...destination.stream.getAudioTracks()
+  ]);
 
-  recorder = new MediaRecorder(stream);
+  recorder = new MediaRecorder(finalStream);
 
   recorder.ondataavailable = e => chunks.push(e.data);
 
@@ -58,21 +40,14 @@ document.getElementById("start").onclick = () => {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "remix.webm";
+    a.download = "video.webm";
     a.click();
 
     chunks = [];
   };
 
-  video.play(); // garante sync
+  video.play();
   draw();
   recorder.start();
 };
-
-document.getElementById("stop").onclick = () => {
-  if (recorder) recorder.stop();
-};
 </script>
-
-</body>
-</html>
