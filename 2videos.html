@@ -5,6 +5,7 @@
 <title>Vídeos sincronizados</title>
 
 <style>
+/* RESET TOTAL */
 * {
   margin: 0;
   padding: 0;
@@ -23,20 +24,27 @@ html, body {
 .videos {
   display: flex;
   width: 100vw;
-  height: 85vh; /* deixa espaço pros botões embaixo */
-  gap: 2px;     /* 🔥 vídeos mais juntos */
+  height: 85vh;
+  gap: 0;              /* 🔥 remove qualquer espaço */
 }
 
+/* CADA LADO */
 .player {
   flex: 1;
   position: relative;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
+/* VÍDEO OCUPA TUDO */
 video {
   width: 100%;
   height: 100%;
+  display: block;       /* 🔥 remove espaço inline fantasma */
   object-fit: contain;
   background: black;
+  border: 0;
 }
 
 /* VOLUME */
@@ -53,7 +61,7 @@ video {
   width: 80%;
 }
 
-/* CONTROLES EMBAIXO */
+/* CONTROLES */
 .controls {
   height: 15vh;
   display: flex;
