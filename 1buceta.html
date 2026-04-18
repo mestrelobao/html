@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Camera + Video Sync Record</title>
+<title>Camera Sync Record</title>
 
 <style>
 * {
@@ -35,7 +35,6 @@ html, body {
   gap: 0;
 }
 
-/* MESMO TAMANHO */
 .player {
   position: relative;
 }
@@ -69,7 +68,7 @@ button {
 
   <div class="videos">
 
-    <!-- CAMERA (substitui o video 1) -->
+    <!-- CAMERA -->
     <div class="player">
       <video id="cam" autoplay playsinline muted></video>
     </div>
@@ -95,7 +94,7 @@ const v2 = document.getElementById("v2");
 let recorder;
 let recordedChunks = [];
 
-/* 🎥 iniciar câmera */
+/* 🎥 ativa câmera */
 async function initCamera() {
   const stream = await navigator.mediaDevices.getUserMedia({
     video: true,
@@ -106,33 +105,15 @@ async function initCamera() {
   return stream;
 }
 
-/* ⏺ iniciar gravação sincronizada */
+/* 🎬 inicia sincronizado */
 async function startRecord() {
 
   recordedChunks = [];
 
-  const camStream = await initCamera();
+  const stream = await initCamera();
 
-  await v2.load();
-
-  // cria stream combinado (camera + video)
-  const canvas = document.createElement("canvas");
-  canvas.width = 1280;
-  canvas.height = 720;
-
-  const ctx = canvas.getContext("2d");
-
-  const draw = () => {
-    ctx.drawImage(cam, 0, 0, canvas.width / 2, canvas.height);
-    ctx.drawImage(v2, canvas.width / 2, 0, canvas.width / 2, canvas.height);
-    requestAnimationFrame(draw);
-  };
-
-  draw();
-
-  const combinedStream = canvas.captureStream(30);
-
-  recorder = new MediaRecorder(combinedStream);
+  // prepara gravação APENAS da câmera
+  recorder = new MediaRecorder(stream);
 
   recorder.ondataavailable = e => {
     if (e.data.size > 0) recordedChunks.push(e.data);
@@ -144,20 +125,19 @@ async function startRecord() {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "gravacao.webm";
+    a.download = "camera.webm";
     a.click();
   };
 
-  /* 🔥 sincronização exata */
+  // 🔥 sincronização exata de início
   v2.currentTime = 0;
 
   await v2.play();
-
   recorder.start();
 
 }
 
-/* ⏹ parar gravação */
+/* ⏹ parar tudo */
 function stopRecord() {
   if (recorder && recorder.state !== "inactive") {
     recorder.stop();
