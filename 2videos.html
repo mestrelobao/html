@@ -5,7 +5,6 @@
 <title>Vídeos sincronizados</title>
 
 <style>
-/* RESET TOTAL */
 * {
   margin: 0;
   padding: 0;
@@ -20,39 +19,37 @@ html, body {
   font-family: Arial, sans-serif;
 }
 
-/* ÁREA DOS VÍDEOS */
+/* ÁREA DOS VÍDEOS (SEM FLEX GHOST SPACE) */
 .videos {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 🔥 mais preciso que flex */
   width: 100vw;
-  height: 85vh;
-  gap: 0;              /* 🔥 remove qualquer espaço */
+  height: 80vh;
 }
 
 /* CADA LADO */
 .player {
-  flex: 1;
   position: relative;
-  margin: 0;
-  padding: 0;
   overflow: hidden;
 }
 
-/* VÍDEO OCUPA TUDO */
+/* VÍDEO PREENCHE TUDO */
 video {
   width: 100%;
   height: 100%;
-  display: block;       /* 🔥 remove espaço inline fantasma */
+  display: block;
   object-fit: contain;
   background: black;
-  border: 0;
 }
 
-/* VOLUME */
+/* CONTROLE DE VOLUME ABAIXO DO VÍDEO */
 .volume {
-  position: absolute;
-  bottom: 10px;
-  width: 100%;
-  text-align: center;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #000;
   color: white;
   font-size: 12px;
 }
@@ -61,9 +58,9 @@ video {
   width: 80%;
 }
 
-/* CONTROLES */
+/* BOTÕES */
 .controls {
-  height: 15vh;
+  height: 20vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -85,21 +82,19 @@ button {
 
   <div class="player">
     <video id="v1" src="video1.mp4" preload="auto"></video>
-
     <div class="volume">
-      Volume 1<br>
-      <input type="range" min="0" max="1" step="0.01" value="1"
-             oninput="v1.volume = this.value">
+      Volume 1
+      <input type="range" min="0" max="1" step="0.01"
+             value="1" oninput="v1.volume = this.value">
     </div>
   </div>
 
   <div class="player">
     <video id="v2" src="video2.mp4" preload="auto"></video>
-
     <div class="volume">
-      Volume 2<br>
-      <input type="range" min="0" max="1" step="0.01" value="1"
-             oninput="v2.volume = this.value">
+      Volume 2
+      <input type="range" min="0" max="1" step="0.01"
+             value="1" oninput="v2.volume = this.value">
     </div>
   </div>
 
