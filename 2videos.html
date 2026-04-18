@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Vídeos sincronizados</title>
+<title>Synced Loop Videos</title>
 
 <style>
 * {
@@ -15,11 +15,10 @@ html, body {
   width: 100%;
   height: 100%;
   background: black;
-  font-family: Arial, sans-serif;
   overflow: hidden;
+  font-family: Arial, sans-serif;
 }
 
-/* CONTAINER PRINCIPAL */
 .wrapper {
   height: 100vh;
   display: flex;
@@ -28,30 +27,28 @@ html, body {
   align-items: center;
 }
 
-/* ÁREA DOS VÍDEOS */
+/* VIDEOS CENTERED */
 .videos {
   display: flex;
-  justify-content: center;  /* centraliza no meio da tela */
+  justify-content: center;
   align-items: center;
-  gap: 0;                   /* colados */
+  gap: 0;
 }
 
-/* CADA VÍDEO */
 .player {
   position: relative;
 }
 
-/* VÍDEO SEM CORTAR */
+/* NO CROPPING */
 video {
-  width: 45vw;            /* controla tamanho */
-  height: auto;
-  max-height: 70vh;       /* impede ultrapassar tela */
-  display: block;
-  object-fit: contain;    /* NÃO corta vídeo */
+  width: 45vw;
+  max-height: 70vh;
+  object-fit: contain;
   background: black;
+  display: block;
 }
 
-/* CONTROLE DE VOLUME */
+/* VOLUME */
 .volume {
   position: absolute;
   bottom: -40px;
@@ -65,7 +62,7 @@ video {
   width: 80%;
 }
 
-/* BOTÕES */
+/* CONTROLS */
 .controls {
   margin-top: 60px;
   display: flex;
@@ -87,7 +84,7 @@ button {
   <div class="videos">
 
     <div class="player">
-      <video id="v1" src="video1.mp4" preload="auto"></video>
+      <video id="v1" src="video1.mp4" preload="auto" loop></video>
       <div class="volume">
         Volume 1<br>
         <input type="range" min="0" max="1" step="0.01"
@@ -96,7 +93,7 @@ button {
     </div>
 
     <div class="player">
-      <video id="v2" src="video2.mp4" preload="auto"></video>
+      <video id="v2" src="video2.mp4" preload="auto" loop></video>
       <div class="volume">
         Volume 2<br>
         <input type="range" min="0" max="1" step="0.01"
@@ -107,8 +104,8 @@ button {
   </div>
 
   <div class="controls">
-    <button onclick="startSync()">▶️ Iniciar</button>
-    <button onclick="stopSync()">⏸️ Parar</button>
+    <button onclick="startSync()">▶ Start</button>
+    <button onclick="stopSync()">⏸ Stop</button>
   </div>
 
 </div>
@@ -147,6 +144,15 @@ async function startSync() {
     if (Math.abs(diff) > 0.03) {
       v2.currentTime = v1.currentTime;
     }
+
+    // 🔥 EXTRA SAFETY: keep loop aligned
+    if (v1.ended || v2.ended) {
+      v1.currentTime = 0;
+      v2.currentTime = 0;
+      v1.play();
+      v2.play();
+    }
+
   }, 50);
 }
 
@@ -159,13 +165,6 @@ function stopSync() {
     syncInterval = null;
   }
 }
-
-[v1, v2].forEach(v => {
-  v.addEventListener("ended", () => {
-    v.pause();
-    v.currentTime = 0;
-  });
-});
 </script>
 
 </body>
