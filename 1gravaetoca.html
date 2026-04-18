@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Live Record & Play</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: Arial;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+video {
+  width: 45vw;
+  margin-top: 20px;
+  background: black;
+}
+
+.controls {
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 16px;
+  margin: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Gravação + Playback ao vivo</h2>
+
+<video id="live" autoplay playsinline muted></video>
+
+<div class="controls">
+  <button onclick="start()">▶ Start</button>
+  <button onclick="stop()">⏹ Stop</button>
+</div>
+
+<script>
+let stream;
+let recorder;
+let chunks = [];
+
+/* 🎥 inicia câmera */
+async function start() {
+  stream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true
+  });
+
+  const video = document.getElementById("live");
+  video.srcObject = stream;
+
+  // gravação ao mesmo tempo
+  recorder = new MediaRecorder(stream);
+
+  recorder.ondataavailable = e => {
+    chunks.push(e.data);
+  };
+
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: "video/webm" });
+    const url = URL.createObjectURL(blob);
+
+    // 🔥 toca o vídeo gravado imediatamente
+    const playback = document.createElement("video");
+    playback.src = url;
+    playback.controls = true;
+    playback.autoplay = true;
+
+    document.body.appendChild(playback);
+  };
+
+  recorder.start();
+}
+
+/* ⏹ parar */
+function stop() {
+  if (recorder && recorder.state !== "inactive") {
+    recorder.stop();
+  }
+
+  stream?.getTracks().forEach(t => t.stop());
+}
+</script>
+
+</body>
+</html>
