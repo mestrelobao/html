@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h3>Vídeo</h3>
+<video id="video" src="video.mp4" controls loop width="400"></video>
+
+<h3>Câmera</h3>
+<video id="cam" autoplay muted width="200"></video>
+
+<br><br>
+<button id="start">Gravar Remix</button>
+<button id="stop">Parar</button>
+
+<canvas id="canvas" width="800" height="400" style="display:none;"></canvas>
+
+<script>
+const video = document.getElementById("video");
+const cam = document.getElementById("cam");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let recorder, chunks = [];
+
+// 📷 iniciar câmera
+async function initCam() {
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true
+  });
+  cam.srcObject = stream;
+}
+initCam();
+
+// 🎨 desenhar lado a lado
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // esquerda: vídeo
+  ctx.drawImage(video, 0, 0, canvas.width / 2, canvas.height);
+
+  // direita: câmera
+  ctx.drawImage(cam, canvas.width / 2, 0, canvas.width / 2, canvas.height);
+
+  requestAnimationFrame(draw);
+}
+
+document.getElementById("start").onclick = () => {
+  const stream = canvas.captureStream(30);
+
+  recorder = new MediaRecorder(stream);
+
+  recorder.ondataavailable = e => chunks.push(e.data);
+
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: "video/webm" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "remix.webm";
+    a.click();
+
+    chunks = [];
+  };
+
+  video.play(); // garante sync
+  draw();
+  recorder.start();
+};
+
+document.getElementById("stop").onclick = () => {
+  if (recorder) recorder.stop();
+};
+</script>
+
+</body>
+</html>
