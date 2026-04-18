@@ -1,17 +1,70 @@
-<script>
-let audioContext;
-let destination;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Remix Lado a Lado</title>
+</head>
+<body>
 
+<h2>🎬 Vídeo original</h2>
+<video id="video" src="video.mp4" controls loop width="400"></video>
+
+<h2>📷 Câmera</h2>
+<video id="cam" autoplay muted width="200"></video>
+
+<br><br>
+<button id="start">▶️ Gravar Remix</button>
+<button id="stop">⏹️ Parar</button>
+
+<!-- Canvas oculto (onde tudo é combinado) -->
+<canvas id="canvas" width="800" height="400" style="display:none;"></canvas>
+
+<script>
+const video = document.getElementById("video");
+const cam = document.getElementById("cam");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let recorder;
+let chunks = [];
+let animationId;
+
+// 📷 Iniciar câmera
+async function initCam() {
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true
+  });
+  cam.srcObject = stream;
+}
+initCam();
+
+// 🎨 Desenho lado a lado
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // vídeo à esquerda
+  ctx.drawImage(video, 0, 0, canvas.width / 2, canvas.height);
+
+  // câmera à direita
+  ctx.drawImage(cam, canvas.width / 2, 0, canvas.width / 2, canvas.height);
+
+  animationId = requestAnimationFrame(draw);
+}
+
+// ▶️ Iniciar gravação
 document.getElementById("start").onclick = async () => {
+  chunks = [];
+
   // 🎥 stream do canvas
   const canvasStream = canvas.captureStream(30);
 
-  // 🎤 pegar áudio do microfone
+  // 🎤 stream do microfone (da câmera)
   const micStream = cam.srcObject;
 
-  // 🎧 criar contexto de áudio
-  audioContext = new AudioContext();
-  destination = audioContext.createMediaStreamDestination();
+  // 🎧 contexto de áudio
+  const audioContext = new AudioContext();
+  const destination = audioContext.createMediaStreamDestination();
 
   // 🎤 microfone
   const micSource = audioContext.createMediaStreamSource(micStream);
@@ -21,10 +74,10 @@ document.getElementById("start").onclick = async () => {
   const videoSource = audioContext.createMediaElementSource(video);
   videoSource.connect(destination);
 
-  // (opcional) ouvir no output
+  // (opcional) escutar o vídeo
   videoSource.connect(audioContext.destination);
 
-  // 🔗 juntar tudo
+  // 🔗 juntar vídeo + áudio
   const finalStream = new MediaStream([
     ...canvasStream.getVideoTracks(),
     ...destination.stream.getAudioTracks()
@@ -32,22 +85,37 @@ document.getElementById("start").onclick = async () => {
 
   recorder = new MediaRecorder(finalStream);
 
-  recorder.ondataavailable = e => chunks.push(e.data);
+  recorder.ondataavailable = e => {
+    if (e.data.size > 0) chunks.push(e.data);
+  };
 
   recorder.onstop = () => {
+    cancelAnimationFrame(animationId);
+
     const blob = new Blob(chunks, { type: "video/webm" });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "video.webm";
+    a.download = "video.mp4";
     a.click();
-
-    chunks = [];
   };
 
-  video.play();
+  // garantir que o vídeo está tocando
+  video.muted = false;
+  await video.play();
+
   draw();
   recorder.start();
 };
+
+// ⏹️ Parar gravação
+document.getElementById("stop").onclick = () => {
+  if (recorder && recorder.state !== "inactive") {
+    recorder.stop();
+  }
+};
 </script>
+
+</body>
+</html>
