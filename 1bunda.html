@@ -1,0 +1,138 @@
+<input type="file" id="v1" accept="video/*" />
+<input type="file" id="v2" accept="video/*" />
+<button onclick="run()">Sincronizar e Play</button>
+
+<br><br>
+
+<video id="video1" controls width="300"></video>
+<video id="video2" controls width="300"></video>
+
+<script>
+async function getAudioBuffer(file, audioContext) {
+  const arrayBuffer = await file.arrayBuffer();
+  return await audioContext.decodeAudioData(arrayBuffer);
+}
+
+function toMono(buffer) {
+  const channels = [];
+  for (let i = 0; i < buffer.numberOfChannels; i++) {
+    channels.push(buffer.getChannelData(i));
+  }
+
+  const mono = new Float32Array(channels[0].length);
+
+  for (let i = 0; i < mono.length; i++) {
+    let sum = 0;
+    for (let ch of channels) sum += ch[i];
+    mono[i] = sum / channels.length;
+  }
+
+  return mono;
+}
+
+function downsample(data, factor = 20) {
+  const result = [];
+  for (let i = 0; i < data.length; i += factor) {
+    result.push(data[i]);
+  }
+  return result;
+}
+
+function getEnergy(signal, frameSize = 1024) {
+  const energy = [];
+  for (let i = 0; i < signal.length; i += frameSize) {
+    let sum = 0;
+    for (let j = 0; j < frameSize; j++) {
+      if (i + j < signal.length) {
+        sum += signal[i + j] ** 2;
+      }
+    }
+    energy.push(sum);
+  }
+  return energy;
+}
+
+function crossCorrelation(a, b) {
+  let bestOffset = 0;
+  let maxCorr = -Infinity;
+
+  for (let offset = -b.length; offset < b.length; offset++) {
+    let corr = 0;
+
+    for (let i = 0; i < a.length; i++) {
+      let j = i + offset;
+      if (j >= 0 && j < b.length) {
+        corr += a[i] * b[j];
+      }
+    }
+
+    if (corr > maxCorr) {
+      maxCorr = corr;
+      bestOffset = offset;
+    }
+  }
+
+  return bestOffset;
+}
+
+async function calculateOffset(file1, file2) {
+  const audioContext = new AudioContext();
+
+  const buffer1 = await getAudioBuffer(file1, audioContext);
+  const buffer2 = await getAudioBuffer(file2, audioContext);
+
+  let data1 = toMono(buffer1);
+  let data2 = toMono(buffer2);
+
+  data1 = downsample(data1, 20);
+  data2 = downsample(data2, 20);
+
+  const energy1 = getEnergy(data1);
+  const energy2 = getEnergy(data2);
+
+  const offset = crossCorrelation(energy1, energy2);
+
+  const seconds =
+    offset * (1024 * 20) / buffer1.sampleRate;
+
+  return seconds;
+}
+
+async function run() {
+  const file1 = document.getElementById("v1").files[0];
+  const file2 = document.getElementById("v2").files[0];
+
+  const v1 = document.getElementById("video1");
+  const v2 = document.getElementById("video2");
+
+  v1.src = URL.createObjectURL(file1);
+  v2.src = URL.createObjectURL(file2);
+
+  await Promise.all([
+    v1.play().catch(()=>{}),
+    v2.play().catch(()=>{})
+  ]);
+
+  v1.pause();
+  v2.pause();
+
+  const offset = await calculateOffset(file1, file2);
+  console.log("Offset:", offset);
+
+  // reset
+  v1.currentTime = 0;
+  v2.currentTime = 0;
+
+  if (offset > 0) {
+    v2.currentTime = offset;
+  } else {
+    v1.currentTime = -offset;
+  }
+
+  // 🎬 play sincronizado
+  await Promise.all([
+    v1.play(),
+    v2.play()
+  ]);
+}
+</script>
