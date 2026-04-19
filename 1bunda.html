@@ -1,6 +1,15 @@
 <input type="file" id="v1" accept="video/*" />
 <input type="file" id="v2" accept="video/*" />
-<button onclick="run()">Sincronizar e Play</button>
+
+<br><br>
+
+<button onclick="autoSync()">Auto Sync</button>
+
+<br><br>
+
+<label>Offset manual (segundos):</label>
+<input type="number" id="manualOffset" step="0.1" value="0" />
+<button onclick="applyManualOffset()">Aplicar Offset</button>
 
 <br><br>
 
@@ -8,25 +17,70 @@
 <video id="video2" controls width="300"></video>
 
 <script>
+let currentOffset = 0;
+
+function loadVideos(file1, file2) {
+  const v1 = document.getElementById("video1");
+  const v2 = document.getElementById("video2");
+
+  v1.src = URL.createObjectURL(file1);
+  v2.src = URL.createObjectURL(file2);
+}
+
+function applyOffset(offset) {
+  const v1 = document.getElementById("video1");
+  const v2 = document.getElementById("video2");
+
+  v1.pause();
+  v2.pause();
+
+  v1.currentTime = 0;
+  v2.currentTime = 0;
+
+  if (offset > 0) {
+    v2.currentTime = offset;
+  } else {
+    v1.currentTime = -offset;
+  }
+
+  currentOffset = offset;
+
+  Promise.all([v1.play(), v2.play()]);
+}
+
+function applyManualOffset() {
+  const offset = parseFloat(
+    document.getElementById("manualOffset").value
+  );
+  applyOffset(offset);
+}
+
+// (mesma função de auto sync de antes, simplificada)
+async function autoSync() {
+  const file1 = document.getElementById("v1").files[0];
+  const file2 = document.getElementById("v2").files[0];
+
+  loadVideos(file1, file2);
+
+  const offset = await calculateOffset(file1, file2);
+
+  document.getElementById("manualOffset").value = offset.toFixed(2);
+
+  applyOffset(offset);
+}
+
+// ===== cálculo de offset (igual ao anterior) =====
+
 async function getAudioBuffer(file, audioContext) {
   const arrayBuffer = await file.arrayBuffer();
   return await audioContext.decodeAudioData(arrayBuffer);
 }
 
 function toMono(buffer) {
-  const channels = [];
-  for (let i = 0; i < buffer.numberOfChannels; i++) {
-    channels.push(buffer.getChannelData(i));
+  const mono = new Float32Array(buffer.length);
+  for (let i = 0; i < buffer.length; i++) {
+    mono[i] = buffer.getChannelData(0)[i];
   }
-
-  const mono = new Float32Array(channels[0].length);
-
-  for (let i = 0; i < mono.length; i++) {
-    let sum = 0;
-    for (let ch of channels) sum += ch[i];
-    mono[i] = sum / channels.length;
-  }
-
   return mono;
 }
 
@@ -92,47 +146,20 @@ async function calculateOffset(file1, file2) {
 
   const offset = crossCorrelation(energy1, energy2);
 
-  const seconds =
-    offset * (1024 * 20) / buffer1.sampleRate;
-
-  return seconds;
+  return offset * (1024 * 20) / buffer1.sampleRate;
 }
 
-async function run() {
-  const file1 = document.getElementById("v1").files[0];
-  const file2 = document.getElementById("v2").files[0];
-
+// ===== manter sincronizado =====
+setInterval(() => {
   const v1 = document.getElementById("video1");
   const v2 = document.getElementById("video2");
 
-  v1.src = URL.createObjectURL(file1);
-  v2.src = URL.createObjectURL(file2);
+  if (!v1.paused && !v2.paused) {
+    const diff = v1.currentTime - v2.currentTime;
 
-  await Promise.all([
-    v1.play().catch(()=>{}),
-    v2.play().catch(()=>{})
-  ]);
-
-  v1.pause();
-  v2.pause();
-
-  const offset = await calculateOffset(file1, file2);
-  console.log("Offset:", offset);
-
-  // reset
-  v1.currentTime = 0;
-  v2.currentTime = 0;
-
-  if (offset > 0) {
-    v2.currentTime = offset;
-  } else {
-    v1.currentTime = -offset;
+    if (Math.abs(diff) > 0.1) {
+      v2.currentTime += diff;
+    }
   }
-
-  // 🎬 play sincronizado
-  await Promise.all([
-    v1.play(),
-    v2.play()
-  ]);
-}
+}, 500);
 </script>
