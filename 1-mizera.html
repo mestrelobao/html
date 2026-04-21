@@ -55,20 +55,10 @@ button {
   <video id="recorded" controls></video>
 </div>
 
-<!-- 🔥 CONTROLES NOVOS (ABAIXO DOS VÍDEOS) -->
+<!-- 🔥 BOTÕES NOVOS ABAIXO DOS VÍDEOS -->
 <div class="controls">
-
-  <div>
-    <button onclick="playBoth()">▶ Play</button>
-    <button onclick="pauseBoth()">⏹ Stop</button>
-  </div>
-
-  <div>
-    Offset vídeo gravado (segundos):
-    <input type="number" id="offset" step="0.1" value="0">
-    <button onclick="applyOffset()">Aplicar</button>
-  </div>
-
+  <button onclick="playBoth()">▶ Play</button>
+  <button onclick="pauseBoth()">⏹ Stop</button>
 </div>
 
 <script>
@@ -135,13 +125,6 @@ function playBoth() {
 function pauseBoth() {
   guide.pause();
   recorded.pause();
-}
-
-// 🎚 offset do vídeo gravado
-function applyOffset() {
-  const offset = parseFloat(document.getElementById("offset").value) || 0;
-
-  recorded.currentTime = offset;
 }
 </script>
 
