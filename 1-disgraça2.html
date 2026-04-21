@@ -59,9 +59,13 @@ input {
   <video id="recorded" controls></video>
 </div>
 
+<!-- 🎚 OFFSETS -->
 <div class="controls">
-  Offset (segundos):
-  <input type="number" id="offset" step="0.1" value="0">
+  Guide Offset:
+  <input type="number" id="offsetGuide" step="0.1" value="0">
+
+  Recorded Offset:
+  <input type="number" id="offsetRecorded" step="0.1" value="0">
 </div>
 
 <div class="controls">
@@ -84,11 +88,11 @@ document.getElementById("fileInput").addEventListener("change", (e) => {
   guide.src = URL.createObjectURL(file);
 });
 
-// 🎥 gravação + guide sincronizado com offset
+// 🎥 gravação
 async function start() {
   chunks = [];
 
-  const offset = parseFloat(document.getElementById("offset").value) || 0;
+  const offsetGuide = parseFloat(document.getElementById("offsetGuide").value) || 0;
 
   stream = await navigator.mediaDevices.getUserMedia({
     video: true,
@@ -106,8 +110,8 @@ async function start() {
     recorded.src = URL.createObjectURL(blob);
   };
 
-  // 🎯 ambos começam juntos, mas guide com offset
-  guide.currentTime = Math.max(0, offset);
+  // ▶ inicia ambos "alinhados"
+  guide.currentTime = Math.max(0, offsetGuide);
   guide.play().catch(() => {});
 
   recorder.start();
@@ -120,15 +124,16 @@ function stop() {
   guide.pause();
 }
 
-// ▶ play manual sincronizado
+// ▶ PLAY COM DOIS OFFSETS
 function playMaster() {
-  const offset = parseFloat(document.getElementById("offset").value) || 0;
+  const offsetGuide = parseFloat(document.getElementById("offsetGuide").value) || 0;
+  const offsetRecorded = parseFloat(document.getElementById("offsetRecorded").value) || 0;
 
-  recorded.currentTime = 0;
-  guide.currentTime = Math.max(0, offset);
+  guide.currentTime = Math.max(0, offsetGuide);
+  recorded.currentTime = Math.max(0, offsetRecorded);
 
-  recorded.play().catch(() => {});
   guide.play().catch(() => {});
+  recorded.play().catch(() => {});
 }
 
 // ⏸ pause
