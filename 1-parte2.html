@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Indaband Segunda Parte</title>
+<title>Duet Recorder</title>
 
 <style>
 body {
@@ -15,7 +15,7 @@ body {
   align-items: center;
 }
 
-.container {
+.row {
   display: flex;
   gap: 10px;
   margin-top: 20px;
@@ -41,7 +41,7 @@ button {
 
 <body>
 
-<h2>Gravação com Vídeo Guia</h2>
+<h2>Duet Recorder (Guia + Gravação)</h2>
 
 <input type="file" id="fileInput" accept="video/*">
 
@@ -50,25 +50,18 @@ button {
   <button onclick="stop()">⏹ Parar</button>
 </div>
 
-<div class="container">
+<div class="row">
   <video id="guide" controls></video>
-  <video id="camera" autoplay playsinline muted></video>
+  <video id="recorded" autoplay playsinline muted></video>
 </div>
-
-<!-- resultado final -->
-<div id="output"></div>
 
 <script>
 let stream;
 let recorder;
 let chunks = [];
 
-let canvas;
-let ctx;
-let canvasStream;
-
 const guide = document.getElementById("guide");
-const camera = document.getElementById("camera");
+const recorded = document.getElementById("recorded");
 
 // 📂 carregar vídeo guia
 document.getElementById("fileInput").addEventListener("change", (e) => {
@@ -78,80 +71,41 @@ document.getElementById("fileInput").addEventListener("change", (e) => {
   guide.src = URL.createObjectURL(file);
 });
 
-// ▶ iniciar gravação
+// ▶ gravar
 async function start() {
   chunks = [];
 
-  document.getElementById("output").innerHTML = "";
-
   stream = await navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: false
+    audio: true   // 🔥 COM ÁUDIO AGORA
   });
 
-  camera.srcObject = stream;
-
-  // canvas lado a lado
-  canvas = document.createElement("canvas");
-  ctx = canvas.getContext("2d");
-
-  canvas.width = 640 * 2;
-  canvas.height = 360;
+  // mostra câmera ao vivo no lugar do vídeo gravado temporariamente
+  recorded.srcObject = stream;
 
   guide.play();
 
-  draw();
-
-  canvasStream = canvas.captureStream(30);
-
-  recorder = new MediaRecorder(canvasStream);
+  recorder = new MediaRecorder(stream);
 
   recorder.ondataavailable = e => {
-    if (e.data.size > 0) {
-      chunks.push(e.data);
-    }
+    if (e.data.size > 0) chunks.push(e.data);
   };
 
   recorder.onstop = () => {
     const blob = new Blob(chunks, { type: "video/webm" });
     const url = URL.createObjectURL(blob);
 
-    window.lastRecordedBlob = blob;
-
-    const result = document.createElement("video");
-    result.src = url;
-    result.controls = true;
-    result.autoplay = true;
-    result.style.width = "600px";
-    result.style.marginTop = "20px";
-
-    document.getElementById("output").innerHTML = "";
-    document.getElementById("output").appendChild(result);
+    // substitui stream por vídeo final gravado
+    recorded.srcObject = null;
+    recorded.src = url;
+    recorded.controls = true;
+    recorded.play();
   };
 
   recorder.start();
 }
 
-// 🎬 desenha guia + câmera lado a lado
-function draw() {
-  const gw = guide.videoWidth;
-  const gh = guide.videoHeight;
-
-  const cw = camera.videoWidth;
-  const ch = camera.videoHeight;
-
-  if (gw && gh && cw && ch) {
-    // guia (esquerda)
-    ctx.drawImage(guide, 0, 0, 640, 360);
-
-    // câmera (direita)
-    ctx.drawImage(camera, 640, 0, 640, 360);
-  }
-
-  requestAnimationFrame(draw);
-}
-
-// ⏹ parar gravação
+// ⏹ parar
 function stop() {
   if (recorder && recorder.state !== "inactive") {
     recorder.stop();
