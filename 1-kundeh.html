@@ -84,7 +84,7 @@ document.getElementById("fileInput").addEventListener("change", (e) => {
   guide.src = URL.createObjectURL(file);
 });
 
-// gravação
+// 🎥 gravação + autoplay do guide
 async function start() {
   chunks = [];
 
@@ -104,17 +104,21 @@ async function start() {
     recorded.src = URL.createObjectURL(blob);
   };
 
+  // 🔥 inicia o guide junto
+  guide.currentTime = 0;
+  guide.play().catch(() => {});
+
   recorder.start();
 }
 
-// parar
+// ⏹ parar
 function stop() {
   recorder?.stop();
   stream?.getTracks().forEach(t => t.stop());
   guide.pause();
 }
 
-// ▶ PLAY COM OFFSET REAL (sem sync loop)
+// ▶ play manual com offset
 function playMaster() {
   const offset = parseFloat(document.getElementById("offset").value) || 0;
 
@@ -123,13 +127,12 @@ function playMaster() {
 
   guide.play();
 
-  // ⏱ aplica atraso REAL no recorded
   setTimeout(() => {
     recorded.play();
   }, offset * 1000);
 }
 
-// pause
+// ⏸ pause
 function pauseMaster() {
   guide.pause();
   recorded.pause();
