@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -56,8 +55,8 @@ input {
 </div>
 
 <div class="row">
-  <video id="recorded" controls></video>
   <video id="guide" controls></video>
+  <video id="recorded" controls></video>
 </div>
 
 <!-- 🎚 OFFSET CONTROL -->
@@ -135,11 +134,11 @@ function stop() {
   guide.pause();
 }
 
-// 🎚 aplicar offset
+// 🎚 aplicar offset (AGORA NO GUIDE)
 function applyOffset() {
   offsetValue = parseFloat(document.getElementById("offset").value) || 0;
 
-  recorded.currentTime = Math.max(0, offsetValue);
+  guide.currentTime = Math.max(0, offsetValue);
 }
 
 // ▶ MASTER PLAY
@@ -147,8 +146,8 @@ function playMaster() {
   guide.pause();
   recorded.pause();
 
-  guide.currentTime = 0;
-  recorded.currentTime = Math.max(0, offsetValue);
+  guide.currentTime = Math.max(0, offsetValue);
+  recorded.currentTime = 0;
 
   const p = guide.play().catch(() => {});
 
