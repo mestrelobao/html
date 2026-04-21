@@ -74,19 +74,17 @@ let stream;
 let recorder;
 let chunks = [];
 
-let offsetValue = 0;
-
 const guide = document.getElementById("guide");
 const recorded = document.getElementById("recorded");
 
+// carregar vídeo
 document.getElementById("fileInput").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
-
   guide.src = URL.createObjectURL(file);
 });
 
-// 🎥 gravação
+// gravação
 async function start() {
   chunks = [];
 
@@ -109,41 +107,32 @@ async function start() {
   recorder.start();
 }
 
-// ⏹ parar
+// parar
 function stop() {
   recorder?.stop();
   stream?.getTracks().forEach(t => t.stop());
   guide.pause();
 }
 
-// ▶ play
+// ▶ PLAY COM OFFSET REAL (sem sync loop)
 function playMaster() {
-  offsetValue = parseFloat(document.getElementById("offset").value) || 0;
+  const offset = parseFloat(document.getElementById("offset").value) || 0;
 
   guide.currentTime = 0;
   recorded.currentTime = 0;
 
-  guide.play().then(() => {
+  guide.play();
+
+  // ⏱ aplica atraso REAL no recorded
+  setTimeout(() => {
     recorded.play();
-    sync();
-  });
+  }, offset * 1000);
 }
 
-// ⏸ pause
+// pause
 function pauseMaster() {
   guide.pause();
   recorded.pause();
-}
-
-// 🔥 SYNC CORRETO COM OFFSET
-function sync() {
-  if (guide.paused || recorded.paused) return;
-
-  const targetTime = guide.currentTime - offsetValue;
-
-  recorded.currentTime = Math.max(0, targetTime);
-
-  requestAnimationFrame(sync);
 }
 </script>
 
