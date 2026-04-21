@@ -41,7 +41,7 @@ button {
 
 <body>
 
-<h2>Gravação com vídeo guia</h2>
+<h2>Gravação com Vídeo Guia</h2>
 
 <input type="file" id="fileInput" accept="video/*">
 
@@ -55,6 +55,9 @@ button {
   <video id="camera" autoplay playsinline muted></video>
 </div>
 
+<!-- resultado final -->
+<div id="output"></div>
+
 <script>
 let stream;
 let recorder;
@@ -67,7 +70,7 @@ let canvasStream;
 const guide = document.getElementById("guide");
 const camera = document.getElementById("camera");
 
-// 📂 carregar vídeo local
+// 📂 carregar vídeo guia
 document.getElementById("fileInput").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -79,7 +82,8 @@ document.getElementById("fileInput").addEventListener("change", (e) => {
 async function start() {
   chunks = [];
 
-  // câmera
+  document.getElementById("output").innerHTML = "";
+
   stream = await navigator.mediaDevices.getUserMedia({
     video: true,
     audio: false
@@ -87,7 +91,7 @@ async function start() {
 
   camera.srcObject = stream;
 
-  // canvas (merge dos 2 vídeos lado a lado)
+  // canvas lado a lado
   canvas = document.createElement("canvas");
   ctx = canvas.getContext("2d");
 
@@ -103,12 +107,16 @@ async function start() {
   recorder = new MediaRecorder(canvasStream);
 
   recorder.ondataavailable = e => {
-    if (e.data.size > 0) chunks.push(e.data);
+    if (e.data.size > 0) {
+      chunks.push(e.data);
+    }
   };
 
   recorder.onstop = () => {
     const blob = new Blob(chunks, { type: "video/webm" });
     const url = URL.createObjectURL(blob);
+
+    window.lastRecordedBlob = blob;
 
     const result = document.createElement("video");
     result.src = url;
@@ -117,13 +125,14 @@ async function start() {
     result.style.width = "600px";
     result.style.marginTop = "20px";
 
-    document.body.appendChild(result);
+    document.getElementById("output").innerHTML = "";
+    document.getElementById("output").appendChild(result);
   };
 
   recorder.start();
 }
 
-// 🎥 desenhar lado a lado
+// 🎬 desenha guia + câmera lado a lado
 function draw() {
   const gw = guide.videoWidth;
   const gh = guide.videoHeight;
@@ -132,17 +141,17 @@ function draw() {
   const ch = camera.videoHeight;
 
   if (gw && gh && cw && ch) {
-    // vídeo guia
+    // guia (esquerda)
     ctx.drawImage(guide, 0, 0, 640, 360);
 
-    // câmera
+    // câmera (direita)
     ctx.drawImage(camera, 640, 0, 640, 360);
   }
 
   requestAnimationFrame(draw);
 }
 
-// ⏹ parar
+// ⏹ parar gravação
 function stop() {
   if (recorder && recorder.state !== "inactive") {
     recorder.stop();
