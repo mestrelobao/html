@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Duet Recorder (Master + Offset)</title>
+<title>Duet Recorder</title>
 
 <style>
 body {
@@ -45,7 +45,7 @@ input {
 
 <body>
 
-<h2>Duet Recorder (Master + Offset)</h2>
+<h2>Duet Recorder</h2>
 
 <input type="file" id="fileInput" accept="video/*">
 
@@ -59,16 +59,14 @@ input {
   <video id="recorded" controls></video>
 </div>
 
-<!-- 🎚 OFFSET CONTROL -->
 <div class="controls">
   Offset (segundos):
   <input type="number" id="offset" step="0.1" value="0">
-  <button onclick="applyOffset()">Aplicar Offset</button>
 </div>
 
 <div class="controls">
-  <button onclick="playMaster()">▶ Play Master</button>
-  <button onclick="pauseMaster()">⏸ Pause Master</button>
+  <button onclick="playMaster()">▶ Play</button>
+  <button onclick="pauseMaster()">⏸ Pause</button>
 </div>
 
 <script>
@@ -76,29 +74,21 @@ let stream;
 let recorder;
 let chunks = [];
 
-let offsetValue = 0;
-
 const guide = document.getElementById("guide");
 const recorded = document.getElementById("recorded");
 
-// 📂 carregar vídeo guia
+// carregar vídeo
 document.getElementById("fileInput").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
-
-  const url = URL.createObjectURL(file);
-
-  guide.src = url;
-  guide.load();
-
-  guide.onloadedmetadata = () => {
-    guide.currentTime = 0;
-  };
+  guide.src = URL.createObjectURL(file);
 });
 
-// ▶ gravar
+// 🎥 gravação + guide sincronizado com offset
 async function start() {
   chunks = [];
+
+  const offset = parseFloat(document.getElementById("offset").value) || 0;
 
   stream = await navigator.mediaDevices.getUserMedia({
     video: true,
@@ -113,65 +103,38 @@ async function start() {
 
   recorder.onstop = () => {
     const blob = new Blob(chunks, { type: "video/webm" });
-    const url = URL.createObjectURL(blob);
-
-    recorded.src = url;
-    recorded.controls = true;
-    recorded.autoplay = false;
-    recorded.muted = false;
+    recorded.src = URL.createObjectURL(blob);
   };
+
+  // 🎯 ambos começam juntos, mas guide com offset
+  guide.currentTime = Math.max(0, offset);
+  guide.play().catch(() => {});
 
   recorder.start();
 }
 
-// ⏹ parar gravação
+// ⏹ parar
 function stop() {
-  if (recorder && recorder.state !== "inactive") {
-    recorder.stop();
-  }
-
+  recorder?.stop();
   stream?.getTracks().forEach(t => t.stop());
   guide.pause();
 }
 
-// 🎚 aplicar offset (AGORA NO GUIDE)
-function applyOffset() {
-  offsetValue = parseFloat(document.getElementById("offset").value) || 0;
-
-  guide.currentTime = Math.max(0, offsetValue);
-}
-
-// ▶ MASTER PLAY
+// ▶ play manual sincronizado
 function playMaster() {
-  guide.pause();
-  recorded.pause();
+  const offset = parseFloat(document.getElementById("offset").value) || 0;
 
-  guide.currentTime = Math.max(0, offsetValue);
   recorded.currentTime = 0;
+  guide.currentTime = Math.max(0, offset);
 
-  guide.play().then(() => {
-    recorded.play().catch(() => {});
-    syncLoop();
-  }).catch(() => {});
+  recorded.play().catch(() => {});
+  guide.play().catch(() => {});
 }
 
-// ⏸ MASTER PAUSE
+// ⏸ pause
 function pauseMaster() {
   guide.pause();
   recorded.pause();
-}
-
-// 🔁 sync loop
-function syncLoop() {
-  if (guide.paused || recorded.paused) return;
-
-  const diff = guide.currentTime - recorded.currentTime;
-
-  if (Math.abs(diff) > 0.03) {
-    recorded.currentTime += diff;
-  }
-
-  requestAnimationFrame(syncLoop);
 }
 </script>
 
