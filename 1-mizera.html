@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Duet Sync Player</title>
+<title>Duet Player Controlado</title>
 
 <style>
 body {
@@ -30,6 +30,10 @@ video {
 
 .controls {
   margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 button {
@@ -45,22 +49,11 @@ input {
 
 <body>
 
-<h2>Duet Sync Player</h2>
+<h2>Dueto com Controle Manual</h2>
 
 <div class="controls">
   <input type="file" id="v1" accept="video/*">
   <input type="file" id="v2" accept="video/*">
-</div>
-
-<div class="controls">
-  <button onclick="playBoth()">▶ Play</button>
-  <button onclick="pauseBoth()">⏸ Pause</button>
-</div>
-
-<div class="controls">
-  Offset vídeo 2 (segundos):
-  <input type="number" id="offset" step="0.1" value="0">
-  <button onclick="applyOffset()">Aplicar</button>
 </div>
 
 <div class="row">
@@ -68,11 +61,27 @@ input {
   <video id="video2" controls></video>
 </div>
 
+<!-- 🔥 CONTROLES ABAIXO DOS VÍDEOS -->
+<div class="controls">
+
+  <div>
+    <button onclick="playBoth()">▶ Play</button>
+    <button onclick="stopBoth()">⏹ Stop</button>
+  </div>
+
+  <div>
+    Offset vídeo 2 (segundos):
+    <input type="number" id="offset" step="0.1" value="0">
+    <button onclick="applyOffset()">Aplicar</button>
+  </div>
+
+</div>
+
 <script>
 const v1 = document.getElementById("video1");
 const v2 = document.getElementById("video2");
 
-// 📂 carregar vídeos
+// 📂 load vídeos
 document.getElementById("v1").addEventListener("change", e => {
   v1.src = URL.createObjectURL(e.target.files[0]);
 });
@@ -81,43 +90,24 @@ document.getElementById("v2").addEventListener("change", e => {
   v2.src = URL.createObjectURL(e.target.files[0]);
 });
 
-// ▶ play sincronizado
+// ▶ play os dois
 function playBoth() {
   v1.play();
   v2.play();
-
-  syncLoop();
 }
 
-// ⏸ pause sincronizado
-function pauseBoth() {
+// ⏹ stop os dois
+function stopBoth() {
   v1.pause();
   v2.pause();
 }
 
-// 🎯 aplica offset no vídeo 2
+// 🎚 aplica offset no vídeo 2
 function applyOffset() {
   const offset = parseFloat(document.getElementById("offset").value) || 0;
 
   v1.currentTime = 0;
   v2.currentTime = offset;
-}
-
-// 🔁 mantém sincronizado durante playback
-function syncLoop() {
-  const sync = () => {
-    if (v1.paused || v2.paused) return;
-
-    const diff = v1.currentTime - v2.currentTime;
-
-    if (Math.abs(diff) > 0.05) {
-      v2.currentTime += diff;
-    }
-
-    requestAnimationFrame(sync);
-  };
-
-  sync();
 }
 </script>
 
