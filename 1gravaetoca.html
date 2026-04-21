@@ -45,6 +45,9 @@ button {
   <button onclick="stop()">⏹ Stop</button>
 </div>
 
+<!-- 🔥 container único para o vídeo gravado -->
+<div id="output"></div>
+
 <script>
 let stream;
 let recorder;
@@ -53,6 +56,9 @@ let canvasStream;
 
 async function start() {
   chunks = [];
+
+  // 🔥 limpa vídeo anterior (reset)
+  document.getElementById("output").innerHTML = "";
 
   stream = await navigator.mediaDevices.getUserMedia({
     video: true,
@@ -105,10 +111,10 @@ async function start() {
     draw();
   };
 
-  // captura stream do canvas (vídeo final)
+  // stream final (canvas)
   canvasStream = canvas.captureStream(30);
 
-  // adiciona áudio original
+  // adiciona áudio
   stream.getAudioTracks().forEach(track => {
     canvasStream.addTrack(track);
   });
@@ -132,7 +138,11 @@ async function start() {
     playback.style.width = "300px";
     playback.style.height = "533px";
 
-    document.body.appendChild(playback);
+    const output = document.getElementById("output");
+
+    // 🔥 garante substituição
+    output.innerHTML = "";
+    output.appendChild(playback);
   };
 
   recorder.start();
