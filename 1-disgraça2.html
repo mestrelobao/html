@@ -1,123 +1,178 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Sincronizador Avançado</title>
-  <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-    }
-    video {
-      width: 45%;
-      margin: 10px;
-      border: 1px solid #ccc;
-    }
-    .controls {
-      margin: 15px;
-    }
-    input[type="range"] {
-      width: 300px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Duet Recorder (Master + Offset)</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: Arial;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+video {
+  width: 300px;
+  height: 533px;
+  background: black;
+  object-fit: cover;
+}
+
+.controls {
+  margin-top: 15px;
+}
+
+button {
+  padding: 10px 16px;
+  margin: 5px;
+}
+
+input {
+  width: 80px;
+}
+</style>
 </head>
+
 <body>
 
-<h2>Sincronização de Vídeos</h2>
+<h2>Duet Recorder (Master + Offset)</h2>
+
+<input type="file" id="fileInput" accept="video/*">
 
 <div class="controls">
-  <input type="file" id="input1" accept="video/*">
-  <input type="file" id="input2" accept="video/*">
+  <button onclick="start()">▶ Gravar</button>
+  <button onclick="stop()">⏹ Parar</button>
+</div>
+
+<div class="row">
+  <video id="guide" controls></video>
+  <video id="recorded" controls></video>
+</div>
+
+<!-- 🎚 OFFSET CONTROL -->
+<div class="controls">
+  Offset (segundos):
+  <input type="number" id="offset" step="0.1" value="0">
+  <button onclick="applyOffset()">Aplicar Offset</button>
 </div>
 
 <div class="controls">
-  <button onclick="togglePlay()">Play / Pause</button>
-</div>
-
-<div class="controls">
-  <label>Offset: <span id="offsetValue">0.0</span>s</label><br>
-  <input type="range" id="offsetSlider" min="-10" max="10" step="0.05" value="0">
-</div>
-
-<div>
-  <video id="v1" controls></video>
-  <video id="v2" controls></video>
+  <button onclick="playMaster()">▶ Play Master</button>
+  <button onclick="pauseMaster()">⏸ Pause Master</button>
 </div>
 
 <script>
-const v1 = document.getElementById('v1');
-const v2 = document.getElementById('v2');
-const slider = document.getElementById('offsetSlider');
-const offsetLabel = document.getElementById('offsetValue');
+let stream;
+let recorder;
+let chunks = [];
 
-let offset = 0;
-let syncing = false;
+let offsetValue = 0;
 
-// carregar vídeos
-document.getElementById('input1').onchange = e => {
-  v1.src = URL.createObjectURL(e.target.files[0]);
-};
+const guide = document.getElementById("guide");
+const recorded = document.getElementById("recorded");
 
-document.getElementById('input2').onchange = e => {
-  v2.src = URL.createObjectURL(e.target.files[0]);
-};
+// 📂 carregar vídeo guia
+document.getElementById("fileInput").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-// atualizar offset em tempo real
-slider.oninput = () => {
-  offset = parseFloat(slider.value);
-  offsetLabel.textContent = offset.toFixed(2);
-  syncNow(v1, v2);
-};
+  const url = URL.createObjectURL(file);
 
-// controle único
-function togglePlay() {
-  if (v1.paused && v2.paused) {
-    v1.play();
-    v2.play();
-  } else {
-    v1.pause();
-    v2.pause();
+  guide.src = url;
+  guide.load();
+
+  guide.onloadedmetadata = () => {
+    guide.currentTime = 0;
+  };
+});
+
+// ▶ gravar
+async function start() {
+  chunks = [];
+
+  stream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true
+  });
+
+  recorder = new MediaRecorder(stream);
+
+  recorder.ondataavailable = e => {
+    if (e.data.size > 0) chunks.push(e.data);
+  };
+
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: "video/webm" });
+    const url = URL.createObjectURL(blob);
+
+    recorded.src = url;
+    recorded.controls = true;
+    recorded.autoplay = false;
+    recorded.muted = false;
+  };
+
+  recorder.start();
+}
+
+// ⏹ parar gravação
+function stop() {
+  if (recorder && recorder.state !== "inactive") {
+    recorder.stop();
   }
+
+  stream?.getTracks().forEach(t => t.stop());
+  guide.pause();
 }
 
-// sincronização principal
-function syncNow(master, slave) {
-  if (syncing) return;
-  syncing = true;
+// 🎚 aplicar offset (AGORA NO GUIDE)
+function applyOffset() {
+  offsetValue = parseFloat(document.getElementById("offset").value) || 0;
 
-  slave.currentTime = master.currentTime + offset;
-
-  syncing = false;
+  guide.currentTime = Math.max(0, offsetValue);
 }
 
-// sincronização bidirecional
-function setupSync(master, slave) {
-  master.addEventListener('play', () => {
-    if (!syncing) {
-      slave.currentTime = master.currentTime + offset;
-      slave.play();
-    }
-  });
+// ▶ MASTER PLAY
+function playMaster() {
+  guide.pause();
+  recorded.pause();
 
-  master.addEventListener('pause', () => {
-    if (!syncing) slave.pause();
-  });
+  guide.currentTime = Math.max(0, offsetValue);
+  recorded.currentTime = 0;
 
-  master.addEventListener('seeked', () => {
-    syncNow(master, slave);
-  });
-
-  master.addEventListener('timeupdate', () => {
-    if (!syncing && Math.abs((slave.currentTime - master.currentTime) - offset) > 0.3) {
-      syncNow(master, slave);
-    }
-  });
+  guide.play().then(() => {
+    recorded.play().catch(() => {});
+    syncLoop();
+  }).catch(() => {});
 }
 
-// ativar nos dois sentidos
-setupSync(v1, v2);
-setupSync(v2, v1);
+// ⏸ MASTER PAUSE
+function pauseMaster() {
+  guide.pause();
+  recorded.pause();
+}
 
+// 🔁 sync loop
+function syncLoop() {
+  if (guide.paused || recorded.paused) return;
+
+  const diff = guide.currentTime - recorded.currentTime;
+
+  if (Math.abs(diff) > 0.03) {
+    recorded.currentTime += diff;
+  }
+
+  requestAnimationFrame(syncLoop);
+}
 </script>
 
 </body>
