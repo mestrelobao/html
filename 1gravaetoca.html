@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Dual Recorder Sync</title>
+<title>Shorts Recorder</title>
 
 <style>
 body {
@@ -17,282 +17,143 @@ body {
 
 video {
   width: 300px;
-  height: 533px;
+  height: 533px; /* 9:16 */
   background: black;
   object-fit: cover;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .controls {
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 button {
   padding: 10px 16px;
   margin: 5px;
 }
-
-#players {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
 </style>
 </head>
 
 <body>
 
-<h2>Dual Recorder + Sync (Shorts 9:16)</h2>
+<h2>Gravação em formato Shorts (9:16)</h2>
 
 <video id="preview" autoplay playsinline muted></video>
 
 <div class="controls">
-  <button onclick="startFirst()">▶ Gravar Vídeo 1</button>
-  <button onclick="startSecond()">▶ Gravar Vídeo 2</button>
+  <button onclick="start()">▶ Start</button>
   <button onclick="stop()">⏹ Stop</button>
 </div>
 
-<hr>
-
-<button onclick="autoSync()">🔄 Auto Sync</button>
-
-<br><br>
-
-<label>Offset manual (segundos):</label>
-<input type="number" id="manualOffset" step="0.1" value="0">
-<button onclick="applyManualOffset()">Aplicar Offset</button>
-
-<div id="players">
-  <video id="video1" controls></video>
-  <video id="video2" controls></video>
-</div>
+<!-- 🔥 container único para o vídeo gravado -->
+<div id="output"></div>
 
 <script>
 let stream;
-let videoEl;
-let canvas;
-let ctx;
-
-let recorder = null;
+let recorder;
 let chunks = [];
+let canvasStream;
 
-let blob1 = null;
-let blob2 = null;
+async function start() {
+  chunks = [];
 
-let currentSlot = 1;
-
-// =========================
-// 🎥 CAMERA (1 vez só)
-// =========================
-async function initCamera() {
-  if (stream) return;
+  // 🔥 limpa vídeo anterior (reset)
+  document.getElementById("output").innerHTML = "";
 
   stream = await navigator.mediaDevices.getUserMedia({
     video: true,
     audio: true
   });
 
-  videoEl = document.getElementById("preview");
-  videoEl.srcObject = stream;
+  const video = document.getElementById("preview");
+  video.srcObject = stream;
 
-  canvas = document.createElement("canvas");
-  ctx = canvas.getContext("2d");
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
 
   canvas.width = 1080;
   canvas.height = 1920;
 
-  draw();
-}
+  function draw() {
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
 
-// =========================
-// 🎬 DRAW (SHORTS FORMAT)
-// =========================
-function draw() {
-  const vw = videoEl.videoWidth;
-  const vh = videoEl.videoHeight;
+    if (!vw || !vh) {
+      requestAnimationFrame(draw);
+      return;
+    }
 
-  if (vw && vh) {
     const canvasRatio = canvas.width / canvas.height;
     const videoRatio = vw / vh;
 
     let sx, sy, sw, sh;
 
     if (videoRatio > canvasRatio) {
+      // corta lados
       sh = vh;
       sw = vh * canvasRatio;
       sx = (vw - sw) / 2;
       sy = 0;
     } else {
+      // corta topo/baixo
       sw = vw;
       sh = vw / canvasRatio;
       sx = 0;
       sy = (vh - sh) / 2;
     }
 
-    ctx.drawImage(videoEl, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+
+    requestAnimationFrame(draw);
   }
 
-  requestAnimationFrame(draw);
-}
+  video.onloadedmetadata = () => {
+    draw();
+  };
 
-// =========================
-// 🎬 RECORDING
-// =========================
-async function startRecording(slot) {
-  await initCamera();
+  // stream final (canvas)
+  canvasStream = canvas.captureStream(30);
 
-  currentSlot = slot;
-  chunks = [];
-
-  const canvasStream = canvas.captureStream(30);
-
-  // áudio
-  stream.getAudioTracks().forEach(t => canvasStream.addTrack(t));
+  // adiciona áudio
+  stream.getAudioTracks().forEach(track => {
+    canvasStream.addTrack(track);
+  });
 
   recorder = new MediaRecorder(canvasStream);
 
   recorder.ondataavailable = e => {
-    if (e.data.size > 0) chunks.push(e.data);
+    if (e.data.size > 0) {
+      chunks.push(e.data);
+    }
   };
 
   recorder.onstop = () => {
     const blob = new Blob(chunks, { type: "video/webm" });
+    const url = URL.createObjectURL(blob);
 
-    if (currentSlot === 1) {
-      blob1 = blob;
-    } else {
-      blob2 = blob;
-    }
+    const playback = document.createElement("video");
+    playback.src = url;
+    playback.controls = true;
+    playback.autoplay = true;
+    playback.style.width = "300px";
+    playback.style.height = "533px";
 
-    refreshPlayers();
+    const output = document.getElementById("output");
+
+    // 🔥 garante substituição
+    output.innerHTML = "";
+    output.appendChild(playback);
   };
 
   recorder.start();
-}
-
-// botões
-function startFirst() {
-  startRecording(1);
-}
-
-function startSecond() {
-  startRecording(2);
 }
 
 function stop() {
   if (recorder && recorder.state !== "inactive") {
     recorder.stop();
   }
-}
 
-// =========================
-// 📺 PLAYBACK
-// =========================
-function refreshPlayers() {
-  if (blob1) {
-    document.getElementById("video1").src = URL.createObjectURL(blob1);
-  }
-
-  if (blob2) {
-    document.getElementById("video2").src = URL.createObjectURL(blob2);
-  }
-}
-
-// =========================
-// 🔄 SYNC SYSTEM
-// =========================
-function applyOffset(offset) {
-  const v1 = document.getElementById("video1");
-  const v2 = document.getElementById("video2");
-
-  v1.pause();
-  v2.pause();
-
-  v1.currentTime = 0;
-  v2.currentTime = 0;
-
-  if (offset > 0) {
-    v2.currentTime = offset;
-  } else {
-    v1.currentTime = -offset;
-  }
-
-  v1.play();
-  v2.play();
-}
-
-function applyManualOffset() {
-  const offset = parseFloat(document.getElementById("manualOffset").value);
-  applyOffset(offset);
-}
-
-// =========================
-// 🔄 AUTO SYNC (BÁSICO)
-// =========================
-async function autoSync() {
-  if (!blob1 || !blob2) return;
-
-  const offset = await calculateOffset(blob1, blob2);
-
-  document.getElementById("manualOffset").value = offset.toFixed(2);
-  applyOffset(offset);
-}
-
-// =========================
-// 🎧 AUDIO SYNC ENGINE
-// =========================
-async function getAudioBuffer(blob, ctx) {
-  const arrayBuffer = await blob.arrayBuffer();
-  return await ctx.decodeAudioData(arrayBuffer);
-}
-
-function toMono(buffer) {
-  return buffer.getChannelData(0);
-}
-
-function downsample(data, factor = 20) {
-  const out = [];
-  for (let i = 0; i < data.length; i += factor) {
-    out.push(data[i]);
-  }
-  return out;
-}
-
-function crossCorrelation(a, b) {
-  let best = 0;
-  let max = -Infinity;
-
-  for (let o = -b.length; o < b.length; o++) {
-    let sum = 0;
-
-    for (let i = 0; i < a.length; i++) {
-      const j = i + o;
-      if (j >= 0 && j < b.length) {
-        sum += a[i] * b[j];
-      }
-    }
-
-    if (sum > max) {
-      max = sum;
-      best = o;
-    }
-  }
-
-  return best;
-}
-
-async function calculateOffset(blobA, blobB) {
-  const ctx = new AudioContext();
-
-  const a = await getAudioBuffer(blobA, ctx);
-  const b = await getAudioBuffer(blobB, ctx);
-
-  let da = downsample(toMono(a));
-  let db = downsample(toMono(b));
-
-  const offset = crossCorrelation(da, db);
-
-  return offset * (1024 * 20) / a.sampleRate;
+  stream?.getTracks().forEach(t => t.stop());
 }
 </script>
 
