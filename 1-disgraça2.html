@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Sincronizador Avançado</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+    }
+    video {
+      width: 45%;
+      margin: 10px;
+      border: 1px solid #ccc;
+    }
+    .controls {
+      margin: 15px;
+    }
+    input[type="range"] {
+      width: 300px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Sincronização de Vídeos</h2>
+
+<div class="controls">
+  <input type="file" id="input1" accept="video/*">
+  <input type="file" id="input2" accept="video/*">
+</div>
+
+<div class="controls">
+  <button onclick="togglePlay()">Play / Pause</button>
+</div>
+
+<div class="controls">
+  <label>Offset: <span id="offsetValue">0.0</span>s</label><br>
+  <input type="range" id="offsetSlider" min="-10" max="10" step="0.05" value="0">
+</div>
+
+<div>
+  <video id="v1" controls></video>
+  <video id="v2" controls></video>
+</div>
+
+<script>
+const v1 = document.getElementById('v1');
+const v2 = document.getElementById('v2');
+const slider = document.getElementById('offsetSlider');
+const offsetLabel = document.getElementById('offsetValue');
+
+let offset = 0;
+let syncing = false;
+
+// carregar vídeos
+document.getElementById('input1').onchange = e => {
+  v1.src = URL.createObjectURL(e.target.files[0]);
+};
+
+document.getElementById('input2').onchange = e => {
+  v2.src = URL.createObjectURL(e.target.files[0]);
+};
+
+// atualizar offset em tempo real
+slider.oninput = () => {
+  offset = parseFloat(slider.value);
+  offsetLabel.textContent = offset.toFixed(2);
+  syncNow(v1, v2);
+};
+
+// controle único
+function togglePlay() {
+  if (v1.paused && v2.paused) {
+    v1.play();
+    v2.play();
+  } else {
+    v1.pause();
+    v2.pause();
+  }
+}
+
+// sincronização principal
+function syncNow(master, slave) {
+  if (syncing) return;
+  syncing = true;
+
+  slave.currentTime = master.currentTime + offset;
+
+  syncing = false;
+}
+
+// sincronização bidirecional
+function setupSync(master, slave) {
+  master.addEventListener('play', () => {
+    if (!syncing) {
+      slave.currentTime = master.currentTime + offset;
+      slave.play();
+    }
+  });
+
+  master.addEventListener('pause', () => {
+    if (!syncing) slave.pause();
+  });
+
+  master.addEventListener('seeked', () => {
+    syncNow(master, slave);
+  });
+
+  master.addEventListener('timeupdate', () => {
+    if (!syncing && Math.abs((slave.currentTime - master.currentTime) - offset) > 0.3) {
+      syncNow(master, slave);
+    }
+  });
+}
+
+// ativar nos dois sentidos
+setupSync(v1, v2);
+setupSync(v2, v1);
+
+</script>
+
+</body>
+</html>
