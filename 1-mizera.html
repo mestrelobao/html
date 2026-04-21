@@ -55,7 +55,6 @@ button {
   <video id="recorded" controls></video>
 </div>
 
-<!-- 🎯 CONTROLES MASTER -->
 <div class="controls">
   <button onclick="playMaster()">▶ Play Master</button>
   <button onclick="pauseMaster()">⏸ Pause Master</button>
@@ -69,12 +68,19 @@ let chunks = [];
 const guide = document.getElementById("guide");
 const recorded = document.getElementById("recorded");
 
-// 📂 carregar vídeo guia
+// 📂 carregar vídeo guia (corrigido)
 document.getElementById("fileInput").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
-  guide.src = URL.createObjectURL(file);
+  const url = URL.createObjectURL(file);
+
+  guide.src = url;
+  guide.load();
+
+  guide.onloadedmetadata = () => {
+    guide.currentTime = 0;
+  };
 });
 
 // ▶ gravar
@@ -115,21 +121,29 @@ function stop() {
   guide.pause();
 }
 
-// 🎯 PLAY MASTER (sincronizado)
+// ▶ MASTER PLAY (corrigido)
 function playMaster() {
-  guide.play().catch(() => {});
-  recorded.play().catch(() => {});
+  guide.pause();
+  recorded.pause();
 
-  syncLoop();
+  guide.currentTime = 0;
+  recorded.currentTime = 0;
+
+  const p = guide.play().catch(() => {});
+
+  p.then(() => {
+    recorded.play().catch(() => {});
+    syncLoop();
+  });
 }
 
-// ⏸ PAUSE MASTER
+// ⏸ MASTER PAUSE
 function pauseMaster() {
   guide.pause();
   recorded.pause();
 }
 
-// 🔁 loop de sincronização
+// 🔁 sync loop protegido
 function syncLoop() {
   if (guide.paused || recorded.paused) return;
 
