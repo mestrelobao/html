@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Duet Player Controlado</title>
+<title>Duet Recorder</title>
 
 <style>
 body {
@@ -30,47 +30,41 @@ video {
 
 .controls {
   margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
 }
 
 button {
   padding: 10px 16px;
   margin: 5px;
 }
-
-input {
-  width: 80px;
-}
 </style>
 </head>
 
 <body>
 
-<h2>Dueto com Controle Manual</h2>
+<h2>Duet Recorder (Guia + Gravação)</h2>
+
+<input type="file" id="fileInput" accept="video/*">
 
 <div class="controls">
-  <input type="file" id="v1" accept="video/*">
-  <input type="file" id="v2" accept="video/*">
+  <button onclick="start()">▶ Gravar</button>
+  <button onclick="stop()">⏹ Parar</button>
 </div>
 
 <div class="row">
-  <video id="video1" controls></video>
-  <video id="video2" controls></video>
+  <video id="guide" controls></video>
+  <video id="recorded" controls></video>
 </div>
 
-<!-- 🔥 CONTROLES ABAIXO DOS VÍDEOS -->
+<!-- 🔥 CONTROLES NOVOS (ABAIXO DOS VÍDEOS) -->
 <div class="controls">
 
   <div>
     <button onclick="playBoth()">▶ Play</button>
-    <button onclick="stopBoth()">⏹ Stop</button>
+    <button onclick="pauseBoth()">⏹ Stop</button>
   </div>
 
   <div>
-    Offset vídeo 2 (segundos):
+    Offset vídeo gravado (segundos):
     <input type="number" id="offset" step="0.1" value="0">
     <button onclick="applyOffset()">Aplicar</button>
   </div>
@@ -78,36 +72,76 @@ input {
 </div>
 
 <script>
-const v1 = document.getElementById("video1");
-const v2 = document.getElementById("video2");
+let stream;
+let recorder;
+let chunks = [];
 
-// 📂 load vídeos
-document.getElementById("v1").addEventListener("change", e => {
-  v1.src = URL.createObjectURL(e.target.files[0]);
+const guide = document.getElementById("guide");
+const recorded = document.getElementById("recorded");
+
+// 📂 carregar vídeo guia
+document.getElementById("fileInput").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  guide.src = URL.createObjectURL(file);
 });
 
-document.getElementById("v2").addEventListener("change", e => {
-  v2.src = URL.createObjectURL(e.target.files[0]);
-});
+// ▶ gravar
+async function start() {
+  chunks = [];
 
-// ▶ play os dois
+  stream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true
+  });
+
+  recorder = new MediaRecorder(stream);
+
+  recorder.ondataavailable = e => {
+    if (e.data.size > 0) chunks.push(e.data);
+  };
+
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: "video/webm" });
+    const url = URL.createObjectURL(blob);
+
+    recorded.src = url;
+    recorded.controls = true;
+    recorded.autoplay = false;
+    recorded.muted = false;
+  };
+
+  recorder.start();
+}
+
+// ⏹ parar gravação
+function stop() {
+  if (recorder && recorder.state !== "inactive") {
+    recorder.stop();
+  }
+
+  stream?.getTracks().forEach(t => t.stop());
+  guide.pause();
+}
+
+// ▶ play ambos
 function playBoth() {
-  v1.play();
-  v2.play();
+  guide.play();
+  recorded.play();
 }
 
-// ⏹ stop os dois
-function stopBoth() {
-  v1.pause();
-  v2.pause();
+// ⏹ pause ambos
+function pauseBoth() {
+  guide.pause();
+  recorded.pause();
 }
 
-// 🎚 aplica offset no vídeo 2
+// 🎚 offset do vídeo gravado
 function applyOffset() {
   const offset = parseFloat(document.getElementById("offset").value) || 0;
 
-  v1.currentTime = 0;
-  v2.currentTime = offset;
+  recorded.currentTime = offset;
 }
 </script>
 
