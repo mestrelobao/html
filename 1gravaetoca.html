@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Dual Recorder + Loop Reference</title>
+<title>Dual Recorder Sync</title>
 
 <style>
 body {
@@ -42,7 +42,7 @@ button {
 
 <body>
 
-<h2>Dual Recorder + Loop Sync (Shorts)</h2>
+<h2>Dual Recorder + Sync (Shorts 9:16)</h2>
 
 <video id="preview" autoplay playsinline muted></video>
 
@@ -61,10 +61,6 @@ button {
 <label>Offset manual (segundos):</label>
 <input type="number" id="manualOffset" step="0.1" value="0">
 <button onclick="applyManualOffset()">Aplicar Offset</button>
-
-<!-- 🔁 vídeo 1 em loop (referência) -->
-<h3>Referência (Vídeo 1 em loop)</h3>
-<video id="refVideo" autoplay playsinline loop muted></video>
 
 <div id="players">
   <video id="video1" controls></video>
@@ -86,7 +82,7 @@ let blob2 = null;
 let currentSlot = 1;
 
 // =========================
-// 🎥 CAMERA
+// 🎥 CAMERA (1 vez só)
 // =========================
 async function initCamera() {
   if (stream) return;
@@ -109,7 +105,7 @@ async function initCamera() {
 }
 
 // =========================
-// 🎬 DRAW (SHORTS)
+// 🎬 DRAW (SHORTS FORMAT)
 // =========================
 function draw() {
   const vw = videoEl.videoWidth;
@@ -150,6 +146,7 @@ async function startRecording(slot) {
 
   const canvasStream = canvas.captureStream(30);
 
+  // áudio
   stream.getAudioTracks().forEach(t => canvasStream.addTrack(t));
 
   recorder = new MediaRecorder(canvasStream);
@@ -163,7 +160,6 @@ async function startRecording(slot) {
 
     if (currentSlot === 1) {
       blob1 = blob;
-      startLoopReference(); // 🔁 ativa loop do vídeo 1
     } else {
       blob2 = blob;
     }
@@ -174,6 +170,7 @@ async function startRecording(slot) {
   recorder.start();
 }
 
+// botões
 function startFirst() {
   startRecording(1);
 }
@@ -186,21 +183,6 @@ function stop() {
   if (recorder && recorder.state !== "inactive") {
     recorder.stop();
   }
-}
-
-// =========================
-// 🔁 LOOP DO VÍDEO 1
-// =========================
-function startLoopReference() {
-  if (!blob1) return;
-
-  const ref = document.getElementById("refVideo");
-  const url = URL.createObjectURL(blob1);
-
-  ref.src = url;
-  ref.loop = true;
-  ref.muted = true;
-  ref.play();
 }
 
 // =========================
@@ -245,7 +227,7 @@ function applyManualOffset() {
 }
 
 // =========================
-// 🔄 AUTO SYNC
+// 🔄 AUTO SYNC (BÁSICO)
 // =========================
 async function autoSync() {
   if (!blob1 || !blob2) return;
