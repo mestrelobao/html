@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Duet Recorder (Master Sync)</title>
+<title>Duet Recorder (Master + Offset)</title>
 
 <style>
 body {
@@ -36,12 +36,16 @@ button {
   padding: 10px 16px;
   margin: 5px;
 }
+
+input {
+  width: 80px;
+}
 </style>
 </head>
 
 <body>
 
-<h2>Duet Recorder (Master Sync)</h2>
+<h2>Duet Recorder (Master + Offset)</h2>
 
 <input type="file" id="fileInput" accept="video/*">
 
@@ -55,6 +59,13 @@ button {
   <video id="recorded" controls></video>
 </div>
 
+<!-- 🎚 OFFSET CONTROL -->
+<div class="controls">
+  Offset (segundos):
+  <input type="number" id="offset" step="0.1" value="0">
+  <button onclick="applyOffset()">Aplicar Offset</button>
+</div>
+
 <div class="controls">
   <button onclick="playMaster()">▶ Play Master</button>
   <button onclick="pauseMaster()">⏸ Pause Master</button>
@@ -65,10 +76,12 @@ let stream;
 let recorder;
 let chunks = [];
 
+let offsetValue = 0;
+
 const guide = document.getElementById("guide");
 const recorded = document.getElementById("recorded");
 
-// 📂 carregar vídeo guia (corrigido)
+// 📂 carregar vídeo guia
 document.getElementById("fileInput").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -121,13 +134,20 @@ function stop() {
   guide.pause();
 }
 
-// ▶ MASTER PLAY (corrigido)
+// 🎚 aplicar offset
+function applyOffset() {
+  offsetValue = parseFloat(document.getElementById("offset").value) || 0;
+
+  recorded.currentTime = Math.max(0, offsetValue);
+}
+
+// ▶ MASTER PLAY
 function playMaster() {
   guide.pause();
   recorded.pause();
 
   guide.currentTime = 0;
-  recorded.currentTime = 0;
+  recorded.currentTime = Math.max(0, offsetValue);
 
   const p = guide.play().catch(() => {});
 
@@ -143,7 +163,7 @@ function pauseMaster() {
   recorded.pause();
 }
 
-// 🔁 sync loop protegido
+// 🔁 sync loop
 function syncLoop() {
   if (guide.paused || recorded.paused) return;
 
