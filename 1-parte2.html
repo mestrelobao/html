@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Indaband Segunda Parte</title>
+<title>Duet Recorder</title>
 
 <style>
 body {
@@ -52,7 +52,7 @@ button {
 
 <div class="row">
   <video id="guide" controls></video>
-  <video id="recorded" autoplay playsinline muted></video>
+  <video id="recorded" controls></video>
 </div>
 
 <script>
@@ -77,12 +77,10 @@ async function start() {
 
   stream = await navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: true   // 🔥 COM ÁUDIO AGORA
+    audio: true   // 🔥 áudio ligado
   });
 
-  // mostra câmera ao vivo no lugar do vídeo gravado temporariamente
-  recorded.srcObject = stream;
-
+  // só preview da câmera (sem substituir vídeo final)
   guide.play();
 
   recorder = new MediaRecorder(stream);
@@ -95,11 +93,11 @@ async function start() {
     const blob = new Blob(chunks, { type: "video/webm" });
     const url = URL.createObjectURL(blob);
 
-    // substitui stream por vídeo final gravado
-    recorded.srcObject = null;
+    // ❗ não autoplay
     recorded.src = url;
     recorded.controls = true;
-    recorded.play();
+    recorded.autoplay = false;
+    recorded.muted = false;   // 🔥 áudio normal
   };
 
   recorder.start();
