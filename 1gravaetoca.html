@@ -15,7 +15,6 @@ body {
   align-items: center;
 }
 
-/* preview vertical */
 video {
   width: 300px;
   height: 533px; /* 9:16 */
@@ -53,7 +52,8 @@ let chunks = [];
 let canvasStream;
 
 async function start() {
-  // pega câmera
+  chunks = [];
+
   stream = await navigator.mediaDevices.getUserMedia({
     video: true,
     audio: true
@@ -62,7 +62,6 @@ async function start() {
   const video = document.getElementById("preview");
   video.srcObject = stream;
 
-  // cria canvas vertical (Shorts)
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
@@ -70,14 +69,43 @@ async function start() {
   canvas.height = 1920;
 
   function draw() {
-    // desenha o vídeo ocupando formato vertical
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+
+    if (!vw || !vh) {
+      requestAnimationFrame(draw);
+      return;
+    }
+
+    const canvasRatio = canvas.width / canvas.height;
+    const videoRatio = vw / vh;
+
+    let sx, sy, sw, sh;
+
+    if (videoRatio > canvasRatio) {
+      // corta lados
+      sh = vh;
+      sw = vh * canvasRatio;
+      sx = (vw - sw) / 2;
+      sy = 0;
+    } else {
+      // corta topo/baixo
+      sw = vw;
+      sh = vw / canvasRatio;
+      sx = 0;
+      sy = (vh - sh) / 2;
+    }
+
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+
     requestAnimationFrame(draw);
   }
 
-  draw();
+  video.onloadedmetadata = () => {
+    draw();
+  };
 
-  // captura stream do canvas
+  // captura stream do canvas (vídeo final)
   canvasStream = canvas.captureStream(30);
 
   // adiciona áudio original
