@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Duet Recorder (Master + Offset)</title>
+<title>Duet Recorder</title>
 
 <style>
 body {
@@ -45,7 +45,7 @@ input {
 
 <body>
 
-<h2>Duet Recorder (Master + Offset)</h2>
+<h2>Duet Recorder</h2>
 
 <input type="file" id="fileInput" accept="video/*">
 
@@ -59,16 +59,14 @@ input {
   <video id="recorded" controls></video>
 </div>
 
-<!-- 🎚 OFFSET CONTROL -->
 <div class="controls">
   Offset (segundos):
   <input type="number" id="offset" step="0.1" value="0">
-  <button onclick="applyOffset()">Aplicar Offset</button>
 </div>
 
 <div class="controls">
-  <button onclick="playMaster()">▶ Play Master</button>
-  <button onclick="pauseMaster()">⏸ Pause Master</button>
+  <button onclick="playMaster()">▶ Play</button>
+  <button onclick="pauseMaster()">⏸ Pause</button>
 </div>
 
 <script>
@@ -81,22 +79,14 @@ let offsetValue = 0;
 const guide = document.getElementById("guide");
 const recorded = document.getElementById("recorded");
 
-// 📂 carregar vídeo guia
 document.getElementById("fileInput").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
-  const url = URL.createObjectURL(file);
-
-  guide.src = url;
-  guide.load();
-
-  guide.onloadedmetadata = () => {
-    guide.currentTime = 0;
-  };
+  guide.src = URL.createObjectURL(file);
 });
 
-// ▶ gravar
+// 🎥 gravação
 async function start() {
   chunks = [];
 
@@ -113,66 +103,47 @@ async function start() {
 
   recorder.onstop = () => {
     const blob = new Blob(chunks, { type: "video/webm" });
-    const url = URL.createObjectURL(blob);
-
-    recorded.src = url;
-    recorded.controls = true;
-    recorded.autoplay = false;
-    recorded.muted = false;
+    recorded.src = URL.createObjectURL(blob);
   };
 
   recorder.start();
 }
 
-// ⏹ parar gravação
+// ⏹ parar
 function stop() {
-  if (recorder && recorder.state !== "inactive") {
-    recorder.stop();
-  }
-
+  recorder?.stop();
   stream?.getTracks().forEach(t => t.stop());
   guide.pause();
 }
 
-// 🎚 aplicar offset (agora usado como referência de sync)
-function applyOffset() {
-  offsetValue = parseFloat(document.getElementById("offset").value) || 0;
-}
-
-// ▶ MASTER PLAY
+// ▶ play
 function playMaster() {
-  guide.pause();
-  recorded.pause();
+  offsetValue = parseFloat(document.getElementById("offset").value) || 0;
 
   guide.currentTime = 0;
   recorded.currentTime = 0;
 
   guide.play().then(() => {
-    recorded.play().catch(() => {});
-    syncLoop();
-  }).catch(() => {});
+    recorded.play();
+    sync();
+  });
 }
 
-// ⏸ MASTER PAUSE
+// ⏸ pause
 function pauseMaster() {
   guide.pause();
   recorded.pause();
 }
 
-// 🔁 sync loop com offset REAL aplicado no guide
-function syncLoop() {
+// 🔥 SYNC CORRETO COM OFFSET
+function sync() {
   if (guide.paused || recorded.paused) return;
 
-  // 🔥 offset aplicado aqui corretamente
-  const effectiveGuideTime = guide.currentTime - offsetValue;
+  const targetTime = guide.currentTime - offsetValue;
 
-  const diff = effectiveGuideTime - recorded.currentTime;
+  recorded.currentTime = Math.max(0, targetTime);
 
-  if (Math.abs(diff) > 0.03) {
-    recorded.currentTime += diff;
-  }
-
-  requestAnimationFrame(syncLoop);
+  requestAnimationFrame(sync);
 }
 </script>
 
