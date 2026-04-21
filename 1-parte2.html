@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Gravador com Vídeo Guia</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: Arial;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+video {
+  width: 300px;
+  height: 533px;
+  background: black;
+  object-fit: cover;
+}
+
+.controls {
+  margin-top: 15px;
+}
+
+button {
+  padding: 10px 16px;
+  margin: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Gravação com vídeo guia</h2>
+
+<input type="file" id="fileInput" accept="video/*">
+
+<div class="controls">
+  <button onclick="start()">▶ Gravar</button>
+  <button onclick="stop()">⏹ Parar</button>
+</div>
+
+<div class="container">
+  <video id="guide" controls></video>
+  <video id="camera" autoplay playsinline muted></video>
+</div>
+
+<script>
+let stream;
+let recorder;
+let chunks = [];
+
+let canvas;
+let ctx;
+let canvasStream;
+
+const guide = document.getElementById("guide");
+const camera = document.getElementById("camera");
+
+// 📂 carregar vídeo local
+document.getElementById("fileInput").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  guide.src = URL.createObjectURL(file);
+});
+
+// ▶ iniciar gravação
+async function start() {
+  chunks = [];
+
+  // câmera
+  stream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: false
+  });
+
+  camera.srcObject = stream;
+
+  // canvas (merge dos 2 vídeos lado a lado)
+  canvas = document.createElement("canvas");
+  ctx = canvas.getContext("2d");
+
+  canvas.width = 640 * 2;
+  canvas.height = 360;
+
+  guide.play();
+
+  draw();
+
+  canvasStream = canvas.captureStream(30);
+
+  recorder = new MediaRecorder(canvasStream);
+
+  recorder.ondataavailable = e => {
+    if (e.data.size > 0) chunks.push(e.data);
+  };
+
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: "video/webm" });
+    const url = URL.createObjectURL(blob);
+
+    const result = document.createElement("video");
+    result.src = url;
+    result.controls = true;
+    result.autoplay = true;
+    result.style.width = "600px";
+    result.style.marginTop = "20px";
+
+    document.body.appendChild(result);
+  };
+
+  recorder.start();
+}
+
+// 🎥 desenhar lado a lado
+function draw() {
+  const gw = guide.videoWidth;
+  const gh = guide.videoHeight;
+
+  const cw = camera.videoWidth;
+  const ch = camera.videoHeight;
+
+  if (gw && gh && cw && ch) {
+    // vídeo guia
+    ctx.drawImage(guide, 0, 0, 640, 360);
+
+    // câmera
+    ctx.drawImage(camera, 640, 0, 640, 360);
+  }
+
+  requestAnimationFrame(draw);
+}
+
+// ⏹ parar
+function stop() {
+  if (recorder && recorder.state !== "inactive") {
+    recorder.stop();
+  }
+
+  stream?.getTracks().forEach(t => t.stop());
+  guide.pause();
+}
+</script>
+
+</body>
+</html>
