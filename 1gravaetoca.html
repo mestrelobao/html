@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Live Record & Play</title>
+<title>Shorts Recorder</title>
 
 <style>
 body {
@@ -15,10 +15,13 @@ body {
   align-items: center;
 }
 
+/* preview vertical */
 video {
-  width: 45vw;
-  margin-top: 20px;
+  width: 300px;
+  height: 533px; /* 9:16 */
   background: black;
+  object-fit: cover;
+  margin-top: 20px;
 }
 
 .controls {
@@ -34,9 +37,9 @@ button {
 
 <body>
 
-<h2>Gravação + Playback ao vivo</h2>
+<h2>Gravação em formato Shorts (9:16)</h2>
 
-<video id="live" autoplay playsinline muted></video>
+<video id="preview" autoplay playsinline muted></video>
 
 <div class="controls">
   <button onclick="start()">▶ Start</button>
@@ -47,33 +50,59 @@ button {
 let stream;
 let recorder;
 let chunks = [];
+let canvasStream;
 
-/* 🎥 inicia câmera */
 async function start() {
+  // pega câmera
   stream = await navigator.mediaDevices.getUserMedia({
     video: true,
     audio: true
   });
 
-  const video = document.getElementById("live");
+  const video = document.getElementById("preview");
   video.srcObject = stream;
 
-  // gravação ao mesmo tempo
-  recorder = new MediaRecorder(stream);
+  // cria canvas vertical (Shorts)
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = 1080;
+  canvas.height = 1920;
+
+  function draw() {
+    // desenha o vídeo ocupando formato vertical
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+
+  // captura stream do canvas
+  canvasStream = canvas.captureStream(30);
+
+  // adiciona áudio original
+  stream.getAudioTracks().forEach(track => {
+    canvasStream.addTrack(track);
+  });
+
+  recorder = new MediaRecorder(canvasStream);
 
   recorder.ondataavailable = e => {
-    chunks.push(e.data);
+    if (e.data.size > 0) {
+      chunks.push(e.data);
+    }
   };
 
   recorder.onstop = () => {
     const blob = new Blob(chunks, { type: "video/webm" });
     const url = URL.createObjectURL(blob);
 
-    // 🔥 toca o vídeo gravado imediatamente
     const playback = document.createElement("video");
     playback.src = url;
     playback.controls = true;
     playback.autoplay = true;
+    playback.style.width = "300px";
+    playback.style.height = "533px";
 
     document.body.appendChild(playback);
   };
@@ -81,7 +110,6 @@ async function start() {
   recorder.start();
 }
 
-/* ⏹ parar */
 function stop() {
   if (recorder && recorder.state !== "inactive") {
     recorder.stop();
