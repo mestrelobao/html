@@ -134,11 +134,9 @@ function stop() {
   guide.pause();
 }
 
-// 🎚 aplicar offset (AGORA NO GUIDE)
+// 🎚 aplicar offset (agora usado como referência de sync)
 function applyOffset() {
   offsetValue = parseFloat(document.getElementById("offset").value) || 0;
-
-  guide.currentTime = Math.max(0, offsetValue);
 }
 
 // ▶ MASTER PLAY
@@ -146,15 +144,13 @@ function playMaster() {
   guide.pause();
   recorded.pause();
 
-  guide.currentTime = Math.max(0, offsetValue);
+  guide.currentTime = 0;
   recorded.currentTime = 0;
 
-  const p = guide.play().catch(() => {});
-
-  p.then(() => {
+  guide.play().then(() => {
     recorded.play().catch(() => {});
     syncLoop();
-  });
+  }).catch(() => {});
 }
 
 // ⏸ MASTER PAUSE
@@ -163,11 +159,14 @@ function pauseMaster() {
   recorded.pause();
 }
 
-// 🔁 sync loop
+// 🔁 sync loop com offset REAL aplicado no guide
 function syncLoop() {
   if (guide.paused || recorded.paused) return;
 
-  const diff = guide.currentTime - recorded.currentTime;
+  // 🔥 offset aplicado aqui corretamente
+  const effectiveGuideTime = guide.currentTime - offsetValue;
+
+  const diff = effectiveGuideTime - recorded.currentTime;
 
   if (Math.abs(diff) > 0.03) {
     recorded.currentTime += diff;
