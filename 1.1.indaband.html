@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Duet Recorder PRO</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: Arial;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+video {
+  width: 300px;
+  height: 533px;
+  background: black;
+  object-fit: cover;
+}
+
+.controls {
+  margin-top: 15px;
+}
+
+button {
+  padding: 10px 16px;
+  margin: 5px;
+}
+
+input {
+  width: 80px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Duet Recorder PRO</h2>
+
+<input type="file" id="fileInput" accept="video/*">
+
+<div class="controls">
+  <button onclick="start()">▶ Gravar</button>
+  <button onclick="stop()">⏹ Parar</button>
+</div>
+
+<div class="row">
+  <video id="guide" controls></video>
+  <video id="recorded" controls></video>
+</div>
+
+<div class="controls">
+  Guide Offset:
+  <input type="number" id="offsetGuide" step="0.1" value="0">
+
+  Recorded Offset:
+  <input type="number" id="offsetRecorded" step="0.1" value="0">
+</div>
+
+<div class="controls">
+  <button onclick="playMaster()">▶ Play</button>
+  <button onclick="pauseMaster()">⏸ Pause</button>
+</div>
+
+<div class="controls">
+  <button onclick="exportVideo()">⬇ Exportar com Áudio</button>
+</div>
+
+<!-- canvas oculto -->
+<canvas id="canvas" width="600" height="533" style="display:none;"></canvas>
+
+<script>
+let stream;
+let recorder;
+let chunks = [];
+
+const guide = document.getElementById("guide");
+const recorded = document.getElementById("recorded");
+
+const offsetGuideInput = document.getElementById("offsetGuide");
+const offsetRecordedInput = document.getElementById("offsetRecorded");
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+// carregar vídeo
+fileInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  guide.src = URL.createObjectURL(file);
+});
+
+// 🎥 gravação da câmera
+async function start() {
+  chunks = [];
+
+  stream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true
+  });
+
+  recorder = new MediaRecorder(stream);
+
+  recorder.ondataavailable = e => {
+    if (e.data.size > 0) chunks.push(e.data);
+  };
+
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: "video/webm" });
+    recorded.src = URL.createObjectURL(blob);
+  };
+
+  const offsetGuide = parseFloat(offsetGuideInput.value) || 0;
+
+  guide.currentTime = offsetGuide;
+  await guide.play().catch(()=>{});
+
+  recorder.start();
+}
+
+// ⏹ parar
+function stop() {
+  recorder?.stop();
+  stream?.getTracks().forEach(t => t.stop());
+  guide.pause();
+}
+
+// ▶ controle sincronizado
+function playMaster() {
+  const og = parseFloat(offsetGuideInput.value) || 0;
+  const or = parseFloat(offsetRecordedInput.value) || 0;
+
+  guide.currentTime = og;
+  recorded.currentTime = or;
+
+  guide.play();
+  recorded.play();
+}
+
+function pauseMaster() {
+  guide.pause();
+  recorded.pause();
+}
+
+// 🎬 desenhar no canvas
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.drawImage(guide, 0, 0, canvas.width / 2, canvas.height);
+  ctx.drawImage(recorded, canvas.width / 2, 0, canvas.width / 2, canvas.height);
+
+  requestAnimationFrame(draw);
+}
+
+// 🎧 MIX DE ÁUDIO
+function setupAudioMix() {
+  const audioContext = new AudioContext();
+  const destination = audioContext.createMediaStreamDestination();
+
+  const guideSource = audioContext.createMediaElementSource(guide);
+  const recordedSource = audioContext.createMediaElementSource(recorded);
+
+  const guideGain = audioContext.createGain();
+  const recordedGain = audioContext.createGain();
+
+  guideGain.gain.value = 0.8;
+  recordedGain.gain.value = 1.0;
+
+  guideSource.connect(guideGain).connect(destination);
+  recordedSource.connect(recordedGain).connect(destination);
+
+  // evitar duplicação
+  guide.muted = true;
+  recorded.muted = true;
+
+  return { audioContext, destination };
+}
+
+// 🎥 EXPORT FINAL COM ÁUDIO
+async function exportVideo() {
+  const { audioContext, destination } = setupAudioMix();
+
+  const canvasStream = canvas.captureStream(30);
+
+  const finalStream = new MediaStream([
+    ...canvasStream.getVideoTracks(),
+    ...destination.stream.getAudioTracks()
+  ]);
+
+  const recorder = new MediaRecorder(finalStream, {
+    mimeType: "video/webm"
+  });
+
+  let chunks = [];
+
+  recorder.ondataavailable = e => {
+    if (e.data.size > 0) chunks.push(e.data);
+  };
+
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: "video/webm" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "duet-final.webm";
+    a.click();
+  };
+
+  const og = parseFloat(offsetGuideInput.value) || 0;
+  const or = parseFloat(offsetRecordedInput.value) || 0;
+
+  guide.currentTime = og;
+  recorded.currentTime = or;
+
+  await audioContext.resume();
+
+  guide.play();
+  recorded.play();
+
+  draw();
+
+  recorder.start();
+
+  const duration = Math.min(
+    guide.duration - og,
+    recorded.duration - or
+  );
+
+  setTimeout(() => {
+    recorder.stop();
+    guide.pause();
+    recorded.pause();
+  }, duration * 1000);
+}
+</script>
+
+</body>
+</html>
