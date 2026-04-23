@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Duet Recorder PRO</title>
+<title>Duet Recorder FINAL</title>
 
 <style>
 body {
@@ -40,12 +40,16 @@ button {
 input {
   width: 80px;
 }
+
+canvas {
+  display: none;
+}
 </style>
 </head>
 
 <body>
 
-<h2>Duet Recorder PRO</h2>
+<h2>Duet Recorder FINAL</h2>
 
 <input type="file" id="fileInput" accept="video/*">
 
@@ -61,10 +65,10 @@ input {
 
 <div class="controls">
   Guide Offset:
-  <input type="number" id="offsetGuide" step="0.1" value="0">
+  <input type="number" id="offsetGuide" value="0" step="0.1">
 
   Recorded Offset:
-  <input type="number" id="offsetRecorded" step="0.1" value="0">
+  <input type="number" id="offsetRecorded" value="0" step="0.1">
 </div>
 
 <div class="controls">
@@ -73,10 +77,10 @@ input {
 </div>
 
 <div class="controls">
-  <button onclick="exportVideo()">⬇ Exportar com Áudio</button>
+  <button onclick="exportVideo()">⬇ Export FINAL com áudio</button>
 </div>
 
-<canvas id="canvas" width="600" height="533" style="display:none;"></canvas>
+<canvas id="canvas" width="600" height="533"></canvas>
 
 <script>
 let stream;
@@ -86,11 +90,11 @@ let chunks = [];
 const guide = document.getElementById("guide");
 const recorded = document.getElementById("recorded");
 
-const offsetGuideInput = document.getElementById("offsetGuide");
-const offsetRecordedInput = document.getElementById("offsetRecorded");
-
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
+const offsetGuideInput = document.getElementById("offsetGuide");
+const offsetRecordedInput = document.getElementById("offsetRecorded");
 
 // carregar vídeo guia
 fileInput.addEventListener("change", (e) => {
@@ -134,7 +138,7 @@ function stop() {
   guide.pause();
 }
 
-// ▶ controle
+// ▶ play sincronizado
 function playMaster() {
   const og = parseFloat(offsetGuideInput.value) || 0;
   const or = parseFloat(offsetRecordedInput.value) || 0;
@@ -151,7 +155,7 @@ function pauseMaster() {
   recorded.pause();
 }
 
-// 🎬 canvas render
+// 🎬 render canvas
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -161,82 +165,66 @@ function draw() {
   requestAnimationFrame(draw);
 }
 
-// 🎧 setup áudio (VERSÃO CORRIGIDA)
-async function setupAudioMix() {
-  const audioContext = new AudioContext();
-  await audioContext.resume();
+// 🎧 pegar áudio de forma estável
+function getAudioTracks() {
+  const g = guide.captureStream();
+  const r = recorded.captureStream();
 
-  const destination = audioContext.createMediaStreamDestination();
-
-  const guideSource = audioContext.createMediaElementSource(guide);
-  const recordedSource = audioContext.createMediaElementSource(recorded);
-
-  const guideGain = audioContext.createGain();
-  const recordedGain = audioContext.createGain();
-
-  guideGain.gain.value = 0.8;
-  recordedGain.gain.value = 1.0;
-
-  guideSource.connect(guideGain).connect(destination);
-  recordedSource.connect(recordedGain).connect(destination);
-
-  // 🔇 evita duplicação
-  guide.muted = true;
-  recorded.muted = true;
-
-  return { audioContext, destination };
+  return [
+    g.getAudioTracks()[0],
+    r.getAudioTracks()[0]
+  ].filter(Boolean);
 }
 
-// 🎥 export final
+// 🎥 EXPORT FINAL DEFINITIVO
 async function exportVideo() {
-  if (!guide.src || !recorded.src) {
-    alert("Carregue e grave os dois vídeos primeiro");
-    return;
-  }
-
   const og = parseFloat(offsetGuideInput.value) || 0;
   const or = parseFloat(offsetRecordedInput.value) || 0;
 
   guide.currentTime = og;
   recorded.currentTime = or;
 
-  // 👉 IMPORTANTE: play antes do áudio
   await guide.play().catch(()=>{});
   await recorded.play().catch(()=>{});
 
-  const { audioContext, destination } = await setupAudioMix();
+  // 🔥 delay crítico pra ativar áudio no Chrome
+  await new Promise(r => setTimeout(r, 200));
 
   const canvasStream = canvas.captureStream(30);
 
-  const finalStream = new MediaStream([
-    ...canvasStream.getVideoTracks(),
-    ...destination.stream.getAudioTracks()
-  ]);
+  const audioTracks = getAudioTracks();
 
-  console.log("Audio tracks:", finalStream.getAudioTracks().length);
+  console.log("audio tracks:", audioTracks.length);
+
+  const finalStream = canvasStream;
+
+  audioTracks.forEach(track => {
+    finalStream.addTrack(track);
+  });
+
+  console.log("final audio:", finalStream.getAudioTracks().length);
 
   const recorderFinal = new MediaRecorder(finalStream, {
     mimeType: "video/webm;codecs=vp8,opus"
   });
 
-  let finalChunks = [];
+  let chunksFinal = [];
 
   recorderFinal.ondataavailable = e => {
-    if (e.data.size > 0) finalChunks.push(e.data);
+    if (e.data.size > 0) chunksFinal.push(e.data);
   };
 
   recorderFinal.onstop = () => {
-    const blob = new Blob(finalChunks, { type: "video/webm" });
+    const blob = new Blob(chunksFinal, { type: "video/webm" });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "duet-final-com-audio.webm";
+    a.download = "duet-final.webm";
     a.click();
   };
 
   draw();
-
   recorderFinal.start();
 
   const duration = Math.min(
