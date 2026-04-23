@@ -76,7 +76,6 @@ input {
   <button onclick="exportVideo()">⬇ Exportar com Áudio</button>
 </div>
 
-<!-- canvas oculto -->
 <canvas id="canvas" width="600" height="533" style="display:none;"></canvas>
 
 <script>
@@ -93,14 +92,14 @@ const offsetRecordedInput = document.getElementById("offsetRecorded");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-// carregar vídeo
+// carregar vídeo guia
 fileInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
   guide.src = URL.createObjectURL(file);
 });
 
-// 🎥 gravação da câmera
+// 🎥 grava câmera
 async function start() {
   chunks = [];
 
@@ -120,9 +119,9 @@ async function start() {
     recorded.src = URL.createObjectURL(blob);
   };
 
-  const offsetGuide = parseFloat(offsetGuideInput.value) || 0;
+  const og = parseFloat(offsetGuideInput.value) || 0;
 
-  guide.currentTime = offsetGuide;
+  guide.currentTime = og;
   await guide.play().catch(()=>{});
 
   recorder.start();
@@ -135,7 +134,7 @@ function stop() {
   guide.pause();
 }
 
-// ▶ controle sincronizado
+// ▶ controle
 function playMaster() {
   const og = parseFloat(offsetGuideInput.value) || 0;
   const or = parseFloat(offsetRecordedInput.value) || 0;
@@ -152,7 +151,7 @@ function pauseMaster() {
   recorded.pause();
 }
 
-// 🎬 desenhar no canvas
+// 🎬 canvas render
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -162,9 +161,11 @@ function draw() {
   requestAnimationFrame(draw);
 }
 
-// 🎧 MIX DE ÁUDIO
-function setupAudioMix() {
+// 🎧 setup áudio (VERSÃO CORRIGIDA)
+async function setupAudioMix() {
   const audioContext = new AudioContext();
+  await audioContext.resume();
+
   const destination = audioContext.createMediaStreamDestination();
 
   const guideSource = audioContext.createMediaElementSource(guide);
@@ -179,16 +180,31 @@ function setupAudioMix() {
   guideSource.connect(guideGain).connect(destination);
   recordedSource.connect(recordedGain).connect(destination);
 
-  // evitar duplicação
+  // 🔇 evita duplicação
   guide.muted = true;
   recorded.muted = true;
 
   return { audioContext, destination };
 }
 
-// 🎥 EXPORT FINAL COM ÁUDIO
+// 🎥 export final
 async function exportVideo() {
-  const { audioContext, destination } = setupAudioMix();
+  if (!guide.src || !recorded.src) {
+    alert("Carregue e grave os dois vídeos primeiro");
+    return;
+  }
+
+  const og = parseFloat(offsetGuideInput.value) || 0;
+  const or = parseFloat(offsetRecordedInput.value) || 0;
+
+  guide.currentTime = og;
+  recorded.currentTime = or;
+
+  // 👉 IMPORTANTE: play antes do áudio
+  await guide.play().catch(()=>{});
+  await recorded.play().catch(()=>{});
+
+  const { audioContext, destination } = await setupAudioMix();
 
   const canvasStream = canvas.captureStream(30);
 
@@ -197,40 +213,31 @@ async function exportVideo() {
     ...destination.stream.getAudioTracks()
   ]);
 
-  const recorder = new MediaRecorder(finalStream, {
-    mimeType: "video/webm"
+  console.log("Audio tracks:", finalStream.getAudioTracks().length);
+
+  const recorderFinal = new MediaRecorder(finalStream, {
+    mimeType: "video/webm;codecs=vp8,opus"
   });
 
-  let chunks = [];
+  let finalChunks = [];
 
-  recorder.ondataavailable = e => {
-    if (e.data.size > 0) chunks.push(e.data);
+  recorderFinal.ondataavailable = e => {
+    if (e.data.size > 0) finalChunks.push(e.data);
   };
 
-  recorder.onstop = () => {
-    const blob = new Blob(chunks, { type: "video/webm" });
+  recorderFinal.onstop = () => {
+    const blob = new Blob(finalChunks, { type: "video/webm" });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "duet-final.webm";
+    a.download = "duet-final-com-audio.webm";
     a.click();
   };
 
-  const og = parseFloat(offsetGuideInput.value) || 0;
-  const or = parseFloat(offsetRecordedInput.value) || 0;
-
-  guide.currentTime = og;
-  recorded.currentTime = or;
-
-  await audioContext.resume();
-
-  guide.play();
-  recorded.play();
-
   draw();
 
-  recorder.start();
+  recorderFinal.start();
 
   const duration = Math.min(
     guide.duration - og,
@@ -238,7 +245,7 @@ async function exportVideo() {
   );
 
   setTimeout(() => {
-    recorder.stop();
+    recorderFinal.stop();
     guide.pause();
     recorded.pause();
   }, duration * 1000);
