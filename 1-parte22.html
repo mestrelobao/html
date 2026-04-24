@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Duet Recorder</title>
+<title>Duet Recorder PRO</title>
 
 <style>
 body {
@@ -36,12 +36,16 @@ button {
   padding: 10px 16px;
   margin: 5px;
 }
+
+input {
+  width: 80px;
+}
 </style>
 </head>
 
 <body>
 
-<h2>Duet Recorder (Guia + Gravação)</h2>
+<h2>Duet Recorder PRO</h2>
 
 <input type="file" id="fileInput" accept="video/*">
 
@@ -55,6 +59,26 @@ button {
   <video id="recorded" controls></video>
 </div>
 
+<div class="controls">
+  Guide Offset:
+  <input type="number" id="offsetGuide" step="0.1" value="0">
+
+  Recorded Offset:
+  <input type="number" id="offsetRecorded" step="0.1" value="0">
+</div>
+
+<div class="controls">
+  <button onclick="playMaster()">▶ Play</button>
+  <button onclick="pauseMaster()">⏸ Pause</button>
+</div>
+
+<div class="controls">
+  <button onclick="exportSynced()">⬇️ Exportar Sincronizado</button>
+</div>
+
+<!-- FFmpeg -->
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js"></script>
+
 <script>
 let stream;
 let recorder;
@@ -63,25 +87,23 @@ let chunks = [];
 const guide = document.getElementById("guide");
 const recorded = document.getElementById("recorded");
 
-// 📂 carregar vídeo guia
+// carregar vídeo guia
 document.getElementById("fileInput").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
-
   guide.src = URL.createObjectURL(file);
 });
 
-// ▶ gravar
+// 🎥 gravação
 async function start() {
   chunks = [];
 
+  const offsetGuide = parseFloat(document.getElementById("offsetGuide").value) || 0;
+
   stream = await navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: true   // 🔥 áudio ligado
+    audio: true
   });
-
-  // só preview da câmera (sem substituir vídeo final)
-  guide.play();
 
   recorder = new MediaRecorder(stream);
 
@@ -91,26 +113,101 @@ async function start() {
 
   recorder.onstop = () => {
     const blob = new Blob(chunks, { type: "video/webm" });
-    const url = URL.createObjectURL(blob);
-
-    // ❗ não autoplay
-    recorded.src = url;
-    recorded.controls = true;
-    recorded.autoplay = false;
-    recorded.muted = false;   // 🔥 áudio normal
+    recorded.src = URL.createObjectURL(blob);
   };
+
+  guide.currentTime = Math.max(0, offsetGuide);
+  guide.play().catch(() => {});
 
   recorder.start();
 }
 
-// ⏹ parar
+// parar
 function stop() {
-  if (recorder && recorder.state !== "inactive") {
-    recorder.stop();
-  }
-
+  recorder?.stop();
   stream?.getTracks().forEach(t => t.stop());
   guide.pause();
+}
+
+// ▶ play sincronizado (preview)
+function playMaster() {
+  const offsetGuide = parseFloat(document.getElementById("offsetGuide").value) || 0;
+  const offsetRecorded = parseFloat(document.getElementById("offsetRecorded").value) || 0;
+
+  guide.currentTime = Math.max(0, offsetGuide);
+  recorded.currentTime = Math.max(0, offsetRecorded);
+
+  guide.play().catch(() => {});
+  recorded.play().catch(() => {});
+}
+
+// pause
+function pauseMaster() {
+  guide.pause();
+  recorded.pause();
+}
+
+// 🚀 EXPORTAR SINCRONIZADO
+async function exportSynced() {
+  if (!guide.src || !recorded.src) {
+    alert("Precisa dos dois vídeos");
+    return;
+  }
+
+  const offsetGuide = parseFloat(document.getElementById("offsetGuide").value) || 0;
+  const offsetRecorded = parseFloat(document.getElementById("offsetRecorded").value) || 0;
+
+  const start = Math.max(offsetGuide, offsetRecorded);
+
+  const cutGuide = start - offsetGuide;
+  const cutRecorded = start - offsetRecorded;
+
+  const { createFFmpeg, fetchFile } = FFmpeg;
+  const ffmpeg = createFFmpeg({ log: true });
+
+  await ffmpeg.load();
+
+  const guideBlob = await fetch(guide.src).then(r => r.blob());
+  const recordedBlob = await fetch(recorded.src).then(r => r.blob());
+
+  ffmpeg.FS("writeFile", "guide.mp4", await fetchFile(guideBlob));
+  ffmpeg.FS("writeFile", "recorded.webm", await fetchFile(recordedBlob));
+
+  // cortar guide
+  await ffmpeg.run(
+    "-ss", String(cutGuide),
+    "-i", "guide.mp4",
+    "-c", "copy",
+    "guide_sync.mp4"
+  );
+
+  // cortar recorded
+  await ffmpeg.run(
+    "-ss", String(cutRecorded),
+    "-i", "recorded.webm",
+    "-c", "copy",
+    "recorded_sync.webm"
+  );
+
+  // download guide
+  const gData = ffmpeg.FS("readFile", "guide_sync.mp4");
+  const gUrl = URL.createObjectURL(new Blob([gData.buffer], { type: "video/mp4" }));
+
+  const a1 = document.createElement("a");
+  a1.href = gUrl;
+  a1.download = "guide_sync.mp4";
+  a1.click();
+
+  // download recorded
+  const rData = ffmpeg.FS("readFile", "recorded_sync.webm");
+  const rUrl = URL.createObjectURL(new Blob([rData.buffer], { type: "video/webm" }));
+
+  setTimeout(() => {
+    const a2 = document.createElement("a");
+    a2.href = rUrl;
+    a2.download = "recorded_sync.webm";
+    a2.click();
+  }, 500);
 }
 </script>
 
