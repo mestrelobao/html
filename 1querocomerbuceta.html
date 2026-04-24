@@ -1,46 +1,136 @@
-// import { FFmpeg } from '@ffmpeg/ffmpeg';
-// import { fetchFile } from '@ffmpeg/util';
-function() {
-    const [loaded, setLoaded] = useState(false);
-    const ffmpegRef = useRef(new FFmpeg());
-    const videoRef = useRef(null);
-    const messageRef = useRef(null);
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Converter WEBM → MP4</title>
 
-    const load = async () => {
-        const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd'
-        const ffmpeg = ffmpegRef.current;
-        // Listen to progress event instead of log.
-        ffmpeg.on('progress', ({ progress, time }) => {
-            messageRef.current.innerHTML = `${progress * 100} % (transcoded time: ${time / 1000000} s)`;
-        });
-        // toBlobURL is used to bypass CORS issue, urls with the same
-        // domain can be used directly.
-        await ffmpeg.load({
-            coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-            wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
-        });
-        setLoaded(true);
+  <style>
+    body {
+      font-family: Arial;
+      max-width: 600px;
+      margin: 40px auto;
     }
 
-    const transcode = async () => {
-        const ffmpeg = ffmpegRef.current;
-        await ffmpeg.writeFile('input.webm', await fetchFile('https://raw.githubusercontent.com/ffmpegwasm/testdata/master/Big_Buck_Bunny_180_10s.webm'));
-        await ffmpeg.exec(['-i', 'input.webm', 'output.mp4']);
-        const data = await ffmpeg.readFile('output.mp4');
-        videoRef.current.src =
-            URL.createObjectURL(new Blob([data.buffer], {type: 'video/mp4'}));
+    #progressContainer {
+      width: 100%;
+      background: #eee;
+      border-radius: 6px;
+      margin-top: 10px;
+      height: 20px;
+      overflow: hidden;
+      display: none;
     }
 
-    return (loaded
-        ? (
-            <>
-                <video ref={videoRef} controls></video><br/>
-                <button onClick={transcode}>Transcode webm to mp4</button>
-                <p ref={messageRef}></p>
-            </>
-        )
-        : (
-            <button onClick={load}>Load ffmpeg-core (~31 MB)</button>
-        )
-    );
-}
+    #progressBar {
+      height: 100%;
+      width: 0%;
+      background: #4caf50;
+      transition: width 0.2s;
+    }
+
+    button {
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Converter WEBM → MP4</h2>
+
+  <input type="file" id="upload" accept="video/webm" />
+  <br><br>
+
+  <button id="convert">Converter</button>
+
+  <p id="status"></p>
+
+  <div id="progressContainer">
+    <div id="progressBar"></div>
+  </div>
+
+  <br>
+
+  <a id="download" style="display:none;">Baixar MP4</a>
+
+  <!-- FFmpeg local -->
+  <script src="ffmpeg.min.js"></script>
+
+  <script>
+    const { createFFmpeg, fetchFile } = FFmpeg;
+
+    const ffmpeg = createFFmpeg({
+      log: true,
+      corePath: "./ffmpeg-core.js"
+    });
+
+    const upload = document.getElementById("upload");
+    const convertBtn = document.getElementById("convert");
+    const status = document.getElementById("status");
+    const download = document.getElementById("download");
+    const progressBar = document.getElementById("progressBar");
+    const progressContainer = document.getElementById("progressContainer");
+
+    // progresso
+    ffmpeg.setProgress(({ ratio }) => {
+      const percent = Math.min(100, Math.round(ratio * 100));
+      progressBar.style.width = percent + "%";
+      status.textContent = "Processando: " + percent + "%";
+    });
+
+    convertBtn.onclick = async () => {
+      const file = upload.files[0];
+
+      if (!file) {
+        alert("Selecione um arquivo WEBM");
+        return;
+      }
+
+      progressContainer.style.display = "block";
+      progressBar.style.width = "0%";
+      download.style.display = "none";
+
+      try {
+        status.textContent = "Carregando FFmpeg...";
+
+        if (!ffmpeg.isLoaded()) {
+          await ffmpeg.load();
+        }
+
+        status.textContent = "Preparando arquivo...";
+
+        ffmpeg.FS("writeFile", "input.webm", await fetchFile(file));
+
+        status.textContent = "Convertendo...";
+
+        await ffmpeg.run(
+          "-i", "input.webm",
+          "-c:v", "libx264",
+          "-preset", "fast",
+          "-c:a", "aac",
+          "output.mp4"
+        );
+
+        const data = ffmpeg.FS("readFile", "output.mp4");
+
+        const url = URL.createObjectURL(
+          new Blob([data.buffer], { type: "video/mp4" })
+        );
+
+        download.href = url;
+        download.download = "video.mp4";
+        download.textContent = "Baixar MP4";
+        download.style.display = "inline-block";
+
+        status.textContent = "Conversão concluída!";
+        progressBar.style.width = "100%";
+
+      } catch (err) {
+        console.error(err);
+        status.textContent = "Erro na conversão (veja o console)";
+      }
+    };
+  </script>
+
+</body>
+</html>
