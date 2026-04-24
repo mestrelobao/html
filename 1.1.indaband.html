@@ -1,132 +1,67 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Dual Recorder</title>
-
-<style>
-body {
-  margin: 0;
-  background: black;
-  color: white;
-  font-family: Arial;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-video {
-  width: 300px;
-  height: 533px;
-  background: black;
-  margin: 10px;
-}
-
-.controls {
-  margin: 10px;
-}
-
-button {
-  padding: 10px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <title>Converter WEBM para MP4</title>
 </head>
-
 <body>
+  <h2>Converter WEBM → MP4</h2>
 
-<h2>Dual Recorder (SEPARADO)</h2>
+  <input type="file" id="upload" accept="video/webm" />
+  <br><br>
 
-<input type="file" id="fileInput" accept="video/*">
+  <button id="convert">Converter</button>
+  <p id="status"></p>
 
-<div class="controls">
-  Guide Offset (segundos):
-  <input type="number" id="offsetGuide" value="0" step="0.1">
-</div>
+  <a id="download" style="display:none;">Baixar MP4</a>
 
-<div class="controls">
-  <button onclick="start()">▶ Gravar</button>
-  <button onclick="stop()">⏹ Parar</button>
-</div>
+  <script type="module">
+    import { createFFmpeg, fetchFile } from "https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js";
 
-<h3>Preview</h3>
-<video id="guide" controls></video>
-<video id="recorded" controls></video>
+    const ffmpeg = createFFmpeg({ log: true });
 
-<script>
-let camStream;
-let camRecorder;
-let camChunks = [];
+    const upload = document.getElementById("upload");
+    const convertBtn = document.getElementById("convert");
+    const status = document.getElementById("status");
+    const download = document.getElementById("download");
 
-const guide = document.getElementById("guide");
-const recorded = document.getElementById("recorded");
+    convertBtn.onclick = async () => {
+      const file = upload.files[0];
+      if (!file) {
+        alert("Selecione um arquivo WEBM");
+        return;
+      }
 
-// carregar vídeo guia
-fileInput.addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  guide.src = URL.createObjectURL(file);
-});
+      status.textContent = "Carregando FFmpeg...";
+      if (!ffmpeg.isLoaded()) {
+        await ffmpeg.load();
+      }
 
-// 🎥 START
-async function start() {
-  camChunks = [];
+      status.textContent = "Processando vídeo...";
 
-  const offset = parseFloat(offsetGuide.value) || 0;
+      ffmpeg.FS("writeFile", "input.webm", await fetchFile(file));
 
-  camStream = await navigator.mediaDevices.getUserMedia({
-    video: true,
-    audio: true
-  });
+      await ffmpeg.run(
+        "-i", "input.webm",
+        "-c:v", "libx264",
+        "-preset", "fast",
+        "-c:a", "aac",
+        "output.mp4"
+      );
 
-  camRecorder = new MediaRecorder(camStream);
+      const data = ffmpeg.FS("readFile", "output.mp4");
 
-  camRecorder.ondataavailable = e => {
-    if (e.data.size > 0) camChunks.push(e.data);
-  };
+      const url = URL.createObjectURL(
+        new Blob([data.buffer], { type: "video/mp4" })
+      );
 
-  camRecorder.onstop = () => {
-    const blob = new Blob(camChunks, { type: "video/webm" });
-    recorded.src = URL.createObjectURL(blob);
-  };
+      download.href = url;
+      download.download = "video.mp4";
+      download.style.display = "block";
+      download.textContent = "Baixar MP4";
 
-  // 🎬 sincroniza guia (offset aplicado aqui)
-  guide.currentTime = offset;
-  guide.play().catch(()=>{});
-
-  camRecorder.start();
-}
-
-// ⏹ STOP
-function stop() {
-  camRecorder?.stop();
-  camStream?.getTracks().forEach(t => t.stop());
-  guide.pause();
-}
-
-// 🔥 EXPORT (2 arquivos separados)
-function exportSeparate() {
-  if (!guide.src || !recorded.src) {
-    alert("Grave os dois vídeos primeiro");
-    return;
-  }
-
-  // download guia
-  const a1 = document.createElement("a");
-  a1.href = guide.src;
-  a1.download = "guide.mp4";
-  a1.click();
-
-  // download gravado
-  const a2 = document.createElement("a");
-  a2.href = recorded.src;
-  a2.download = "camera.webm";
-  a2.click();
-}
-</script>
-
-<div class="controls">
-  <button onclick="exportSeparate()">⬇ Baixar vídeos separados</button>
-</div>
-
+      status.textContent = "Conversão concluída!";
+    };
+  </script>
 </body>
 </html>
