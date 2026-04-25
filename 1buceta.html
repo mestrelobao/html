@@ -2,61 +2,47 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Camera Sync Record</title>
+<title>Indaband Primeira Parte - Com Controle de Ganho</title>
 
 <style>
-* {
+body {
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  width: 100%;
-  height: 100%;
   background: black;
-  overflow: hidden;
-  font-family: Arial, sans-serif;
-}
-
-.wrapper {
-  height: 100vh;
+  color: white;
+  font-family: Arial;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-}
-
-/* LADO A LADO */
-.videos {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0;
-}
-
-.player {
-  position: relative;
+  padding-bottom: 50px;
 }
 
 video {
-  width: 45vw;
-  max-height: 70vh;
-  object-fit: contain;
+  width: 300px;
+  height: 533px; /* 9:16 */
   background: black;
-  display: block;
+  object-fit: cover;
+  margin-top: 20px;
 }
 
-/* CONTROLES */
 .controls {
-  margin-top: 50px;
+  margin-top: 20px;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.volume-container {
+  background: #222;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
   gap: 10px;
 }
 
 button {
-  padding: 10px 18px;
-  font-size: 16px;
+  padding: 10px 16px;
   cursor: pointer;
 }
 </style>
@@ -64,87 +50,130 @@ button {
 
 <body>
 
-<div class="wrapper">
+<h2>Gravação em formato Shorts (9:16)</h2>
 
-  <div class="videos">
+<video id="preview" autoplay playsinline muted></video>
 
-    <!-- CAMERA -->
-    <div class="player">
-      <video id="cam" autoplay playsinline muted></video>
-    </div>
-
-    <!-- VIDEO 2 -->
-    <div class="player">
-      <video id="v2" src="video2.mp4" preload="auto" loop></video>
-    </div>
-
+<div class="controls">
+  <div class="volume-container">
+    <label for="gainInput">🎤 Volume Mic:</label>
+    <input type="range" id="gainInput" min="0" max="3" step="0.1" value="1">
+    <span id="gainValue">1.0x</span>
   </div>
 
-  <div class="controls">
-    <button onclick="startRecord()">🎥 Gravar</button>
-    <button onclick="stopRecord()">⏹ Parar</button>
+  <div>
+    <button onclick="start()">▶ Start</button>
+    <button onclick="stop()">⏹ Stop</button>
   </div>
-
 </div>
 
+<div id="output"></div>
+
 <script>
-const cam = document.getElementById("cam");
-const v2 = document.getElementById("v2");
-
+let stream;
 let recorder;
-let recordedChunks = [];
+let chunks = [];
+let canvasStream;
+let audioCtx;
+let gainNode;
 
-/* 🎥 ativa câmera */
-async function initCamera() {
-  const stream = await navigator.mediaDevices.getUserMedia({
+// Atualiza o texto do volume na tela
+document.getElementById('gainInput').addEventListener('input', (e) => {
+  const val = e.target.value;
+  document.getElementById('gainValue').innerText = val + "x";
+  if (gainNode) {
+    gainNode.gain.setTargetAtTime(val, audioCtx.currentTime, 0.01);
+  }
+});
+
+async function start() {
+  chunks = [];
+  document.getElementById("output").innerHTML = "";
+
+  // 1. Captura vídeo e áudio originais
+  stream = await navigator.mediaDevices.getUserMedia({
     video: true,
     audio: true
   });
 
-  cam.srcObject = stream;
-  return stream;
-}
+  const video = document.getElementById("preview");
+  video.srcObject = stream;
 
-/* 🎬 inicia sincronizado */
-async function startRecord() {
+  // --- LÓGICA DE ÁUDIO (CONTROLE DE VOLUME) ---
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const source = audioCtx.createMediaStreamSource(stream);
+  gainNode = audioCtx.createGain();
+  
+  // Define o ganho inicial baseado no slider
+  gainNode.gain.value = document.getElementById('gainInput').value;
+  
+  // Criamos um destino para o áudio processado
+  const audioDestination = audioCtx.createMediaStreamDestination();
+  source.connect(gainNode);
+  gainNode.connect(audioDestination);
+  // --------------------------------------------
 
-  recordedChunks = [];
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = 1080;
+  canvas.height = 1920;
 
-  const stream = await initCamera();
+  function draw() {
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+    if (!vw || !vh) { requestAnimationFrame(draw); return; }
 
-  // prepara gravação APENAS da câmera
-  recorder = new MediaRecorder(stream);
+    const canvasRatio = canvas.width / canvas.height;
+    const videoRatio = vw / vh;
+    let sx, sy, sw, sh;
 
-  recorder.ondataavailable = e => {
-    if (e.data.size > 0) recordedChunks.push(e.data);
-  };
+    if (videoRatio > canvasRatio) {
+      sh = vh; sw = vh * canvasRatio; sx = (vw - sw) / 2; sy = 0;
+    } else {
+      sw = vw; sh = vw / canvasRatio; sx = 0; sy = (vh - sh) / 2;
+    }
+
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+    requestAnimationFrame(draw);
+  }
+
+  video.onloadedmetadata = () => draw();
+
+  // Stream do Canvas (Vídeo)
+  canvasStream = canvas.captureStream(30);
+
+  // 🔥 ADICIONA O ÁUDIO PROCESSADO (com volume) em vez do áudio bruto
+  audioDestination.stream.getAudioTracks().forEach(track => {
+    canvasStream.addTrack(track);
+  });
+
+  recorder = new MediaRecorder(canvasStream);
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
 
   recorder.onstop = () => {
-    const blob = new Blob(recordedChunks, { type: "video/webm" });
+    const blob = new Blob(chunks, { type: "video/webm" });
     const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "camera.webm";
-    a.click();
+    const playback = document.createElement("video");
+    playback.src = url;
+    playback.controls = true;
+    playback.autoplay = true;
+    playback.style.width = "300px";
+    playback.style.height = "533px";
+    playback.style.marginTop = "20px";
+    const output = document.getElementById("output");
+    output.innerHTML = "<h3>Resultado Gravado:</h3>";
+    output.appendChild(playback);
   };
 
-  // 🔥 sincronização exata de início
-  v2.currentTime = 0;
-
-  await v2.play();
   recorder.start();
-
 }
 
-/* ⏹ parar tudo */
-function stopRecord() {
+function stop() {
   if (recorder && recorder.state !== "inactive") {
     recorder.stop();
   }
-
-  cam.srcObject?.getTracks().forEach(t => t.stop());
-  v2.pause();
+  stream?.getTracks().forEach(t => t.stop());
+  if(audioCtx) audioCtx.close();
 }
 </script>
 
