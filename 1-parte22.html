@@ -70,7 +70,7 @@ input {
   <button onclick="playMaster()">▶ Play</button>
   <button onclick="pauseMaster()">⏸ Pause</button>
 </div>
-
+<button onclick="exportWithOffset()">Export Video</button>
 <script>
 let stream;
 let recorder;
@@ -107,6 +107,33 @@ function playMaster() {
 function pauseMaster() {
   guide.pause();
   recorded.pause();
+}
+  async function exportWithOffset() {
+  const offsetRecorded = parseFloat(document.getElementById("offsetRecorded").value) || 0;
+
+  recorded.currentTime = offsetRecorded;
+
+  const stream = recorded.captureStream();
+  const recorder = new MediaRecorder(stream);
+
+  let chunks = [];
+
+  recorder.ondataavailable = e => chunks.push(e.data);
+
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: "video/webm" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "output.webm";
+    a.click();
+  };
+
+  recorder.start();
+  await recorded.play();
+
+  recorded.onended = () => recorder.stop();
 }
 </script>
 
