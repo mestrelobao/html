@@ -93,19 +93,19 @@ setTimeout(minhafuncao, 60000*1);
 async function minhafuncao(){
 console.log("minha funcao()");
 console.log(resultado); 
-let data = new Date();
-let ano_num = data.getFullYear();
-let ano = ano_num.toString();  
-let mes_num = (data.getMonth()+1);
-mes_num = pad (mes_num);
-let mes = mes_num.toString();  
-let dia_num = data.getDate();
-dia_num = pad (dia_num);
-let dia = dia_num.toString();
-let hora = data.getHours()+3;
-hora = pad (hora);
+//let data = new Date();
+//let ano_num = data.getFullYear();
+//let ano = ano_num.toString();  
+//let mes_num = (data.getMonth()+1);
+//mes_num = pad (mes_num);
+//let mes = mes_num.toString();  
+//let dia_num = data.getDate();
+//dia_num = pad (dia_num);
+//let dia = dia_num.toString();
+//let hora = data.getHours()+3;
+//hora = pad (hora);
 
-let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
+let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+resultado+"&data_fim="+resultado);
 let myText = await myObject.text();
 const guiga = JSON.parse(myText);
 console.log(myText);
@@ -134,17 +134,16 @@ if(document.getElementById("aviso").checked) audioAviso.play();
   }
     veronica = normando;
     normando = "";
-buceta = ano+mes+dia+hora;
-metalizar(buceta);
+//buceta = ano+mes+dia+hora;
+metalizar(resultado);
     setTimeout(minhafuncao, 60000*1);
   }
+  //não preciso mais dessa função...
   function addZero(i) {
   if (i < 10) {i = "0" + i}
   return i;
 }
-
-
-function horario_zulu(){
+function horario_zulu(){//preciso corrigir essa função para usar o  horadio zulu que utilizo nasa outras funçoes "resultado"...
 console.log("zulu"); 
 const d = new Date();
 let h = d.getHours();
@@ -167,7 +166,7 @@ if(document.getElementById("metar").checked) audioMetar.play();
 }
 setTimeout(horario_zulu, 1000);
 }
-
+//consertar para ficar metalizar(); usando  a variavel global "resultado"...
 async function metalizar(hora) {
 //let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sble?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini=2026021612&data_fim=2026021612");
 let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+hora+"&data_fim="+hora);
@@ -187,7 +186,7 @@ document.getElementById("linha5").innerHTML = guiga.data.data[2]["mens"];
 console.log("total metar + speci = " + guiga.data.total);
 }
 
-horario_zulu();  //alarme do metar
+horario_zulu();  //timer / alarme do metar
 myfunction(); //wrng.html
 
 </script>
