@@ -58,6 +58,10 @@ let dia_num = data.getDate();
 dia_num = pad (dia_num);
 let dia = dia_num.toString();
 let hora = data.getHours()+3;
+if (hora = 26) {
+dia = dia + 1;
+ hora = 02;
+}
 hora = pad (hora);
 
 //console.log(ano+mes+dia+hora" aqui que eu tenho que analisar as ultimas 4 horas");
