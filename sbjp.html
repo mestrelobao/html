@@ -79,14 +79,15 @@ function formatOffset(offset) {
 }
 
  async function avisos_anteriores(buceta){
- console.log("resultados anteriores ()");
- console.log(buceta);
+
+// console.log(buceta);
 //buceta = formatOffset(-4);
 let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+buceta+"&data_fim="+buceta);
 let myText = await myObject.text();
 const guiga = JSON.parse(myText);
+console.log("avisos_anteriores()");
 if (guiga.data.data[0] === undefined){
-console.log("Nenhum Aviso de Aeródromo por enquanto...");
+console.log("Nenhum Aviso de Aeródromo para "+buceta);
 } else {  
 console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha6").innerHTML = guiga.data.data[0]["mens"];
