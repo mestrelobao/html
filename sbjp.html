@@ -70,7 +70,7 @@ const partes1 = new Intl.DateTimeFormat("pt-BR", {
   hour12: false
 }).formatToParts(agora);
 const mapa1 = {};
-partes.forEach(p => {
+partes1.forEach(p => {
   if (p.type !== "literal") {
     mapa1[p.type] = p.value;
   }
