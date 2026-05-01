@@ -34,7 +34,7 @@ color: blue;
 <p id="linha4"></p>
 <p id="linha5"></p>
 <h2>Sempre deixe essa página ativa para o alarme soar!</h2>
-
+<p id="linha6"></p>
  <script>
   let audioAviso = new Audio('audioAviso.wav');
   let audioMetar = new Audio('audioMetar.wav');
@@ -59,8 +59,27 @@ partes.forEach(p => {
 });
 const resultado = `${mapa.year}${mapa.month}${mapa.day}${mapa.hour}`;
 
-
-  
+function avisos_anteriores(){
+const agora1 = new Date();
+const partes1 = new Intl.DateTimeFormat("pt-BR", {
+  timeZone: "UTC",
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  hour12: false
+}).formatToParts(agora);
+const mapa1 = {};
+partes.forEach(p => {
+  if (p.type !== "literal") {
+    mapa1[p.type] = p.value;
+  }
+});
+const resultado1 = `${mapa1.year}${mapa1.month}${mapa1.day}${mapa1.hour}`;
+console.log("resultados anteriores ()");
+ console.log(resultado);
+}
+//checar se isso ta servindo pra alguma coisa...  
   function pad(d) {
     return (d < 10) ? '0' + d.toString() : d.toString();
 }
@@ -185,7 +204,7 @@ document.getElementById("linha5").innerHTML = guiga.data.data[2]["mens"];
 }
 console.log("total metar + speci = " + guiga.data.total);
 }
-
+avisos_anteriores();
 horario_zulu();  //timer / alarme do metar
 myfunction(); //wrng.html
 
