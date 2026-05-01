@@ -42,30 +42,6 @@ color: blue;
   var veronica = "";
   var normando = "";
 
-  function pad(d) {
-    return (d < 10) ? '0' + d.toString() : d.toString();
-}
-
-async function myfunction() {
-console.log("myfunction()");
-//let data = new Date();
-//let ano_num = data.getFullYear();
-//let ano = ano_num.toString();  
-//let mes_num = (data.getMonth()+1);
-//mes_num = pad (mes_num);
-//let mes = mes_num.toString();  
-//let dia_num = data.getDate();
-//dia_num = pad (dia_num);
-//let dia = dia_num.toString();
-//let hora = data.getHours()+3;
-//if (hora = 26) {
-//dia = dia + 1;
-// hora = 02;
-//}
-//hora = pad (hora);
-
-//console.log(ano+mes+" "+dia+" "+hora+" aqui que eu tenho que analisar as ultimas 4 horas");
-
 const agora = new Date();
 const partes = new Intl.DateTimeFormat("pt-BR", {
   timeZone: "UTC",
@@ -81,9 +57,17 @@ partes.forEach(p => {
     mapa[p.type] = p.value;
   }
 });
-//const resultado = `${mapa.day}${mapa.month}${mapa.year}${mapa.hour}`;
 const resultado = `${mapa.year}${mapa.month}${mapa.day}${mapa.hour}`;
 
+
+  
+  function pad(d) {
+    return (d < 10) ? '0' + d.toString() : d.toString();
+}
+
+async function myfunction() {
+ 
+console.log("myfunction()");
 console.log(resultado);
  
 let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+resultado+"&data_fim="+resultado);
