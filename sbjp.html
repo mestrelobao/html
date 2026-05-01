@@ -80,8 +80,6 @@ function formatOffset(offset) {
 
  async function avisos_anteriores(buceta){
 
-// console.log(buceta);
-//buceta = formatOffset(-4);
 let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+buceta+"&data_fim="+buceta);
 let myText = await myObject.text();
 const guiga = JSON.parse(myText);
@@ -96,9 +94,9 @@ console.log("fim da função avisos_anteriores()");
  } 
   
 //checar se isso ta servindo pra alguma coisa...  
-  function pad(d) {
-    return (d < 10) ? '0' + d.toString() : d.toString();
-}
+//  function pad(d) {
+//    return (d < 10) ? '0' + d.toString() : d.toString();
+//}
 
 async function myfunction() {
  
@@ -120,7 +118,6 @@ console.log(guiga.data.data[0]["mens"]);
 document.getElementById("linha1").innerHTML = guiga.data.data[0]["mens"];
 veronica = guiga.data.data[0]["mens"];
 }  
-//buceta = ano+mes+dia+hora;
 metalizar(resultado);
 setTimeout(minhafuncao, 60000*1);
 }
@@ -128,18 +125,6 @@ setTimeout(minhafuncao, 60000*1);
 async function minhafuncao(){
 console.log("minha funcao()");
 console.log(resultado); 
-//let data = new Date();
-//let ano_num = data.getFullYear();
-//let ano = ano_num.toString();  
-//let mes_num = (data.getMonth()+1);
-//mes_num = pad (mes_num);
-//let mes = mes_num.toString();  
-//let dia_num = data.getDate();
-//dia_num = pad (dia_num);
-//let dia = dia_num.toString();
-//let hora = data.getHours()+3;
-//hora = pad (hora);
-
 let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+resultado+"&data_fim="+resultado);
 let myText = await myObject.text();
 const guiga = JSON.parse(myText);
@@ -169,7 +154,6 @@ if(document.getElementById("aviso").checked) audioAviso.play();
   }
     veronica = normando;
     normando = "";
-//buceta = ano+mes+dia+hora;
 metalizar(resultado);
     setTimeout(minhafuncao, 60000*1);
   }
@@ -224,7 +208,7 @@ avisos_anteriores(formatOffset(-4));
 avisos_anteriores(formatOffset(-3));
 avisos_anteriores(formatOffset(-2));  
 avisos_anteriores(formatOffset(-1));  
-horario_zulu();  //timer / alarme do metar
+horario_zulu();  //timer (ok) / alarme do metar(não funciona!)
 myfunction(); //wrng.html
 
 </script>
