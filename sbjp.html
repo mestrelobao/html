@@ -61,21 +61,25 @@ const resultado = `${mapa.year}${mapa.month}${mapa.day}${mapa.hour}`;
 
 
 
- function UTC(offsetHours) {
-  const agora1 = new Date();
+function getUTCOffset(offsetHours) {
+  const agora = new Date();
 
-  const utc = agora1.getTime() + (agora1.getTimezoneOffset() * 60000);
+  const utc = agora.getTime() + (agora.getTimezoneOffset() * 60000);
   return new Date(utc + (offsetHours * 60 * 60 * 1000));
 }
-function avisos_anteriores(){
-// exemplos
-const utcMinus4 = UTC(-4); 
-const utcMinus3 = UTC(-3);
-const utcMinus2 = UTC(-2);
-const utcMinus1 = UTC(-1);
+function formatOffset(offset) {
+  const d = getUTCOffset(offset);
 
-console.log(utcMinus4, utcMinus3, utcMinus2, utcMinus1);
- 
+  const dia = String(d.getDate()).padStart(2, "0");
+  const mes = String(d.getMonth() + 1).padStart(2, "0");
+  const ano = d.getFullYear();
+  const hora = String(d.getHours()).padStart(2, "0");
+
+  return `${dia}${mes}${ano}${hora}`;
+}
+
+function avisos_anteriores(){
+
 //const agora1 = new Date();
 //const partes1 = new Intl.DateTimeFormat("pt-BR", {
 //  timeZone: "America/Caracas",
@@ -93,6 +97,7 @@ console.log(utcMinus4, utcMinus3, utcMinus2, utcMinus1);
 //});
 //const resultado1 = `${mapa1.year}${mapa1.month}${mapa1.day}${mapa1.hour}`;
  console.log("resultados anteriores ()");
+ console.log(formatOffset(-3));
  //console.log(resultado1);
 }
 //checar se isso ta servindo pra alguma coisa...  
