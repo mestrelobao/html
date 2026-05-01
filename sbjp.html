@@ -60,7 +60,7 @@ let dia = dia_num.toString();
 let hora = data.getHours()+3;
 hora = pad (hora);
 
-console.log(ano+mes+dia+hora" aqui que eu tenho que analisar as ultimas 4 horas");
+//console.log(ano+mes+dia+hora" aqui que eu tenho que analisar as ultimas 4 horas");
 
 let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
 let myText = await myObject.text();
