@@ -65,7 +65,20 @@ let hora = data.getHours()+3;
 hora = pad (hora);
 
 console.log(ano+mes+" "+dia+" "+hora+" aqui que eu tenho que analisar as ultimas 4 horas");
+const agora = new Date();
 
+const horaLondres = agora.toLocaleString("pt-BR", {
+  timeZone: "Europe/London",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit"
+});
+
+console.log(horaLondres);
+ 
+
+
+ 
 let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+ano+mes+dia+hora+"&data_fim="+ano+mes+dia+hora);
 let myText = await myObject.text();
 const guiga = JSON.parse(myText);
