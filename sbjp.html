@@ -35,9 +35,7 @@ color: blue;
 <p id="linha5"></p>
 <h2>Sempre deixe essa página ativa para o alarme soar!</h2>
 <p id="linha6"></p>
- 
- 
- 
+  
  <script>
   let audioAviso = new Audio('audioAviso.wav');
   let audioMetar = new Audio('audioMetar.wav');
@@ -65,14 +63,13 @@ const resultado = `${mapa.year}${mapa.month}${mapa.day}${mapa.hour}`;
 //função para calcular as 4 horas anteriores ao aviso de aeródromo para saber se já existia algum aviso antes...
   
 function getUTCOffset(offsetHours) {
-//  const agora = new Date();
-const agora = new Date("2026-05-01T00:30:00");
-  const utc = agora.getTime() + (agora.getTimezoneOffset() * 60000);
-  return new Date(utc + (offsetHours * 60 * 60 * 1000));
+const agora = new Date();
+const utc = agora.getTime() + (agora.getTimezoneOffset() * 60000);
+return new Date(utc + (offsetHours * 60 * 60 * 1000));
 }
-function formatOffset(offset) {
-  const d = getUTCOffset(offset);
 
+  function formatOffset(offset) {
+  const d = getUTCOffset(offset);
   const dia = String(d.getDate()).padStart(2, "0");
   const mes = String(d.getMonth() + 1).padStart(2, "0");
   const ano = d.getFullYear();
@@ -95,11 +92,6 @@ document.getElementById("linha6").innerHTML = guiga.data.data[0]["mens"];
 }  
 console.log("fim da função avisos_anteriores()");
  } 
-  
-//checar se isso ta servindo pra alguma coisa...  
-//  function pad(d) {
-//    return (d < 10) ? '0' + d.toString() : d.toString();
-//}
 
 async function myfunction() {
  
@@ -167,14 +159,12 @@ metalizar(resultado);
 }
 function horario_zulu() {
   const d = new Date();
-// const d = new Date("2026-05-01T00:30:00");
-
   let h = addZero(d.getUTCHours());
   let m = addZero(d.getUTCMinutes());
   let s = addZero(d.getUTCSeconds());
-
   let time = h + ":" + m + ":" + s;
-  document.getElementById("linha2").innerHTML = time;
+  
+ document.getElementById("linha2").innerHTML = time;
 
   if (m == 50 && s == 0) {
     console.log("alarme ativado");
@@ -183,7 +173,9 @@ function horario_zulu() {
 
   setTimeout(horario_zulu, 1000);
 }
+  
 //consertar para ficar metalizar(); usando  a variavel global "resultado"...
+  
 async function metalizar(hora) {
 //let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sble?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini=2026021612&data_fim=2026021612");
 let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/metar/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+hora+"&data_fim="+hora);
@@ -206,9 +198,8 @@ avisos_anteriores(formatOffset(-4));
 avisos_anteriores(formatOffset(-3));
 avisos_anteriores(formatOffset(-2));  
 avisos_anteriores(formatOffset(-1));  
-horario_zulu();  //timer (ok) / alarme do metar(não funciona!)
-myfunction(); //wrng.html
-
+horario_zulu();  //timer (ok) / alarme do metar(ok)
+myfunction(); //wrng.html (ok)
 </script>
 </body>
 </html>
