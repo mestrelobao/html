@@ -65,8 +65,8 @@ const resultado = `${mapa.year}${mapa.month}${mapa.day}${mapa.hour}`;
 //função para calcular as 4 horas anteriores ao aviso de aeródromo para saber se já existia algum aviso antes...
   
 function getUTCOffset(offsetHours) {
-  const agora = new Date();
-
+//  const agora = new Date();
+const agora = new Date("2026-05-01T00:30:00");
   const utc = agora.getTime() + (agora.getTimezoneOffset() * 60000);
   return new Date(utc + (offsetHours * 60 * 60 * 1000));
 }
@@ -167,6 +167,7 @@ metalizar(resultado);
 }
 function horario_zulu() {
   const d = new Date();
+// const d = new Date("2026-05-01T00:30:00");
 
   let h = addZero(d.getUTCHours());
   let m = addZero(d.getUTCMinutes());
