@@ -35,13 +35,15 @@ color: blue;
 <p id="linha5"></p>
 <h2>Sempre deixe essa página ativa para o alarme soar!</h2>
 <p id="linha6"></p>
+ 
+ 
+ 
  <script>
   let audioAviso = new Audio('audioAviso.wav');
   let audioMetar = new Audio('audioMetar.wav');
-
   var veronica = "";
   var normando = "";
-
+// a variavel global resultado vai conter o horário UTC para ser usado nas chamadas para a API.
 const agora = new Date();
 const partes = new Intl.DateTimeFormat("pt-BR", {
   timeZone: "UTC",
@@ -60,7 +62,8 @@ partes.forEach(p => {
 const resultado = `${mapa.year}${mapa.month}${mapa.day}${mapa.hour}`;
 
 
-
+//função para calcular as 4 horas anteriores ao aviso de aeródromo para saber se já existia algum aviso antes...
+  
 function getUTCOffset(offsetHours) {
   const agora = new Date();
 
@@ -162,28 +165,22 @@ metalizar(resultado);
   if (i < 10) {i = "0" + i}
   return i;
 }
-function horario_zulu(){//preciso corrigir essa função para usar o  horadio zulu que utilizo nasa outras funçoes "resultado"...
-console.log("zulu"); 
-const d = new Date();
-let h = d.getHours();
-if (h == 21) {
-h = addZero(0);
-} else if (h == 22) {
-h = addZero(1);
-} else if (h == 23) {
-h = addZero(2);
-} else {
-h = addZero(h+3);
-}
-let m = addZero(d.getMinutes());
-let s = addZero(d.getSeconds());
-let time = h + ":" + m + ":" + s;
-document.getElementById("linha2").innerHTML = time;
-if( m == 50 && s == 00 ){
-console.log("alarme ativado");
-if(document.getElementById("metar").checked) audioMetar.play();
-}
-setTimeout(horario_zulu, 1000);
+function horario_zulu() {
+  const d = new Date();
+
+  let h = addZero(d.getUTCHours());
+  let m = addZero(d.getUTCMinutes());
+  let s = addZero(d.getUTCSeconds());
+
+  let time = h + ":" + m + ":" + s;
+  document.getElementById("linha2").innerHTML = time;
+
+  if (m == 50 && s == 0) {
+    console.log("alarme ativado");
+    if (document.getElementById("metar").checked) audioMetar.play();
+  }
+
+  setTimeout(horario_zulu, 1000);
 }
 //consertar para ficar metalizar(); usando  a variavel global "resultado"...
 async function metalizar(hora) {
