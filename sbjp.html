@@ -41,23 +41,27 @@ color: blue;
   let audioMetar = new Audio('audioMetar.wav');
   var veronica = "";
   var normando = "";
-// a variavel global resultado vai conter o horário UTC para ser usado nas chamadas para a API.
-const agora = new Date();
-const partes = new Intl.DateTimeFormat("pt-BR", {
-  timeZone: "UTC",
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-  hour: "2-digit",
-  hour12: false
-}).formatToParts(agora);
-const mapa = {};
-partes.forEach(p => {
-  if (p.type !== "literal") {
-    mapa[p.type] = p.value;
-  }
-});
-const resultado = `${mapa.year}${mapa.month}${mapa.day}${mapa.hour}`;
+  
+  function getResultadoUTC() {
+  const agora = new Date();
+  const partes = new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "UTC",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    hour12: false
+  }).formatToParts(agora);
+
+  const mapa = {};
+  partes.forEach(p => {
+    if (p.type !== "literal") {
+      mapa[p.type] = p.value;
+    }
+  });
+
+  return `${mapa.year}${mapa.month}${mapa.day}${mapa.hour}`;
+}
 
 
 //função para calcular as 4 horas anteriores ao aviso de aeródromo para saber se já existia algum aviso antes...
@@ -94,9 +98,9 @@ console.log("fim da função avisos_anteriores()");
  } 
 
 async function myfunction() {
- 
-console.log("myfunction()");
-console.log(resultado);
+
+let resultado = getResultadoUTC();
+console.log("myfunction() "+resultado);
  
 let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+resultado+"&data_fim="+resultado);
 let myText = await myObject.text();
@@ -118,8 +122,9 @@ setTimeout(minhafuncao, 60000*1);
 }
 
 async function minhafuncao(){
-console.log("minha funcao()");
-console.log(resultado); 
+ 
+let resultado = getResultadoUTC();
+console.log("minha função() "+resultado); 
 let myObject = await fetch("https://api-redemet.decea.mil.br/mensagens/aviso/sbjp?api_key=QzbHLKzGoex8tBCb67vCBSk6KdWCPUhjFatzXQ5u&data_ini="+resultado+"&data_fim="+resultado);
 let myText = await myObject.text();
 const guiga = JSON.parse(myText);
@@ -150,8 +155,7 @@ if(document.getElementById("aviso").checked) audioAviso.play();
     veronica = normando;
     normando = "";
 metalizar(resultado);
- console.log("mizera "+resultado);
-    setTimeout(minhafuncao, 60000*1);
+setTimeout(minhafuncao, 60000*1);
   }
   //ainda preciso mais dessa função?
   function addZero(i) {
