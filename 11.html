@@ -1,0 +1,127 @@
+
+guilherme santos <mestrelobaoguilherme@gmail.com>
+1:33 AM (0 minutes ago)
+to me
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Synchronous WAV Sampler</title>
+    <style>
+        body { font-family: sans-serif; background: #121212; color: #fff; padding: 30px; text-align: center; }
+        #drop-zone { border: 3px dashed #444; padding: 50px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; }
+        #drop-zone.hover { border-color: #00ff88; background: #1a2e25; }
+        .controls { margin: 20px; }
+        button { background: #00ff88; color: #000; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:disabled { background: #444; color: #888; cursor: not-allowed; }
+        #file-list { list-style: none; padding: 0; text-align: left; max-width: 400px; margin: 20px auto; }
+        .file-item { background: #222; padding: 10px; margin: 5px 0; border-radius: 4px; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+
+    <h1>Synchronous .WAV Sampler</h1>
+    <p>Upload files, then trigger them perfectly on the same hardware clock.</p>
+
+    <div id="drop-zone">Drag & Drop .WAV samples here or click to upload</div>
+    <input type="file" id="file-input" multiple accept=".wav" style="display: none;">
+
+    <div class="controls">
+        <button id="play-btn" disabled>Play Synchronously</button>
+        <button id="stop-btn" disabled>Stop All</button>
+    </div>
+
+    <h3>Loaded Samples:</h3>
+    <ul id="file-list"></ul>
+
+    <script>
+        // Use the native Web Audio Context API for microsecond-accurate hardware clocking
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const loadedBuffers = [];
+        const activeSources = [];
+
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const playBtn = document.getElementById('play-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const fileList = document.getElementById('file-list');
+
+        dropZone.onclick = () => fileInput.click();
+       
+        dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('hover'); };
+        dropZone.ondragleave = () => dropZone.classList.remove('hover');
+        dropZone.ondrop = (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('hover');
+            handleFiles(e.dataTransfer.files);
+        };
+        fileInput.onchange = (e) => handleFiles(e.target.files);
+
+        function handleFiles(files) {
+            for (let file of files) {
+                if (file.name.endsWith('.wav')) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        // Decode raw array buffer directly into PCM audio data strings
+                        audioCtx.decodeAudioData(event.target.result, (buffer) => {
+                            loadedBuffers.push({ name: file.name, buffer: buffer });
+                            updateUI();
+                        }, (err) => console.error("Error decoding audio file", err));
+                    };
+                    reader.readAsArrayBuffer(file);
+                }
+            }
+        }
+
+        function updateUI() {
+            fileList.innerHTML = '';
+            loadedBuffers.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'file-item';
+                li.innerHTML = `<span>🎵 ${item.name}</span> <span>${item.buffer.duration.toFixed(2)}s</span>`;
+                fileList.appendChild(li);
+            });
+            if (loadedBuffers.length > 0) {
+                playBtn.disabled = false;
+            }
+        }
+
+        playBtn.onclick = () => {
+            // Web browsers require a user gesture to un-resume the Audio Context pipeline
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            stopAll();
+
+            // Set the target execution timestamp slightly in the future (0.1 seconds)
+            // This bypasses standard main-thread Javascript latencies and compilation gaps
+            const startTime = audioCtx.currentTime + 0.1;
+
+            loadedBuffers.forEach(item => {
+                // Generate cheap, lightweight buffer views over our single loaded dataset
+                const source = audioCtx.createBufferSource();
+                source.buffer = item.buffer;
+                source.connect(audioCtx.destination);
+               
+                // Instruct the separate high-priority hardware clock thread exactly when to fire
+                source.start(startTime);
+                activeSources.push(source);
+            });
+
+            stopBtn.disabled = false;
+        };
+
+        stopBtn.onclick = stopAll;
+
+        function stopAll() {
+            activeSources.forEach(source => {
+                try { source.stop(); } catch(e) {}
+            });
+            activeSources.length = 0;
+            stopBtn.disabled = true;
+        }
+    </script>
+</body>
+</html>
