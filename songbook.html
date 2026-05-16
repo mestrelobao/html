@@ -12,7 +12,7 @@
             padding: 20px;
             max-width: 800px;
             margin: 0 auto;
-            margin-bottom: 100px; /* Space so the button doesn't block text */
+            margin-bottom: 100px;
         }
         h1 {
             color: #2c3e50;
@@ -37,7 +37,6 @@
             overflow-x: auto;
             white-space: pre-wrap;
         }
-        /* Stationary Audio Button Styling */
         .audio-control-btn {
             position: fixed;
             bottom: 30px;
@@ -152,31 +151,83 @@ And I want to thank you for giving me the best day of my
 G           C                         Bm            Am
 Oh just to be with you is having the best day of my life</pre>
 
-    <!-- Hidden Audio Element -->
-    <audio id="bg-audio" src="thx.wav" loop></audio>
-
     <!-- Stationary Control Button -->
     <button id="audio-btn" class="audio-control-btn">▶ Play Music</button>
 
     <script>
-        const audio = document.getElementById('bg-audio');
+        const audioUrl = 'thx.wav';
         const button = document.getElementById('audio-btn');
+        
+        let audioCtx = null;
+        let audioBuffer = null;
+        let sourceNode = null;
+        let isPlaying = false;
+
+        // Fetch and decode audio into memory for perfect looping
+        async function loadAudio() {
+            try {
+                const response = await fetch(audioUrl);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const arrayBuffer = await response.arrayBuffer();
+                audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+            } catch (err) {
+                console.error("Web Audio fallback/load failed:", err);
+                alert("Failed to load thx.wav. Note: Local testing requires a local server (like Live Server) because browsers block file:// fetches.");
+            }
+        }
+
+        async function startPlayback() {
+            // Initialize Web Audio context on user gesture
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            // Resume context if browser suspended it
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+
+            // Load file if it hasn't been fetched yet
+            if (!audioBuffer) {
+                button.textContent = '⏳ Loading...';
+                button.disabled = true;
+                await loadAudio();
+                button.disabled = false;
+                if (!audioBuffer) {
+                    button.textContent = '▶ Play Music';
+                    return;
+                }
+            }
+
+            // Web Audio source nodes can only be played once, so we create a new one every play action
+            sourceNode = audioCtx.createBufferSource();
+            sourceNode.buffer = audioBuffer;
+            sourceNode.loop = true; // Flawless precision looping engine
+
+            sourceNode.connect(audioCtx.destination);
+            sourceNode.start(0);
+            
+            isPlaying = true;
+            button.textContent = '⏸ Stop Music';
+            button.classList.add('playing');
+        }
+
+        function stopPlayback() {
+            if (sourceNode) {
+                sourceNode.stop();
+                sourceNode.disconnect();
+                sourceNode = null;
+            }
+            isPlaying = false;
+            button.textContent = '▶ Play Music';
+            button.classList.remove('playing');
+        }
 
         button.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play()
-                    .then(() => {
-                        button.textContent = '⏸ Stop Music';
-                        button.classList.add('playing');
-                    })
-                    .catch(err => {
-                        console.error("Audio playback failed:", err);
-                        alert("Could not play audio. Check if 'thx.wav' is in the same folder.");
-                    });
+            if (!isPlaying) {
+                startPlayback();
             } else {
-                audio.pause();
-                button.textContent = '▶ Play Music';
-                button.classList.remove('playing');
+                stopPlayback();
             }
         });
     </script>
