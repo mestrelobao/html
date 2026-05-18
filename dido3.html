@@ -43,12 +43,14 @@
             padding-bottom: 10px;
         }
         
-        /* Modificado: Maior espaçamento antes e depois dos títulos das blocos */
+        /* Corrigido: Garante isolamento total e grande espaçamento antes de cada título */
         .section-title {
+            display: block;
+            clear: both;
             font-weight: bold;
             color: #e74c3c;
-            margin-top: 60px; /* Aumentado de 30px para 60px */
-            margin-bottom: 25px; /* Aumentado de 15px para 25px */
+            margin-top: 70px; /* Grande espaçamento ANTES do bloco */
+            margin-bottom: 30px; /* Grande espaçamento DEPOIS do título do bloco */
             font-size: 1.2em;
         }
         
@@ -57,9 +59,14 @@
             display: flex;
             flex-wrap: wrap;
             line-height: 3.5; 
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             font-family: "Courier New", Courier, monospace;
             font-size: var(--chord-font-size, 14px);
+        }
+
+        /* Corrigido: Classe especial aplicada na última linha de cada bloco para forçar o distanciamento abaixo dele */
+        .last-line {
+            margin-bottom: 50px !important;
         }
 
         /* Bloco que junta a palavra e o acorde */
@@ -161,7 +168,7 @@
         <div class="chord-wrapper"><span class="chord">Em</span></div>
         <div class="chord-wrapper"><span class="chord">C</span></div>
     </div>
-    <div class="lyric-line">
+    <div class="lyric-line last-line">
         <div class="chord-wrapper"><span class="chord">Em</span></div>
         <div class="chord-wrapper"><span class="chord">C</span></div>
         <div class="chord-wrapper"><span class="chord">Em</span></div>
@@ -227,7 +234,7 @@
         <div class="chord-wrapper">so</div>
         <div class="chord-wrapper"><span class="chord">Em</span>bad</div>
     </div>
-    <div class="lyric-line">
+    <div class="lyric-line last-line">
         <div class="chord-wrapper"><span class="chord">C</span>It's</div>
         <div class="chord-wrapper">not</div>
         <div class="chord-wrapper">so</div>
@@ -298,7 +305,7 @@
         <div class="chord-wrapper">so</div>
         <div class="chord-wrapper">bad</div>
     </div>
-    <div class="lyric-line">
+    <div class="lyric-line last-line">
         <div class="chord-wrapper"><span class="chord">C</span>It's</div>
         <div class="chord-wrapper">not</div>
         <div class="chord-wrapper">so</div>
@@ -328,7 +335,7 @@
         <div class="chord-wrapper">to</div>
         <div class="chord-wrapper"><span class="chord">C</span>be</div>
     </div>
-    <div class="lyric-line">
+    <div class="lyric-line last-line">
         <div class="chord-wrapper">with</div>
         <div class="chord-wrapper">you</div>
         <div class="chord-wrapper">is</div>
@@ -390,7 +397,7 @@
         <div class="chord-wrapper"><span class="chord">Em</span>near</div>
         <div class="chord-wrapper">me</div>
     </div>
-    <div class="lyric-line">
+    <div class="lyric-line last-line">
         <div class="chord-wrapper"><span class="chord">C</span>Because</div>
         <div class="chord-wrapper">you're</div>
         <div class="chord-wrapper">near</div>
@@ -412,14 +419,13 @@
         <div class="chord-wrapper">best</div>
         <div class="chord-wrapper">day</div>
         <div class="chord-wrapper">of</div>
-        <div class="chord-wrapper">my</div>
         <div class="chord-wrapper"><span class="chord">G</span>life</div>
         <div class="chord-wrapper">Oh</div>
         <div class="chord-wrapper">just</div>
         <div class="chord-wrapper">to</div>
         <div class="chord-wrapper"><span class="chord">C</span>be</div>
     </div>
-    <div class="lyric-line">
+    <div class="lyric-line last-line">
         <div class="chord-wrapper">with</div>
         <div class="chord-wrapper">you</div>
         <div class="chord-wrapper">is</div>
