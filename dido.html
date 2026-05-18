@@ -12,9 +12,9 @@
             --heading-color: #2c3e50;
             --pre-bg: #ffffff;
             --pre-border: #dddddd;
-            --panel-bg: rgba(44, 62, 80, 0.15); /* Transparente para não cobrir a letra */
-            --panel-text: #2c3e50;
-            --panel-btn-bg: rgba(255, 255, 255, 0.7);
+            --panel-bg: #2c3e50;
+            --panel-text: #ffffff;
+            --panel-btn-bg: #ffffff;
             --panel-btn-text: #2c3e50;
         }
 
@@ -24,9 +24,9 @@
             --heading-color: #ecf0f1;
             --pre-bg: #1e1e1e;
             --pre-border: #333333;
-            --panel-bg: rgba(255, 255, 255, 0.05);
+            --panel-bg: #222222;
             --panel-text: #e0e0e0;
-            --panel-btn-bg: rgba(51, 51, 51, 0.7);
+            --panel-btn-bg: #333333;
             --panel-btn-text: #ffffff;
         }
 
@@ -64,12 +64,9 @@
             overflow-x: auto;
             white-space: pre-wrap;
             transition: background-color 0.3s, border-color 0.3s;
-            position: relative;
-            z-index: 2; /* Texto fica na camada da frente */
-            pointer-events: none; /* Permite clicar nos botões que estão por trás */
         }
         
-        /* Painel Flutuante ATRÁS do Texto */
+        /* Painel Flutuante na Frente com Alta Transparência */
         .controls-container {
             position: fixed;
             bottom: 30px;
@@ -78,29 +75,33 @@
             flex-direction: column;
             gap: 12px;
             align-items: flex-end;
-            z-index: 1; /* Camada de trás */
-            opacity: 0.6; /* Deixa o painel discreto como marca d'água */
-            transition: opacity 0.2s;
+            z-index: 1000; /* Fica na frente para aceitar o clique */
+            opacity: 0.2; /* Quase invisível para não atrapalhar a leitura */
+            transition: opacity 0.2s ease;
         }
         
-        /* Quando passa o mouse ou toca no painel, ele ganha destaque */
-        .controls-container:hover {
+        /* Torna o painel visível ao passar o mouse ou tocar */
+        .controls-container:hover,
+        .controls-container:focus-within {
             opacity: 1;
         }
 
         .scroll-control-btn {
-            background-color: var(--panel-btn-bg);
-            color: var(--panel-btn-text);
+            background-color: var(--panel-bg);
+            color: var(--panel-text);
             border: 1px solid var(--pre-border);
             border-radius: 50px;
             padding: 12px 22px;
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             transition: all 0.2s ease;
             width: 150px;
             text-align: center;
+        }
+        .scroll-control-btn:hover {
+            transform: scale(1.05);
         }
         .scroll-control-btn.scrolling {
             background-color: #27ae60;
@@ -110,7 +111,7 @@
             background: var(--panel-bg);
             padding: 6px 14px;
             border-radius: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -145,7 +146,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            pointer-events: auto; /* Garante clique no botão */
         }
         .panel-btn:hover {
             opacity: 0.9;
@@ -154,12 +154,6 @@
             width: auto;
             padding: 2px 8px;
             font-size: 12px;
-        }
-        .scroll-control-btn {
-            pointer-events: auto; /* Garante clique no botão */
-        }
-        select {
-            pointer-events: auto; /* Garante clique no seletor */
         }
     </style>
 </head>
@@ -242,7 +236,7 @@ And I want to thank you for giving me the best day of my
 G           C                         Bm            Am    G
 Oh just to be with you is having the best day of my life</pre>
 
-    <!-- Interface Flutuante na Camada de Trás -->
+    <!-- Painel de Controle Flutuante -->
     <div class="controls-container">
         <div class="control-panel-row">
             <span>Tela:</span>
@@ -333,7 +327,7 @@ Oh just to be with you is having the best day of my life</pre>
             if (scrollInterval) startScroll();
         });
 
-        // Pausa de segurança se o usuário interagir com a tela
+        // Pausa se o usuário interagir com a tela manualmente
         window.addEventListener('wheel', () => { if (scrollInterval) stopScroll(); });
         window.addEventListener('touchmove', () => { if (scrollInterval) stopScroll(); });
     </script>
