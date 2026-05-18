@@ -43,18 +43,17 @@
             padding-bottom: 10px;
         }
         
-        /* Corrigido: Garante isolamento total e grande espaçamento antes de cada título */
         .section-title {
             display: block;
             clear: both;
             font-weight: bold;
             color: #e74c3c;
-            margin-top: 70px; /* Grande espaçamento ANTES do bloco */
-            margin-bottom: 30px; /* Grande espaçamento DEPOIS do título do bloco */
+            margin-top: 70px; 
+            margin-bottom: 30px; 
             font-size: 1.2em;
         }
         
-        /* Container da linha de música com espaçamento muito maior */
+        /* Container da linha de música */
         .lyric-line {
             display: flex;
             flex-wrap: wrap;
@@ -64,9 +63,9 @@
             font-size: var(--chord-font-size, 14px);
         }
 
-        /* Corrigido: Classe especial aplicada na última linha de cada bloco para forçar o distanciamento abaixo dele */
+        /* Modificado: Margem inferior dobrada para 80px no fim de cada bloco */
         .last-line {
-            margin-bottom: 50px !important;
+            margin-bottom: 80px !important;
         }
 
         /* Bloco que junta a palavra e o acorde */
@@ -430,7 +429,6 @@
         <div class="chord-wrapper">you</div>
         <div class="chord-wrapper">is</div>
         <div class="chord-wrapper">having</div>
-        <div class="chord-wrapper">the</div>
         <div class="chord-wrapper"><span class="chord">Bm</span>best</div>
         <div class="chord-wrapper">day</div>
         <div class="chord-wrapper">of</div>
