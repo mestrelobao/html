@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Rappa - O Que Sobrou do Céu (Cifras)</title>
+    <style>
+        /* CSS Variables for seamless global theme switching */
+        :root {
+            --bg-color: #f4f4f9;
+            --text-color: #333333;
+            --heading-color: #2c3e50;
+            --pre-bg: #ffffff;
+            --pre-border: #dddddd;
+            --panel-bg: #2c3e50;
+            --panel-text: #ffffff;
+            --panel-btn-bg: #ffffff;
+            --panel-btn-text: #2c3e50;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --heading-color: #ecf0f1;
+            --pre-bg: #1e1e1e;
+            --pre-border: #333333;
+            --panel-bg: #222222;
+            --panel-text: #e0e0e0;
+            --panel-btn-bg: #333333;
+            --panel-btn-text: #ffffff;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            margin-bottom: 160px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1 {
+            color: var(--heading-color);
+            border-bottom: 2px solid var(--heading-color);
+            padding-bottom: 10px;
+            transition: border-color 0.3s;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        pre {
+            font-family: "Courier New", Courier, monospace;
+            font-size: var(--chord-font-size, 14px);
+            line-height: 1.6;
+            background: var(--pre-bg);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--pre-border);
+            overflow-x: auto;
+            white-space: pre-wrap;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        
+        /* Floating Control Panel Layout */
+        .controls-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+            z-index: 1000;
+        }
+        .audio-control-btn, .scroll-control-btn {
+            background-color: var(--panel-bg);
+            color: var(--panel-text);
+            border: 1px solid var(--pre-border);
+            border-radius: 50px;
+            padding: 12px 22px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+            width: 150px;
+            text-align: center;
+        }
+        .audio-control-btn:hover, .scroll-control-btn:hover {
+            transform: scale(1.05);
+        }
+        .audio-control-btn.playing, .scroll-control-btn.scrolling {
+            background-color: #27ae60;
+            color: white;
+        }
+        .control-panel-row {
+            background: var(--panel-bg);
+            padding: 6px 14px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--panel-text);
+            font-size: 13px;
+            border: 1px solid var(--pre-border);
+            transition: background-color 0.3s;
+        }
+        .control-panel-row select {
+            background: var(--panel-btn-bg);
+            color: var(--panel-btn-text);
+            border: none;
+            border-radius: 4px;
+            padding: 2px 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .panel-btn-group {
+            display: flex;
+            gap: 4px;
+        }
+        .panel-btn {
+            background: var(--panel-btn-bg);
+            color: var(--panel-btn-text);
+            border: none;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .panel-btn:hover {
+            opacity: 0.9;
+        }
+        .theme-btn {
+            width: auto;
+            padding: 2px 8px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>O Que Sobrou do Céu</h1>
+    <div class="subtitle">O Rappa | Tom: G#m</div>
+
+    <div class="section-title">[Intro]</div>
+    <pre>E  D#m7  G#m</pre>
+
+    <div class="section-title">[Refrão]</div>
+    <pre>E             D#m7   G#m
+Ô la la Ô la la    ê a
+E             D#m7   G#m
+Ô la la Ô la la   êê a
+E             D#m7   G#m
+Ô la la Ô la la    ê a
+E             D#m7   G#m
+Ô la la Ô la la   êê a</pre>
+
+    <div class="section-title">[Primeira parte]</div>
+    <pre>        E
+Faltou luz mas era dia
+   D#m7         G#m
+O sol invadiu a sala
+ E
+Fez da TV um espelho
+      D#m7                    G#m
+Refletindo o que agente esquecia
+        E               D#m7  G#m
+Faltou luz mas era diiia,  di-i-a
+        E                D#m7  G#m
+Faltou luz mas era dia, dia, dia</pre>
+
+    <div class="section-title">[Segunda parte]</div>
+    <pre>   E
+O som das crianças brincando nas ruas
+ D#m7                 G#m
+Como se fosse um quintal
+      E
+A cerveja gelada na esquina
+ D#m7              G#m
+Como se espantasse o mal
+C#m7
+O chá pra curar essa azia
+    G#m
+Um bom chá pra curar essa azia
+ C#m7                 G#m7
+Todas as ciências de baixa tecnologia
+ C#m7                          G#m7
+Todas as cores escondidas nas nuvens da rotina</pre>
+
+    <div class="section-title">[Pré-Refrão]</div>
+    <pre>     G#m   F#
+Pra gente ver
+    E                   G#m  F# Bbm11
+Por entre os prédios e nós
+     E     F#  ( E  F# )
+Pra gente ver
+                 G#m  F# Bbm11
+O que sobrou do céu</pre>
+
+    <div class="section-title">[Refrão]</div>
+    <pre>E             D#m7   G#m
+Ô la la Ô la la    ê a
+E             D#m7   G#m
+Ô la la Ô la la   êê a
+E             D#m7   G#m
+Ô la la Ô la la    ê a
+E             D#m7   G#m
+Ô la la Ô la la   êê a</pre>
+
+    <div class="section-title">[Primeira parte]</div>
+    <pre>        E
+Faltou luz mas era dia
+   D#m7         G#m
+O sol invadiu a sala
+ E
+Fez da TV um espelho
+      D#m7                    G#m
+Refletindo o que agente esquecia
+        E               D#m7  G#m
+Faltou luz mas era diiia,  di-i-a
+        E                D#m7  G#m
+Faltou luz mas era dia, dia, dia</pre>
+
+    <div class="section-title">[Segunda parte]</div>
+    <pre>   E
+O som das crianças brincando nas ruas
+ D#m7                 G#m
+Como se fosse um quintal
+      E
+A cerveja gelada na esquina
+ D#m7              G#m
+Como se espantasse o mal
+C#m7
+O chá pra curar essa azia
+    G#m
+Um bom chá pra curar essa azia
+ C#m7                 G#m7
+Todas as ciências de baixa tecnologia
+ C#m7                          G#m7
+Todas as cores escondidas nas nuvens da rotina</pre>
+
+    <div class="section-title">[Pré-Refrão]</div>
+    <pre>     G#m   F#
+Pra gente ver
+    E                   G#m  F# Bbm11
+Por entre os prédios e nós
+     E     F#  ( E  F# )
+Pra gente ver
+                 G#m  F# Bbm11
+O que sobrou do céu</pre>
+
+    <div class="section-title">[Refrão]</div>
+    <pre>E             D#m7   G#m
+Ô la la Ô la la    ê a
+E             D#m7   G#m
+Ô la la Ô la la   êê a
+E             D#m7   G#m
+Ô la la Ô la la    ê a
+E             D#m7   G#m
+Ô la la Ô la la   êê a</pre>
+
+    <!-- UI Stack Control Deck -->
+    <div class="controls-container">
+        <!-- Theme Switcher Component -->
+        <div class="control-panel-row">
+            <span>Display:</span>
+            <button id="theme-toggle" class="panel-btn theme-btn">🌙 Dark</button>
+        </div>
+        <!-- Font Modification Component -->
+        <div class="control-panel-row">
+            <span>Font:</span>
+            <div class="panel-btn-group">
+                <button id="font-dec" class="panel-btn" title="Diminuir fonte">−</button>
+                <button id="font-inc" class="panel-btn" title="Aumentar fonte">+</button>
+            </div>
+        </div>
+        <!-- Speed Configurator Component -->
+        <div class="control-panel-row">
+            <label for="speed-select">Velocidade:</label>
+            <select id="speed-select">
+                <option value="0.5">Lento</option>
+                <option value="1" selected>Normal</option>
+                <option value="1.5">Rápido</option>
+                <option value="2">Turbo</option>
+            </select>
+        </div>
+        <button id="scroll-btn" class="scroll-control-btn">📜 Rolar</button>
+        <button id="audio-btn" class="audio-control-btn">▶ Áudio</button>
+    </div>
+
+    <script>
+        const audioUrl = 'orappa.wav';
+        const button = document.getElementById('audio-btn');
+        const scrollBtn = document.getElementById('scroll-btn');
+        const speedSelect = document.getElementById('speed-select');
+        const fontDecBtn = document.getElementById('font-dec');
+        const fontIncBtn = document.getElementById('font-inc');
+        const themeToggle = document.getElementById('theme-toggle');
+        
+        let audioCtx = null;
+        let audioBuffer = null;
+        let sourceNode = null;
+        let isPlaying = false;
+
+        let scrollInterval = null;
+        let isScrolling = false;
+
+        let currentFontSize = 14; 
+        const minFontSize = 10;
+        const maxFontSize = 24;
+
+        // Theme Storage Integration Loop
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️ Light';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeToggle.textContent = '🌙 Dark';
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeToggle.textContent = '🌙 Dark';
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️ Light';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        initTheme();
+
+        // Responsive text scaler execution block
+        function updateFontSize(delta) {
+            const tentativeSize = currentFontSize + delta;
+            if (tentativeSize >= minFontSize && tentativeSize <= maxFontSize) {
+                currentFontSize = tentativeSize;
+                document.documentElement.style.setProperty('--chord-font-size', `${currentFontSize}px`);
+            }
+        }
+
+        fontIncBtn.addEventListener('click', () => updateFontSize(2));
+        fontDecBtn.addEventListener('click', () => updateFontSize(-2));
+
+        // Core Web Audio API pipeline
+        async function loadAudio() {
+            try {
+                const response = await fetch(audioUrl);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const arrayBuffer = await response.arrayBuffer();
+                audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+            } catch (err) {
+                console.error("Web Audio framework execution failure:", err);
+                alert("Não foi possível carregar o arquivo orappa.wav. Lembrete: Testes locais necessitam de um servidor local ativo (ex: Live Server) devido a restrições CORS para requisições file://.");
+            }
+        }
+
+        async function startPlayback() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+
+            if (!audioBuffer) {
+                button.textContent = '⏳ Lendo...';
+                button.disabled = true;
+                await loadAudio();
+                button.disabled = false;
+                if (!audioBuffer) {
+                    button.textContent = '▶ Áudio';
+                    return;
+                }
+            }
+
+            sourceNode = audioCtx.createBufferSource();
+            sourceNode.buffer = audioBuffer;
+            sourceNode.loop = true;
+
+            sourceNode.connect(audioCtx.destination);
+            sourceNode.start(0);
+            
+            isPlaying = true;
+            button.textContent = '⏸ Parar';
+            button.classList.add('playing');
+        }
+
+        function stopPlayback() {
+            if (sourceNode) {
+                sourceNode.stop();
+                sourceNode.disconnect();
+                sourceNode = null;
+            }
+            isPlaying = false;
+            button.textContent = '▶ Áudio';
+            button.classList.remove('playing');
+        }
+
+        button.addEventListener('click', () => {
+            if (!isPlaying) {
+                startPlayback();
+            } else {
+                stopPlayback();
+            }
+        });
+
+        // Frame update dynamic scrolling engine 
+        function startScrolling() {
+            const baseIntervalSpeed = 40; 
+            const currentSpeedMultiplier = parseFloat(speedSelect.value);
+            const absoluteIntervalValue = baseIntervalSpeed / currentSpeedMultiplier;
+
+            if (scrollInterval) clearInterval(scrollInterval);
+
+            scrollInterval = setInterval(() => {
+                window.scrollBy(0, 1);
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                    stopScrolling();
+                }
+            }, absoluteIntervalValue);
+
+            isScrolling = true;
+            scrollBtn.textContent = '⏸ Parar';
+            scrollBtn.classList.add('scrolling');
+        }
+
+        function stopScrolling() {
+            if (scrollInterval) {
+                clearInterval(scrollInterval);
+                scrollInterval = null;
+            }
+            isScrolling = false;
+            scrollBtn.textContent = '📜 Rolar';
+            scrollBtn.classList.remove('scrolling');
+        }
+
+        scrollBtn.addEventListener('click', () => {
+            if (!isScrolling) {
+                startScrolling();
+            } else {
+                stopScrolling();
+            }
+        });
+
+        speedSelect.addEventListener('change', () => {
+            if (isScrolling) {
+                startScrolling();
+            }
+        });
+
+        // Break scroll loops instantly on touch/wheel interaction
+        window.addEventListener('wheel', () => {
+            if (isScrolling) stopScrolling();
+        }, { passive: true });
+
+        window.addEventListener('touchstart', () => {
+            if (isScrolling) stopScrolling();
+        }, { passive: true });
+    </script>
+
+</body>
+</html>
