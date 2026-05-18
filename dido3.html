@@ -42,19 +42,21 @@
             border-bottom: 2px solid var(--heading-color);
             padding-bottom: 10px;
         }
+        
+        /* Modificado: Maior espaçamento antes e depois dos títulos das blocos */
         .section-title {
             font-weight: bold;
             color: #e74c3c;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            font-size: 1.1em;
+            margin-top: 60px; /* Aumentado de 30px para 60px */
+            margin-bottom: 25px; /* Aumentado de 15px para 25px */
+            font-size: 1.2em;
         }
         
         /* Container da linha de música com espaçamento muito maior */
         .lyric-line {
             display: flex;
             flex-wrap: wrap;
-            line-height: 3.5; /* Espaçamento bem maior solicitado */
+            line-height: 3.5; 
             margin-bottom: 12px;
             font-family: "Courier New", Courier, monospace;
             font-size: var(--chord-font-size, 14px);
@@ -64,13 +66,13 @@
         .chord-wrapper {
             position: relative;
             display: inline-block;
-            margin-right: 6px; /* Espaço lateral entre as palavras */
+            margin-right: 6px; 
         }
 
         /* O acorde fica fixado EXATAMENTE acima da palavra vinculada */
         .chord {
             position: absolute;
-            top: -1.4em; /* Ajustado levemente para o novo espaçamento */
+            top: -1.4em; 
             left: 0;
             font-weight: bold;
             color: var(--chord-color);
