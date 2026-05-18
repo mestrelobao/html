@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dido - Thank You (Chords)</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --text-color: #333333;
+            --heading-color: #2c3e50;
+            --panel-bg: #2c3e50;
+            --panel-text: #ffffff;
+            --panel-btn-bg: #ffffff;
+            --panel-btn-text: #2c3e50;
+            --chord-color: #2980b9;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --heading-color: #ecf0f1;
+            --panel-bg: #222222;
+            --panel-text: #e0e0e0;
+            --panel-btn-bg: #333333;
+            --panel-btn-text: #ffffff;
+            --chord-color: #3498db;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            margin-bottom: 160px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1 {
+            color: var(--heading-color);
+            border-bottom: 2px solid var(--heading-color);
+            padding-bottom: 10px;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        /* Container da linha de música */
+        .lyric-line {
+            display: flex;
+            flex-wrap: wrap;
+            line-height: 2.8; /* Dá espaço para o acorde acima */
+            margin-bottom: 8px;
+            font-family: "Courier New", Courier, monospace;
+            font-size: var(--chord-font-size, 14px);
+        }
+
+        /* Bloco que junta a palavra e o acorde */
+        .chord-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-right: 6px; /* Espaço entre as palavras */
+        }
+
+        /* O acorde fica fixado EXATAMENTE acima da palavra vinculada */
+        .chord {
+            position: absolute;
+            top: -1.3em;
+            left: 0;
+            font-weight: bold;
+            color: var(--chord-color);
+            line-height: 1;
+            white-space: nowrap;
+        }
+        
+        /* Painel Flutuante na Frente com Alta Transparência */
+        .controls-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+            z-index: 1000;
+            opacity: 0.2;
+            transition: opacity 0.2s ease;
+        }
+        .controls-container:hover,
+        .controls-container:focus-within {
+            opacity: 1;
+        }
+        .scroll-control-btn {
+            background-color: var(--panel-bg);
+            color: var(--panel-text);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 50px;
+            padding: 12px 22px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+            width: 150px;
+            text-align: center;
+        }
+        .scroll-control-btn.scrolling {
+            background-color: #27ae60;
+            color: white;
+        }
+        .control-panel-row {
+            background: var(--panel-bg);
+            padding: 6px 14px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--panel-text);
+            font-size: 13px;
+        }
+        .control-panel-row select {
+            background: var(--panel-btn-bg);
+            color: var(--panel-btn-text);
+            border: none;
+            border-radius: 4px;
+            padding: 2px 5px;
+            font-weight: bold;
+        }
+        .panel-btn-group {
+            display: flex;
+            gap: 4px;
+        }
+        .panel-btn {
+            background: var(--panel-btn-bg);
+            color: var(--panel-btn-text);
+            border: none;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Thank You - Chords</h1>
+
+    <div class="section-title">[Intro]</div>
+    <div class="lyric-line">
+        <div class="chord-wrapper"><span class="chord">Em</span></div>
+        <div class="chord-wrapper"><span class="chord">C</span></div>
+        <div class="chord-wrapper"><span class="chord">Em</span></div>
+        <div class="chord-wrapper"><span class="chord">C</span></div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper"><span class="chord">Em</span></div>
+        <div class="chord-wrapper"><span class="chord">C</span></div>
+        <div class="chord-wrapper"><span class="chord">Em</span></div>
+        <div class="chord-wrapper"><span class="chord">C</span></div>
+    </div>
+
+    <div class="section-title">[Primeira Parte]</div>
+    <div class="lyric-line">
+        <div class="chord-wrapper"><span class="chord">Em</span>My</div>
+        <div class="chord-wrapper">tea's</div>
+        <div class="chord-wrapper">gone</div>
+        <div class="chord-wrapper"><span class="chord">C</span>cold,</div>
+        <div class="chord-wrapper">I'm</div>
+        <div class="chord-wrapper">wondering</div>
+        <div class="chord-wrapper">why</div>
+        <div class="chord-wrapper">I</div>
+        <div class="chord-wrapper"><span class="chord">D</span>got</div>
+        <div class="chord-wrapper">out</div>
+        <div class="chord-wrapper">of</div>
+        <div class="chord-wrapper"><span class="chord">G</span>bed</div>
+        <div class="chord-wrapper">at</div>
+        <div class="chord-wrapper"><span class="chord">D/F#</span>all</div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper">The</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>morning</div>
+        <div class="chord-wrapper">rain</div>
+        <div class="chord-wrapper"><span class="chord">C</span>clouds</div>
+        <div class="chord-wrapper">up</div>
+        <div class="chord-wrapper">my</div>
+        <div class="chord-wrapper"><span class="chord">D</span>window</div>
+        <div class="chord-wrapper">and</div>
+        <div class="chord-wrapper">I</div>
+        <div class="chord-wrapper"><span class="chord">G</span>can't</div>
+        <div class="chord-wrapper">see</div>
+        <div class="chord-wrapper">at</div>
+        <div class="chord-wrapper"><span class="chord">D/F#</span>all</div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper">And</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>even</div>
+        <div class="chord-wrapper">if</div>
+        <div class="chord-wrapper">I</div>
+        <div class="chord-wrapper"><span class="chord">C</span>could</div>
+        <div class="chord-wrapper">it'd</div>
+        <div class="chord-wrapper">all</div>
+        <div class="chord-wrapper">be</div>
+        <div class="chord-wrapper"><span class="chord">D</span>grey,</div>
+        <div class="chord-wrapper">but</div>
+        <div class="chord-wrapper">your</div>
+        <div class="chord-wrapper"><span class="chord">G</span>picture</div>
+        <div class="chord-wrapper">on</div>
+        <div class="chord-wrapper">my</div>
+        <div class="chord-wrapper"><span class="chord">D/F#</span>wall</div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper">It</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>reminds</div>
+        <div class="chord-wrapper">me</div>
+        <div class="chord-wrapper">that</div>
+        <div class="chord-wrapper">it's</div>
+        <div class="chord-wrapper"><span class="chord">C</span>not</div>
+        <div class="chord-wrapper">so</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>bad</div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper"><span class="chord">C</span>It's</div>
+        <div class="chord-wrapper">not</div>
+        <div class="chord-wrapper">so</div>
+        <div class="chord-wrapper">bad</div>
+    </div>
+
+    <div class="section-title">[Segunda Parte]</div>
+    <div class="lyric-line">
+        <div class="chord-wrapper"><span class="chord">Em</span>I</div>
+        <div class="chord-wrapper">drank</div>
+        <div class="chord-wrapper">too</div>
+        <div class="chord-wrapper"><span class="chord">C</span>much</div>
+        <div class="chord-wrapper">last</div>
+        <div class="chord-wrapper">night,</div>
+        <div class="chord-wrapper">got</div>
+        <div class="chord-wrapper"><span class="chord">D</span>bills</div>
+        <div class="chord-wrapper">to</div>
+        <div class="chord-wrapper">pay,</div>
+        <div class="chord-wrapper">my</div>
+        <div class="chord-wrapper"><span class="chord">G</span>head</div>
+        <div class="chord-wrapper">just</div>
+        <div class="chord-wrapper"><span class="chord">D/F#</span>feels</div>
+        <div class="chord-wrapper">in</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>pain</div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper">I</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>missed</div>
+        <div class="chord-wrapper">the</div>
+        <div class="chord-wrapper"><span class="chord">C</span>bus</div>
+        <div class="chord-wrapper">and</div>
+        <div class="chord-wrapper">there'll</div>
+        <div class="chord-wrapper">be</div>
+        <div class="chord-wrapper"><span class="chord">D</span>hell</div>
+        <div class="chord-wrapper">today;</div>
+        <div class="chord-wrapper">I'm</div>
+        <div class="chord-wrapper"><span class="chord">G</span>late</div>
+        <div class="chord-wrapper">for</div>
+        <div class="chord-wrapper"><span class="chord">D/F#</span>work</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>again</div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper">And</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>even</div>
+        <div class="chord-wrapper">if</div>
+        <div class="chord-wrapper">I'm</div>
+        <div class="chord-wrapper"><span class="chord">C</span>there,</div>
+        <div class="chord-wrapper">they'll</div>
+        <div class="chord-wrapper">all</div>
+        <div class="chord-wrapper"><span class="chord">D</span>imply</div>
+        <div class="chord-wrapper">that</div>
+        <div class="chord-wrapper">I</div>
+        <div class="chord-wrapper"><span class="chord">G</span>might</div>
+        <div class="chord-wrapper">not</div>
+        <div class="chord-wrapper"><span class="chord">D/F#</span>last</div>
+        <div class="chord-wrapper">the</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>day</div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper">And</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>then</div>
+        <div class="chord-wrapper">you</div>
+        <div class="chord-wrapper">call</div>
+        <div class="chord-wrapper"><span class="chord">C</span>me</div>
+        <div class="chord-wrapper">and</div>
+        <div class="chord-wrapper">it's</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>not</div>
+        <div class="chord-wrapper">so</div>
+        <div class="chord-wrapper">bad</div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper"><span class="chord">C</span>It's</div>
+        <div class="chord-wrapper">not</div>
+        <div class="chord-wrapper">so</div>
+        <div class="chord-wrapper">bad</div>
+        <div class="chord-wrapper">and</div>
+    </div>
+
+    <div class="section-title">[Refrão]</div>
+    <div class="lyric-line">
+        <div class="chord-wrapper">And</div>
+        <div class="chord-wrapper">I</div>
+        <div class="chord-wrapper">want</div>
+        <div class="chord-wrapper">to</div>
+        <div class="chord-wrapper"><span class="chord">G</span>thank</div>
+        <div class="chord-wrapper">you</div>
+        <div class="chord-wrapper">for</div>
+        <div class="chord-wrapper"><span class="chord">C</span>giving</div>
+        <div class="chord-wrapper">me</div>
+        <div class="chord-wrapper">the</div>
+        <div class="chord-wrapper">best</div>
+        <div class="chord-wrapper">day</div>
+        <div class="chord-wrapper">of</div>
+        <div class="chord-wrapper">my</div>
+        <div class="chord-wrapper"><span class="chord">G</span>life</div>
+        <div class="chord-wrapper">Oh</div>
+        <div class="chord-wrapper">just</div>
+        <div class="chord-wrapper">to</div>
+        <div class="chord-wrapper"><span class="chord">C</span>be</div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper">with</div>
+        <div class="chord-wrapper">you</div>
+        <div class="chord-wrapper">is</div>
+        <div class="chord-wrapper">having</div>
+        <div class="chord-wrapper">the</div>
+        <div class="chord-wrapper"><span class="chord">Bm</span>best</div>
+        <div class="chord-wrapper">day</div>
+        <div class="chord-wrapper">of</div>
+        <div class="chord-wrapper">my</div>
+        <div class="chord-wrapper"><span class="chord">Am</span>life</div>
+    </div>
+
+    <div class="section-title">[Terceira Parte]</div>
+    <div class="lyric-line">
+        <div class="chord-wrapper"><span class="chord">Em</span>Push</div>
+        <div class="chord-wrapper">the</div>
+        <div class="chord-wrapper">door,</div>
+        <div class="chord-wrapper">I'm</div>
+        <div class="chord-wrapper"><span class="chord">C</span>home</div>
+        <div class="chord-wrapper">at</div>
+        <div class="chord-wrapper">last</div>
+        <div class="chord-wrapper">and</div>
+        <div class="chord-wrapper">I'm</div>
+        <div class="chord-wrapper"><span class="chord">D</span>soaking</div>
+        <div class="chord-wrapper">through</div>
+        <div class="chord-wrapper">and</div>
+        <div class="chord-wrapper"><span class="chord">G</span>through</div>
+        <div class="chord-wrapper"><span class="chord">D/F#</span>Then</div>
+        <div class="chord-wrapper">you</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>handed</div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper">me</div>
+        <div class="chord-wrapper">a</div>
+        <div class="chord-wrapper"><span class="chord">C</span>towel</div>
+        <div class="chord-wrapper">and</div>
+        <div class="chord-wrapper">all</div>
+        <div class="chord-wrapper">I</div>
+        <div class="chord-wrapper"><span class="chord">D</span>see</div>
+        <div class="chord-wrapper">is</div>
+        <div class="chord-wrapper"><span class="chord">G</span>you</div>
+        <div class="chord-wrapper"><span class="chord">D/F#</span>And</div>
+        <div class="chord-wrapper">even</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>if</div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper">my</div>
+        <div class="chord-wrapper"><span class="chord">C</span>house</div>
+        <div class="chord-wrapper">falls</div>
+        <div class="chord-wrapper">down</div>
+        <div class="chord-wrapper">now,</div>
+        <div class="chord-wrapper">I</div>
+        <div class="chord-wrapper"><span class="chord">D</span>wouldn't</div>
+        <div class="chord-wrapper">have</div>
+        <div class="chord-wrapper">a</div>
+        <div class="chord-wrapper"><span class="chord">G</span>clue</div>
+        <div class="chord-wrapper"><span class="chord">D/F#</span>Because</div>
+        <div class="chord-wrapper">you're</div>
+        <div class="chord-wrapper"><span class="chord">Em</span>near</div>
+        <div class="chord-wrapper">me</div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper"><span class="chord">C</span>Because</div>
+        <div class="chord-wrapper">you're</div>
+        <div class="chord-wrapper">near</div>
+        <div class="chord-wrapper">me</div>
+    </div>
+
+    <div class="section-title">[Refrão]</div>
+    <div class="lyric-line">
+        <div class="chord-wrapper">And</div>
+        <div class="chord-wrapper">I</div>
+        <div class="chord-wrapper">want</div>
+        <div class="chord-wrapper">to</div>
+        <div class="chord-wrapper"><span class="chord">G</span>thank</div>
+        <div class="chord-wrapper">you</div>
+        <div class="chord-wrapper">for</div>
+        <div class="chord-wrapper"><span class="chord">C</span>giving</div>
+        <div class="chord-wrapper">me</div>
+        <div class="chord-wrapper">the</div>
+        <div class="chord-wrapper">best</div>
+        <div class="chord-wrapper">day</div>
+        <div class="chord-wrapper">of</div>
+        <div class="chord-wrapper">my</div>
+        <div class="chord-wrapper"><span class="chord">G</span>life</div>
+        <div class="chord-wrapper">Oh</div>
+        <div class="chord-wrapper">just</div>
+        <div class="chord-wrapper">to</div>
+        <div class="chord-wrapper"><span class="chord">C</span>be</div>
+    </div>
+    <div class="lyric-line">
+        <div class="chord-wrapper">with</div>
+        <div class="chord-wrapper">you</div>
+        <div class="chord-wrapper">is</div>
+        <div class="chord-wrapper">having</div>
+        <div class="chord-wrapper">the</div>
+        <div class="chord-wrapper"><span class="chord">Bm</span>best</div>
+        <div class="chord-wrapper">day</div>
+        <div class="chord-wrapper">of</div>
+        <div class="chord-wrapper">my</div>
+        <div class="chord-wrapper"><span class="chord">Am</span>life</div>
+    </div>
+
+    <!-- Painel de Controle Flutuante -->
+    <div class="controls-container">
+        <div class="control-panel-row">
+            <span>Tom:</span>
+            <div class="panel-btn-group">
+                <button id="transpose-dec" class="panel-btn">- Tom</button>
+                <button id="transpose-inc" class="panel-btn">+ Tom</button>
+            </div>
+        </div>
+        <div class="control-panel-row">
+            <span>Tela:</span>
+            <button id="theme-toggle" class="panel-btn theme-btn">🌙 Escuro</button>
+        </div>
+        <div class="control-panel-row">
+            <span>Fonte:</span>
+            <div class="panel-btn-group">
+                <button id="font-dec" class="panel-btn" title="Diminuir fonte">−</button>
+                <button id="font-inc" class="panel-btn" title="Aumentar fonte">+</button>
+            </div>
+        </div>
+        <div class="control-panel-row">
+            <label for="speed-select">Vel:</label>
+            <select id="speed-select">
+                <option value="0.5">Lento</option>
+                <option value="1" selected>Normal</option>
+                <option value="2">Rápido</option>
+            </select>
+        </div>
+        <button id="scroll-btn" class="scroll-control-btn">📜 Rolar</button>
+    </div>
+
+    <script>
+        // Lógica de Alternância de Tema
+        const themeToggle = document.getElementById('theme-toggle');
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        themeToggle.textContent = savedTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeToggle.textContent = newTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+        });
+
+        // Lógica de Redimensionamento da Fonte
+        let fontSize = parseInt(localStorage.getItem('fontSize')) || 14;
+        const updateFontSize = (size) => {
+            document.documentElement.style.setProperty('--chord-font-size', `${size}px`);
+            localStorage.setItem('fontSize', size);
+        };
+        updateFontSize(fontSize);
+
+        document.getElementById('font-inc').addEventListener('click', () => {
+            if(fontSize < 24) { fontSize += 2; updateFontSize(fontSize); }
+        });
+        document.getElementById('font-dec').addEventListener('click', () => {
+            if(fontSize > 10) { fontSize -= 2; updateFontSize(fontSize); }
+        });
+
+        // Lógica de Rolagem Automática
+        let scrollInterval;
+        const scrollBtn = document.getElementById('scroll-btn');
+        const speedSelect = document.getElementById('speed-select');
+
+        const stopScroll = () => {
+            clearInterval(scrollInterval);
+            scrollInterval = null;
+            scrollBtn.classList.remove('scrolling');
+            scrollBtn.textContent = '📜 Rolar';
+        };
+
+        const startScroll = () => {
+            if (scrollInterval) clearInterval(scrollInterval);
+            const speed = parseFloat(speedSelect.value);
+            const intervalTime = 50 / speed; 
+
+            scrollBtn.classList.add('scrolling');
+            scrollBtn.textContent = '⏸️ Pausar';
+
+            scrollInterval = setInterval(() => {
+                window.scrollBy(0, 1);
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                    stopScroll();
+                }
+            }, intervalTime);
+        };
+
+        scrollBtn.addEventListener('click', () => {
+            if (scrollInterval) stopScroll();
+            else startScroll();
+        });
+
+        speedSelect.addEventListener('change', () => {
+            if (scrollInterval) startScroll();
+        });
+
+        window.addEventListener('wheel', () => { if (scrollInterval) stopScroll(); });
+        window.addEventListener('touchmove', () => { if (scrollInterval) stopScroll(); });
+
+        // Lógica de Transposição de Acordes
+        const chordsScale = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+        
+        function transposeChord(chord, semitones) {
+            return chord.replace(/[A-G]#?/g, (match) => {
+                let index = chordsScale.indexOf(match);
+                if (index === -1) return match;
+                let newIndex = (index + semitones + 12) % 12;
+                return chordsScale[newIndex];
+            });
+        }
+
+        function runTranspose(semitones) {
+            const chordElements = document.querySelectorAll('.chord');
+            chordElements.forEach(el => {
+                let currentText = el.textContent;
+                if (currentText.includes('/')) {
+                    let parts = currentText.split('/');
+                    let transParts = parts.map(p => transposeChord(p, semitones));
+                    el.textContent = transParts.join('/');
+                } else {
+                    el.textContent = transposeChord(currentText, semitones);
+                }
+            });
+        }
+
+        document.getElementById('transpose-inc').addEventListener('click', () => runTranspose(1));
+        document.getElementById('transpose-dec').addEventListener('click', () => runTranspose(-1));
+    </script>
+</body>
+</html>
