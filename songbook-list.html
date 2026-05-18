@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Songbook - Índice</title>
+    <style>
+        /* CSS Variables matching the songs theme structure */
+        :root {
+            --bg-color: #f4f4f9;
+            --text-color: #333333;
+            --heading-color: #2c3e50;
+            --card-bg: #ffffff;
+            --card-border: #dddddd;
+            --panel-bg: #2c3e50;
+            --panel-text: #ffffff;
+            --hover-bg: #ecf0f1;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --heading-color: #ecf0f1;
+            --card-bg: #1e1e1e;
+            --card-border: #333333;
+            --panel-bg: #222222;
+            --panel-text: #e0e0e0;
+            --hover-bg: #2c2c2c;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1 {
+            color: var(--heading-color);
+            border-bottom: 2px solid var(--heading-color);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        
+        /* Filter and control layout styles */
+        .search-bar {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        /* Song collection stack layout elements */
+        .song-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .song-item {
+            display: block;
+        }
+        .song-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 16px;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .song-link:hover {
+            background: var(--hover-bg);
+            transform: translateX(4px);
+        }
+        .artist-tag {
+            font-size: 13px;
+            color: #7f8c8d;
+            font-weight: normal;
+            margin-top: 4px;
+            display: block;
+        }
+        .arrow-icon {
+            color: #e74c3c;
+            font-size: 18px;
+        }
+
+        /* UI Command Fixed Deck Layout */
+        .controls-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        .theme-btn {
+            background-color: var(--panel-bg);
+            color: var(--panel-text);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            padding: 12px 22px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+        }
+        .theme-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Meu Songbook</h1>
+
+    <!-- Interactive Search Field Element -->
+    <input type="text" id="search-input" class="search-bar" placeholder="🔍 Buscar música ou artista...">
+
+    <!-- Document Navigation Stack -->
+    <ul class="song-list" id="song-list">
+        <li class="song-item">
+            <a href="songbook2.html" class="song-link">
+                <div>
+                    <span class="song-title">Thank You</span>
+                    <span class="artist-tag">Dido</span>
+                </div>
+                <span class="arrow-icon">➔</span>
+            </a>
+        </li>
+        <li class="song-item">
+            <a href="song-oqsobroudoceu.html" class="song-link">
+                <div>
+                    <span class="song-title">O Que Sobrou do Céu</span>
+                    <span class="artist-tag">O Rappa</span>
+                </div>
+                <span class="arrow-icon">➔</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- UI Floating Dock -->
+    <div class="controls-container">
+        <button id="theme-toggle" class="theme-btn">🌙 Dark</button>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const searchInput = document.getElementById('search-input');
+        const songItems = document.querySelectorAll('.song-item');
+
+        // Dark Theme Configuration Sync Loop
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️ Light';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeToggle.textContent = '🌙 Dark';
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeToggle.textContent = '🌙 Dark';
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️ Light';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Initialize Theme preference system
+        initTheme();
+
+        // Real-Time client side filter function
+        searchInput.addEventListener('input', (e) => {
+            const filterText = e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            
+            songItems.forEach(item => {
+                const title = item.querySelector('.song-title').textContent.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const artist = item.querySelector('.artist-tag').textContent.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                
+                if (title.includes(filterText) || artist.includes(filterText)) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
