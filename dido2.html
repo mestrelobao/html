@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dido - Thank You (Chords)</title>
+    <style>
+        /* Variáveis CSS para controle de tema global */
+        :root {
+            --bg-color: #f4f4f9;
+            --text-color: #333333;
+            --heading-color: #2c3e50;
+            --pre-bg: #ffffff;
+            --pre-border: #dddddd;
+            --panel-bg: #2c3e50;
+            --panel-text: #ffffff;
+            --panel-btn-bg: #ffffff;
+            --panel-btn-text: #2c3e50;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --heading-color: #ecf0f1;
+            --pre-bg: #1e1e1e;
+            --pre-border: #333333;
+            --panel-bg: #222222;
+            --panel-text: #e0e0e0;
+            --panel-btn-bg: #333333;
+            --panel-btn-text: #ffffff;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            margin-bottom: 160px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1 {
+            color: var(--heading-color);
+            border-bottom: 2px solid var(--heading-color);
+            padding-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        pre {
+            font-family: "Courier New", Courier, monospace;
+            font-size: var(--chord-font-size, 14px);
+            line-height: 1.6;
+            background: var(--pre-bg);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--pre-border);
+            overflow-x: auto;
+            white-space: pre-wrap;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        
+        /* Painel Flutuante na Frente com Alta Transparência */
+        .controls-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+            z-index: 1000; /* Fica na frente para aceitar o clique */
+            opacity: 0.2; /* Quase invisível para não atrapalhar a leitura */
+            transition: opacity 0.2s ease;
+        }
+        
+        /* Torna o painel visível ao passar o mouse ou tocar */
+        .controls-container:hover,
+        .controls-container:focus-within {
+            opacity: 1;
+        }
+
+        .scroll-control-btn {
+            background-color: var(--panel-bg);
+            color: var(--panel-text);
+            border: 1px solid var(--pre-border);
+            border-radius: 50px;
+            padding: 12px 22px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+            width: 150px;
+            text-align: center;
+        }
+        .scroll-control-btn:hover {
+            transform: scale(1.05);
+        }
+        .scroll-control-btn.scrolling {
+            background-color: #27ae60;
+            color: white;
+        }
+        .control-panel-row {
+            background: var(--panel-bg);
+            padding: 6px 14px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--panel-text);
+            font-size: 13px;
+            border: 1px solid var(--pre-border);
+            transition: background-color 0.3s;
+        }
+        .control-panel-row select {
+            background: var(--panel-btn-bg);
+            color: var(--panel-btn-text);
+            border: none;
+            border-radius: 4px;
+            padding: 2px 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .panel-btn-group {
+            display: flex;
+            gap: 4px;
+        }
+        .panel-btn {
+            background: var(--panel-btn-bg);
+            color: var(--panel-btn-text);
+            border: none;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .panel-btn:hover {
+            opacity: 0.9;
+        }
+        .theme-btn {
+            width: auto;
+            padding: 2px 8px;
+            font-size: 12px;
+        }
+        /* Classe específica para envolver e identificar os acordes no HTML */
+        .chord {
+            font-weight: bold;
+            color: #2980b9;
+        }
+        [data-theme="dark"] .chord {
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Thank You - Chords</h1>
+
+    <div class="section-title">[Intro]</div>
+    <pre><span class="chord">Em</span>  <span class="chord">C</span>  <span class="chord">Em</span>  <span class="chord">C</span>
+<span class="chord">Em</span>  <span class="chord">C</span>  <span class="chord">Em</span>  <span class="chord">C</span></pre>
+
+    <div class="section-title">[Primeira Parte]</div>
+    <pre><span class="chord">Em</span>            <span class="chord">C</span>                    <span class="chord">D</span>         <span class="chord">G</span>     <span class="chord">D/F#</span> 
+My tea's gone cold, I'm wondering why I got out of bed 
+   <span class="chord">Em</span>
+at all
+<span class="chord">Em</span>          <span class="chord">C</span>                  <span class="chord">D</span>           <span class="chord">G</span>   <span class="chord">D/F#</span>    
+The morning rain clouds up my window and I can't see at 
+<span class="chord">Em</span>
+all
+<span class="chord">Em</span>         <span class="chord">C</span>              <span class="chord">D</span>              <span class="chord">G</span>     <span class="chord">D/F#</span>     
+And even if I could it'd all be grey, but your picture 
+    <span class="chord">Em</span>
+on my wall
+<span class="chord">Em</span>              <span class="chord">C</span>       <span class="chord">Em</span>
+It reminds me that it's not so bad
+<span class="chord">C</span>
+It's not so bad
+
+( <span class="chord">Em</span>  <span class="chord">C</span>  <span class="chord">Em</span>  <span class="chord">C</span> )</pre>
+
+    <div class="section-title">[Segunda Parte]</div>
+    <pre><span class="chord">Em</span>            <span class="chord">C</span>                    <span class="chord">D</span>             <span class="chord">G</span>     
+I drank too much last night, got bills to pay, my head 
+<span class="chord">D/F#</span>    <span class="chord">Em</span>
+just feels in pain
+<span class="chord">Em</span>            <span class="chord">C</span>                    <span class="chord">D</span>             <span class="chord">G</span>       
+I missed the bus and there'll be hell today; I'm late for
+<span class="chord">D/F#</span>    <span class="chord">Em</span>
+ work again
+<span class="chord">Em</span>         <span class="chord">C</span>              <span class="chord">D</span>              <span class="chord">G</span>     <span class="chord">D/F#</span>     
+And even if I'm there,  they'll all imply that I might 
+    <span class="chord">Em</span>
+not last the day
+<span class="chord">Em</span>              <span class="chord">C</span>            <span class="chord">Em</span>
+And then you call me and it's not so bad
+<span class="chord">C</span>
+It's not so bad and</pre>
+
+    <div class="section-title">[Refrão]</div>
+    <pre><span class="chord">G</span>             <span class="chord">C</span>                           <span class="chord">G</span>             
+And I want to thank you for giving me the best day of my
+  <span class="chord">C</span>
+ life
+<span class="chord">G</span>           <span class="chord">C</span>                         <span class="chord">Bm</span>            <span class="chord">Am</span>
+Oh just to be with you is having the best day of my life</pre>
+
+    <div class="section-title">[Terceira Parte]</div>
+    <pre><span class="chord">Em</span>            <span class="chord">C</span>                    <span class="chord">D</span>                 <span class="chord">G</span>     <span class="chord">D/F#</span>  <span class="chord">Em</span>
+Push the door, I'm home at last and I'm soaking through and through
+<span class="chord">Em</span>            <span class="chord">C</span>                    <span class="chord">D</span>            <span class="chord">G</span>   <span class="chord">D/F#</span>  <span class="chord">Em</span>
+Then you handed me a towel and all I see is you
+<span class="chord">Em</span>         <span class="chord">C</span>              <span class="chord">D</span>              <span class="chord">G</span>     <span class="chord">D/F#</span>    <span class="chord">Em</span>
+And even if my house falls down now, I wouldn't have a clue
+<span class="chord">Em</span>              <span class="chord">C</span>            <span class="chord">Em</span>       <span class="chord">C</span>
+Because you're near me</pre>
+
+    <div class="section-title">[Refrão]</div>
+    <pre><span class="chord">G</span>             <span class="chord">C</span>                           <span class="chord">G</span>             
+And I want to thank you for giving me the best day of my
+  <span class="chord">C</span>
+ life
+<span class="chord">G</span>           <span class="chord">C</span>                         <span class="chord">Bm</span>            <span class="chord">Am</span>
+Oh just to be with you is having the best day of my life
+
+<span class="chord">G</span>             <span class="chord">C</span>                           <span class="chord">G</span>             
+And I want to thank you for giving me the best day of my
+  <span class="chord">C</span>
+ life
+<span class="chord">G</span>           <span class="chord">C</span>                         <span class="chord">Bm</span>            <span class="chord">Am</span>    <span class="chord">G</span>
+Oh just to be with you is having the best day of my life</pre>
+
+    <!-- Painel de Controle Flutuante -->
+    <div class="controls-container">
+        <div class="control-panel-row">
+            <span>Tom:</span>
+            <div class="panel-btn-group">
+                <button id="transpose-dec" class="panel-btn">- Tom</button>
+                <button id="transpose-inc" class="panel-btn">+ Tom</button>
+            </div>
+        </div>
+        <div class="control-panel-row">
+            <span>Tela:</span>
+            <button id="theme-toggle" class="panel-btn theme-btn">🌙 Escuro</button>
+        </div>
+        <div class="control-panel-row">
+            <span>Fonte:</span>
+            <div class="panel-btn-group">
+                <button id="font-dec" class="panel-btn" title="Diminuir fonte">−</button>
+                <button id="font-inc" class="panel-btn" title="Aumentar fonte">+</button>
+            </div>
+        </div>
+        <div class="control-panel-row">
+            <label for="speed-select">Vel:</label>
+            <select id="speed-select">
+                <option value="0.5">Lento</option>
+                <option value="1" selected>Normal</option>
+                <option value="2">Rápido</option>
+            </select>
+        </div>
+        <button id="scroll-btn" class="scroll-control-btn">📜 Rolar</button>
+    </div>
+
+    <script>
+        // Lógica de Alternância de Tema
+        const themeToggle = document.getElementById('theme-toggle');
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        themeToggle.textContent = savedTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeToggle.textContent = newTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+        });
+
+        // Lógica de Redimensionamento da Fonte
+        let fontSize = parseInt(localStorage.getItem('fontSize')) || 14;
+        const updateFontSize = (size) => {
+            document.documentElement.style.setProperty('--chord-font-size', `${size}px`);
+            localStorage.setItem('fontSize', size);
+        };
+        updateFontSize(fontSize);
+
+        document.getElementById('font-inc').addEventListener('click', () => {
+            if(fontSize < 24) { fontSize += 2; updateFontSize(fontSize); }
+        });
+        document.getElementById('font-dec').addEventListener('click', () => {
+            if(fontSize > 10) { fontSize -= 2; updateFontSize(fontSize); }
+        });
+
+        // Lógica de Rolagem Automática
+        let scrollInterval;
+        const scrollBtn = document.getElementById('scroll-btn');
+        const speedSelect = document.getElementById('speed-select');
+
+        const stopScroll = () => {
+            clearInterval(scrollInterval);
+            scrollInterval = null;
+            scrollBtn.classList.remove('scrolling');
+            scrollBtn.textContent = '📜 Rolar';
+        };
+
+        const startScroll = () => {
+            if (scrollInterval) clearInterval(scrollInterval);
+            const speed = parseFloat(speedSelect.value);
+            const intervalTime = 50 / speed; 
+
+            scrollBtn.classList.add('scrolling');
+            scrollBtn.textContent = '⏸️ Pausar';
+
+            scrollInterval = setInterval(() => {
+                window.scrollBy(0, 1);
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                    stopScroll();
+                }
+            }, intervalTime);
+        };
+
+        scrollBtn.addEventListener('click', () => {
+            if (scrollInterval) stopScroll();
+            else startScroll();
+        });
+
+        speedSelect.addEventListener('change', () => {
+            if (scrollInterval) startScroll();
+        });
+
+        window.addEventListener('wheel', () => { if (scrollInterval) stopScroll(); });
+        window.addEventListener('touchmove', () => { if (scrollInterval) stopScroll(); });
+
+        // Lógica de Transposição de Acordes
+        const chordsScale = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+        
+        function transposeChord(chord, semitones) {
+            return chord.replace(/[A-G]#?/g, (match) => {
+                let index = chordsScale.indexOf(match);
+                if (index === -1) return match;
+                let newIndex = (index + semitones + 12) % 12;
+                return chordsScale[newIndex];
+            });
+        }
+
+        function runTranspose(semitones) {
+            const chordElements = document.querySelectorAll('.chord');
+            chordElements.forEach(el => {
+                let currentText = el.textContent;
+                // Trata acordes com barra separadamente (ex: D/F#)
+                if (currentText.includes('/')) {
+                    let parts = currentText.split('/');
+                    let transParts = parts.map(p => transposeChord(p, semitones));
+                    el.textContent = transParts.join('/');
+                } else {
+                    el.textContent = transposeChord(currentText, semitones);
+                }
+            });
+        }
+
+        document.getElementById('transpose-inc').addEventListener('click', () => runTranspose(1));
+        document.getElementById('transpose-dec').addEventListener('click', () => runTranspose(-1));
+    </script>
+</body>
+</html>
