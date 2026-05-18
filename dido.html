@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dido - Thank You (Chords)</title>
+    <style>
+        /* Variáveis CSS para controle de tema global */
+        :root {
+            --bg-color: #f4f4f9;
+            --text-color: #333333;
+            --heading-color: #2c3e50;
+            --pre-bg: #ffffff;
+            --pre-border: #dddddd;
+            --panel-bg: rgba(44, 62, 80, 0.15); /* Transparente para não cobrir a letra */
+            --panel-text: #2c3e50;
+            --panel-btn-bg: rgba(255, 255, 255, 0.7);
+            --panel-btn-text: #2c3e50;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --heading-color: #ecf0f1;
+            --pre-bg: #1e1e1e;
+            --pre-border: #333333;
+            --panel-bg: rgba(255, 255, 255, 0.05);
+            --panel-text: #e0e0e0;
+            --panel-btn-bg: rgba(51, 51, 51, 0.7);
+            --panel-btn-text: #ffffff;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            margin-bottom: 160px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1 {
+            color: var(--heading-color);
+            border-bottom: 2px solid var(--heading-color);
+            padding-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        pre {
+            font-family: "Courier New", Courier, monospace;
+            font-size: var(--chord-font-size, 14px);
+            line-height: 1.6;
+            background: var(--pre-bg);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--pre-border);
+            overflow-x: auto;
+            white-space: pre-wrap;
+            transition: background-color 0.3s, border-color 0.3s;
+            position: relative;
+            z-index: 2; /* Texto fica na camada da frente */
+            pointer-events: none; /* Permite clicar nos botões que estão por trás */
+        }
+        
+        /* Painel Flutuante ATRÁS do Texto */
+        .controls-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+            z-index: 1; /* Camada de trás */
+            opacity: 0.6; /* Deixa o painel discreto como marca d'água */
+            transition: opacity 0.2s;
+        }
+        
+        /* Quando passa o mouse ou toca no painel, ele ganha destaque */
+        .controls-container:hover {
+            opacity: 1;
+        }
+
+        .scroll-control-btn {
+            background-color: var(--panel-btn-bg);
+            color: var(--panel-btn-text);
+            border: 1px solid var(--pre-border);
+            border-radius: 50px;
+            padding: 12px 22px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+            width: 150px;
+            text-align: center;
+        }
+        .scroll-control-btn.scrolling {
+            background-color: #27ae60;
+            color: white;
+        }
+        .control-panel-row {
+            background: var(--panel-bg);
+            padding: 6px 14px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--panel-text);
+            font-size: 13px;
+            border: 1px solid var(--pre-border);
+            transition: background-color 0.3s;
+        }
+        .control-panel-row select {
+            background: var(--panel-btn-bg);
+            color: var(--panel-btn-text);
+            border: none;
+            border-radius: 4px;
+            padding: 2px 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .panel-btn-group {
+            display: flex;
+            gap: 4px;
+        }
+        .panel-btn {
+            background: var(--panel-btn-bg);
+            color: var(--panel-btn-text);
+            border: none;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto; /* Garante clique no botão */
+        }
+        .panel-btn:hover {
+            opacity: 0.9;
+        }
+        .theme-btn {
+            width: auto;
+            padding: 2px 8px;
+            font-size: 12px;
+        }
+        .scroll-control-btn {
+            pointer-events: auto; /* Garante clique no botão */
+        }
+        select {
+            pointer-events: auto; /* Garante clique no seletor */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Thank You - Chords</h1>
+
+    <div class="section-title">[Intro]</div>
+    <pre>Em  C  Em  C
+Em  C  Em  C</pre>
+
+    <div class="section-title">[Primeira Parte]</div>
+    <pre>Em            C                    D         G     D/F# 
+My tea's gone cold, I'm wondering why I got out of bed 
+   Em
+at all
+Em          C                  D           G   D/F#    
+The morning rain clouds up my window and I can't see at 
+Em
+all
+Em         C              D              G     D/F#     
+And even if I could it'd all be grey, but your picture 
+    Em
+on my wall
+Em              C       Em
+It reminds me that it's not so bad
+C
+It's not so bad
+
+( Em  C  Em  C )</pre>
+
+    <div class="section-title">[Segunda Parte]</div>
+    <pre>Em            C                    D             G     
+I drank too much last night, got bills to pay, my head 
+D/F#    Em
+just feels in pain
+Em            C                    D             G       
+I missed the bus and there'll be hell today; I'm late for
+D/F#    Em
+ work again
+Em         C              D              G     D/F#     
+And even if I'm there,  they'll all imply that I might 
+    Em
+not last the day
+Em              C            Em
+And then you call me and it's not so bad
+C
+It's not so bad and</pre>
+
+    <div class="section-title">[Refrão]</div>
+    <pre>G             C                           G             
+And I want to thank you for giving me the best day of my
+  C
+ life
+G           C                         Bm            Am
+Oh just to be with you is having the best day of my life</pre>
+
+    <div class="section-title">[Terceira Parte]</div>
+    <pre>Em            C                    D                 G     D/F#  Em
+Push the door, I'm home at last and I'm soaking through and through
+Em            C                    D            G   D/F#  Em
+Then you handed me a towel and all I see is you
+Em         C              D              G     D/F#    Em
+And even if my house falls down now, I wouldn't have a clue
+Em              C            Em       C
+Because you're near me</pre>
+
+    <div class="section-title">[Refrão]</div>
+    <pre>G             C                           G             
+And I want to thank you for giving me the best day of my
+  C
+ life
+G           C                         Bm            Am
+Oh just to be with you is having the best day of my life
+
+G             C                           G             
+And I want to thank you for giving me the best day of my
+  C
+ life
+G           C                         Bm            Am    G
+Oh just to be with you is having the best day of my life</pre>
+
+    <!-- Interface Flutuante na Camada de Trás -->
+    <div class="controls-container">
+        <div class="control-panel-row">
+            <span>Tela:</span>
+            <button id="theme-toggle" class="panel-btn theme-btn">🌙 Escuro</button>
+        </div>
+        <div class="control-panel-row">
+            <span>Fonte:</span>
+            <div class="panel-btn-group">
+                <button id="font-dec" class="panel-btn" title="Diminuir fonte">−</button>
+                <button id="font-inc" class="panel-btn" title="Aumentar fonte">+</button>
+            </div>
+        </div>
+        <div class="control-panel-row">
+            <label for="speed-select">Vel:</label>
+            <select id="speed-select">
+                <option value="0.5">Lento</option>
+                <option value="1" selected>Normal</option>
+                <option value="2">Rápido</option>
+            </select>
+        </div>
+        <button id="scroll-btn" class="scroll-control-btn">📜 Rolar</button>
+    </div>
+
+    <script>
+        // Lógica de Alternância de Tema
+        const themeToggle = document.getElementById('theme-toggle');
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        themeToggle.textContent = savedTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeToggle.textContent = newTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+        });
+
+        // Lógica de Redimensionamento da Fonte
+        let fontSize = parseInt(localStorage.getItem('fontSize')) || 14;
+        const updateFontSize = (size) => {
+            document.documentElement.style.setProperty('--chord-font-size', `${size}px`);
+            localStorage.setItem('fontSize', size);
+        };
+        updateFontSize(fontSize);
+
+        document.getElementById('font-inc').addEventListener('click', () => {
+            if(fontSize < 24) { fontSize += 2; updateFontSize(fontSize); }
+        });
+        document.getElementById('font-dec').addEventListener('click', () => {
+            if(fontSize > 10) { fontSize -= 2; updateFontSize(fontSize); }
+        });
+
+        // Lógica de Rolagem Automática
+        let scrollInterval;
+        const scrollBtn = document.getElementById('scroll-btn');
+        const speedSelect = document.getElementById('speed-select');
+
+        const stopScroll = () => {
+            clearInterval(scrollInterval);
+            scrollInterval = null;
+            scrollBtn.classList.remove('scrolling');
+            scrollBtn.textContent = '📜 Rolar';
+        };
+
+        const startScroll = () => {
+            if (scrollInterval) clearInterval(scrollInterval);
+            const speed = parseFloat(speedSelect.value);
+            const intervalTime = 50 / speed; 
+
+            scrollBtn.classList.add('scrolling');
+            scrollBtn.textContent = '⏸️ Pausar';
+
+            scrollInterval = setInterval(() => {
+                window.scrollBy(0, 1);
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                    stopScroll();
+                }
+            }, intervalTime);
+        };
+
+        scrollBtn.addEventListener('click', () => {
+            if (scrollInterval) stopScroll();
+            else startScroll();
+        });
+
+        speedSelect.addEventListener('change', () => {
+            if (scrollInterval) startScroll();
+        });
+
+        // Pausa de segurança se o usuário interagir com a tela
+        window.addEventListener('wheel', () => { if (scrollInterval) stopScroll(); });
+        window.addEventListener('touchmove', () => { if (scrollInterval) stopScroll(); });
+    </script>
+</body>
+</html>
