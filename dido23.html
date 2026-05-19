@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dido - Thank You (Chords)</title>
     <style>
-        /* Global CSS Theme Variables */
+        /* Variáveis CSS para controle de tema global */
         :root {
             --bg-color: #f4f4f9;
             --text-color: #333333;
@@ -55,11 +55,11 @@
             font-size: 1.1em;
         }
         
-        /* NEW RESPONSIVE CHORD LAYOUT ENGINE */
+        /* MOTOR DE CIFRAS RESPONSIVO CORRIGIDO */
         .song-block {
             font-family: "Courier New", Courier, monospace;
             font-size: var(--chord-font-size);
-            line-height: 2.2; /* Extra space for chords above */
+            line-height: 2.8; /* Espaço ampliado para a cifra flutuar sem apertar a linha */
             background: var(--pre-bg);
             padding: 15px;
             border-radius: 5px;
@@ -67,30 +67,30 @@
             transition: background-color 0.3s, border-color 0.3s;
         }
         .line {
-            display: flex;
-            flex-wrap: wrap; /* Allows text to wrap safely on resize */
-            margin-bottom: 8px;
+            display: block; /* Comportamento de linha normal de texto */
+            margin-bottom: 4px;
+            white-space: normal; /* Permite quebra natural no resize */
         }
         .w {
-            display: inline-flex;
-            flex-direction: column; /* Stack chord directly over text */
+            display: inline-block; /* Alinha na mesma linha das palavras sem cifra */
+            position: relative; /* Base para o posicionamento absoluto da cifra */
             vertical-align: bottom;
-            position: relative;
         }
         .w::before {
-            content: attr(data-chord); /* Inject chord from HTML attribute */
+            content: attr(data-chord); /* Resgata o acorde do atributo HTML */
             font-weight: bold;
-            color: #e74c3c; /* Distinct color for chords */
-            height: 1.2em;
-            line-height: 1.2em;
-            margin-bottom: 0.1em;
+            color: #e74c3c;
+            position: absolute;
+            bottom: 1.2em; /* Faz a cifra flutuar exatamente acima da palavra */
+            left: 0;
             white-space: pre;
+            pointer-events: none; /* Ignora cliques para não atrapalhar seleção de texto */
         }
         .space {
-            white-space: pre;
+            white-space: pre; /* Preserva os espaços digitados entre as palavras */
         }
         
-        /* Floating Control Panel */
+        /* Painel Flutuante na Frente com Alta Transparência */
         .controls-container {
             position: fixed;
             bottom: 30px;
@@ -271,7 +271,7 @@
         </div>
     </div>
 
-    <!-- Floating Control Panel Component -->
+    <!-- Painel de Controle Flutuante -->
     <div class="controls-container">
         <div class="control-panel-row">
             <span>Tela:</span>
@@ -295,9 +295,9 @@
         <button id="scroll-toggle" class="scroll-control-btn">Auto Scroll</button>
     </div>
 
-    <!-- Scripts Operations -->
+    <!-- Scripts de Operação -->
     <script>
-        // Theme Toggle (Light / Dark)
+        // Alternador de Tema (Claro / Escuro)
         const themeToggle = document.getElementById('theme-toggle');
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -310,7 +310,7 @@
             }
         });
 
-        // Font Size Configurator
+        // Configuração do tamanho da fonte
         let currentFontSize = 14;
         const fontDec = document.getElementById('font-dec');
         const fontInc = document.getElementById('font-inc');
@@ -329,7 +329,7 @@
             }
         });
 
-        // Auto Scroll System
+        // Sistema de Rolagem Automática (Smooth Auto-Scroll)
         const scrollToggle = document.getElementById('scroll-toggle');
         const speedSelect = document.getElementById('speed-select');
         let scrollInterval = null;
