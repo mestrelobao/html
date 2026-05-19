@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dido - Thank You (Chords)</title>
+    <style>
+        /* Global CSS Theme Variables */
+        :root {
+            --bg-color: #f4f4f9;
+            --text-color: #333333;
+            --heading-color: #2c3e50;
+            --pre-bg: #ffffff;
+            --pre-border: #dddddd;
+            --panel-bg: #2c3e50;
+            --panel-text: #ffffff;
+            --panel-btn-bg: #ffffff;
+            --panel-btn-text: #2c3e50;
+            --chord-font-size: 14px;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --heading-color: #ecf0f1;
+            --pre-bg: #1e1e1e;
+            --pre-border: #333333;
+            --panel-bg: #222222;
+            --panel-text: #e0e0e0;
+            --panel-btn-bg: #333333;
+            --panel-btn-text: #ffffff;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            margin-bottom: 160px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1 {
+            color: var(--heading-color);
+            border-bottom: 2px solid var(--heading-color);
+            padding-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* RESPONSIVE CHORD LAYOUT ENGINE */
+        .song-block {
+            font-family: "Courier New", Courier, monospace;
+            font-size: var(--chord-font-size);
+            line-height: 2.8; /* Space for the floating chords */
+            background: var(--pre-bg);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--pre-border);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .line {
+            display: block;
+            margin-bottom: 4px;
+            white-space: normal;
+        }
+        
+        /* Elements containing text + chords */
+        .w {
+            display: inline-block;
+            position: relative;
+            vertical-align: bottom;
+        }
+        .w::before {
+            content: attr(data-chord);
+            font-weight: bold;
+            color: #e74c3c;
+            position: absolute;
+            bottom: 1.2em;
+            left: 0;
+            white-space: pre;
+            pointer-events: none;
+        }
+        
+        /* NEW FIXED: Standalone chords with zero text beneath */
+        .w-only {
+            display: inline-block;
+            position: relative;
+            vertical-align: bottom;
+            min-width: 4ch; /* Reserves layout footprint for the chord width */
+        }
+        .w-only::before {
+            content: attr(data-chord);
+            font-weight: bold;
+            color: #e74c3c;
+            position: absolute;
+            bottom: 1.2em;
+            left: 0;
+            white-space: pre;
+            pointer-events: none;
+        }
+        
+        .space {
+            white-space: pre;
+        }
+        
+        /* Floating Control Panel Layout */
+        .controls-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+            z-index: 1000;
+            opacity: 0.3;
+            transition: opacity 0.2s ease;
+        }
+        .controls-container:hover,
+        .controls-container:focus-within {
+            opacity: 1;
+        }
+        .scroll-control-btn {
+            background-color: var(--panel-bg);
+            color: var(--panel-text);
+            border: 1px solid var(--pre-border);
+            border-radius: 50px;
+            padding: 12px 22px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+            width: 150px;
+            text-align: center;
+        }
+        .scroll-control-btn:hover {
+            transform: scale(1.05);
+        }
+        .scroll-control-btn.scrolling {
+            background-color: #27ae60;
+            color: white;
+        }
+        .control-panel-row {
+            background: var(--panel-bg);
+            padding: 6px 14px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--panel-text);
+            font-size: 13px;
+            border: 1px solid var(--pre-border);
+            transition: background-color 0.3s;
+        }
+        .control-panel-row select {
+            background: var(--panel-btn-bg);
+            color: var(--panel-btn-text);
+            border: none;
+            border-radius: 4px;
+            padding: 2px 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .panel-btn-group {
+            display: flex;
+            gap: 4px;
+        }
+        .panel-btn {
+            background: var(--panel-btn-bg);
+            color: var(--panel-btn-text);
+            border: none;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .panel-btn:hover {
+            opacity: 0.9;
+        }
+        .theme-btn {
+            width: auto;
+            padding: 2px 8px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Thank You - Chords</h1>
+
+    <div class="section-title">[Intro]</div>
+    <div class="song-block">
+        <div class="line">
+            <span class="w-only" data-chord="Em">&nbsp;</span>
+            <span class="space">    </span>
+            <span class="w-only" data-chord="C">&nbsp;</span>
+            <span class="space">    </span>
+            <span class="w-only" data-chord="Em">&nbsp;</span>
+            <span class="space">    </span>
+            <span class="w-only" data-chord="C">&nbsp;</span>
+        </div>
+        <div class="line">
+            <span class="w-only" data-chord="Em">&nbsp;</span>
+            <span class="space">    </span>
+            <span class="w-only" data-chord="C">&nbsp;</span>
+            <span class="space">    </span>
+            <span class="w-only" data-chord="Em">&nbsp;</span>
+            <span class="space">    </span>
+            <span class="w-only" data-chord="C">&nbsp;</span>
+        </div>
+    </div>
+
+    <div class="section-title">[Primeira Parte]</div>
+    <div class="song-block">
+        <div class="line">
+            <span class="w" data-chord="Em">My</span>
+            <span class="space"> tea's gone </span>
+            <span class="w" data-chord="C">cold,</span>
+            <span class="space"> I'm wondering </span>
+            <span class="w" data-chord="D">why</span>
+            <span class="space"> I got </span>
+            <span class="w" data-chord="G">out</span>
+            <span class="space"> of </span>
+            <span class="w" data-chord="D/F#">bed</span>
+            <span class="space"> at </span>
+            <span class="w" data-chord="Em">all</span>
+        </div>
+        <div class="line">
+            <span class="w" data-chord="Em">The</span>
+            <span class="space"> morning </span>
+            <span class="w" data-chord="C">rain</span>
+            <span class="space"> clouds up my </span>
+            <span class="w" data-chord="D">window</span>
+            <span class="space"> and I </span>
+            <span class="w" data-chord="G">can't</span>
+            <span class="space"> </span>
+            <span class="w" data-chord="D/F#">see</span>
+            <span class="space"> at </span>
+            <span class="w" data-chord="Em">all</span>
+        </div>
+        <div class="line">
+            <span class="w" data-chord="Em">And</span>
+            <span class="space"> even </span>
+            <span class="w" data-chord="C">if</span>
+            <span class="space"> I could it'd </span>
+            <span class="w" data-chord="D">all</span>
+            <span class="space"> be grey, but </span>
+            <span class="w" data-chord="G">your</span>
+            <span class="space"> pic</span>
+            <span class="w" data-chord="D/F#">ture</span>
+            <span class="space"> on my </span>
+            <span class="w" data-chord="Em">wall</span>
+        </div>
+        <div class="line">
+            <span class="w" data-chord="Em">It</span>
+            <span class="space"> reminds me </span>
+            <span class="w" data-chord="C">that</span>
+            <span class="space"> it's </span>
+            <span class="w" data-chord="Em">not</span>
+            <span class="space"> so bad</span>
+        </div>
+        <div class="line">
+            <span class="w" data-chord="C">It's not so bad</span>
+        </div>
+        <div class="line" style="margin-top: 15px;">
+            <span class="w-only" data-chord="Em">&nbsp;</span>
+            <span class="space">  </span>
+            <span class="w-only" data-chord="C">&nbsp;</span>
+            <span class="space">  </span>
+            <span class="w-only" data-chord="Em">&nbsp;</span>
+            <span class="space">  </span>
+            <span class="w-only" data-chord="C">&nbsp;</span>
+        </div>
+    </div>
+
+    <div class="section-title">[Refrão]</div>
+    <div class="song-block">
+        <div class="line">
+            <span class="w" data-chord="G">And</span>
+            <span class="space"> I want to </span>
+            <span class="w" data-chord="C">thank</span>
+            <span class="space"> you for giving me the </span>
+            <span class="w" data-chord="G">best</span>
+            <span class="space"> day of my </span>
+            <span class="w" data-chord="C">life</span>
+        </div>
+        <div class="line">
+            <span class="w" data-chord="G">Oh</span>
+            <span class="space"> just to </span>
+            <span class="w" data-chord="C">be</span>
+            <span class="space"> with you is having the </span>
+            <span class="w" data-chord="Bm">best</span>
+            <span class="space"> day of my </span>
+            <span class="w" data-chord="Am">life</span>
+        </div>
+    </div>
+
+    <!-- Floating UI Dashboard Controls -->
+    <div class="controls-container">
+        <div class="control-panel-row">
+            <span>Tela:</span>
+            <button id="theme-toggle" class="panel-btn theme-btn">🌙 Escuro</button>
+        </div>
+        <div class="control-panel-row">
+            <span>Fonte:</span>
+            <div class="panel-btn-group">
+                <button id="font-dec" class="panel-btn" title="Diminuir fonte">−</button>
+                <button id="font-inc" class="panel-btn" title="Aumentar fonte">+</button>
+            </div>
+        </div>
+        <div class="control-panel-row">
+            <label for="speed-select">Vel:</label>
+            <select id="speed-select">
+                <option value="1">1x</option>
+                <option value="2">2x</option>
+                <option value="3">3x</option>
+            </select>
+        </div>
+        <button id="scroll-toggle" class="scroll-control-btn">Auto Scroll</button>
+    </div>
+
+    <!-- Interface Mechanics Scripts -->
+    <script>
+        // Light / Dark Theme Toggling Engine
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                themeToggle.textContent = '🌙 Escuro';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️ Claro';
+            }
+        });
+
+        // Dynamic Typography Scaling Engine
+        let currentFontSize = 14;
+        const fontDec = document.getElementById('font-dec');
+        const fontInc = document.getElementById('font-inc');
+        
+        fontDec.addEventListener('click', () => {
+            if (currentFontSize > 10) {
+                currentFontSize -= 2;
+                document.documentElement.style.setProperty('--chord-font-size', currentFontSize + 'px');
+            }
+        });
+
+        fontInc.addEventListener('click', () => {
+            if (currentFontSize < 24) {
+                currentFontSize += 2;
+                document.documentElement.style.setProperty('--chord-font-size', currentFontSize + 'px');
+            }
+        });
+
+        // Smooth Auto-Scrolling Playback Engine
+        const scrollToggle = document.getElementById('scroll-toggle');
+        const speedSelect = document.getElementById('speed-select');
+        let scrollInterval = null;
+
+        scrollToggle.addEventListener('click', () => {
+            if (scrollInterval) {
+                clearInterval(scrollInterval);
+                scrollInterval = null;
+                scrollToggle.textContent = 'Auto Scroll';
+                scrollToggle.classList.remove('scrolling');
+            } else {
+                scrollToggle.textContent = 'Parar';
+                scrollToggle.classList.add('scrolling');
+                
+                const speed = parseFloat(speedSelect.value);
+                const intervalTime = 40 / speed; 
+
+                scrollInterval = setInterval(() => {
+                    window.scrollBy(0, 1);
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                        clearInterval(scrollInterval);
+                        scrollInterval = null;
+                        scrollToggle.textContent = 'Auto Scroll';
+                        scrollToggle.classList.remove('scrolling');
+                    }
+                }, intervalTime);
+            }
+        });
+    </script>
+</body>
+</html>
