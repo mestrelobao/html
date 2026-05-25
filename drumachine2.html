@@ -3,124 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Tempo em BPM</title>
+    <title>Audio Loop Sync Fix</title>
     <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #f0f2f5;
-            margin: 0;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            text-align: center;
-            width: 350px;
-        }
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .control-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background: #fafafa;
-            border-radius: 8px;
-            border: 1px solid #eee;
-        }
-        .tempo-container {
-            margin-top: 20px;
-            padding: 15px;
-            background: #eef5ff;
-            border-radius: 8px;
-            border: 1px solid #b8daff;
-        }
-        .track-label {
-            font-weight: bold;
-            color: #333;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: bold;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 140px;
-            transition: background 0.2s;
-            color: white;
-        }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f0f2f5; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; width: 350px; }
+        .btn-group { display: flex; flex-direction: column; gap: 15px; margin: 20px 0; }
+        button { padding: 12px 20px; font-size: 14px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; color: white; width: 100%; }
         .groove-btn { background-color: #007bff; }
-        .groove-btn:hover { background-color: #0056b3; }
         .fill-btn { background-color: #e0a800; color: #212529; }
-        .fill-btn:hover { background-color: #d39e00; }
         .active-stop { background-color: #dc3545 !important; color: white !important; }
         .playing-fill { background-color: #28a745 !important; color: white !important; }
         button:disabled { background-color: #cccccc !important; color: white !important; cursor: not-allowed; }
-        input[type="range"] { width: 100%; margin-top: 10px; }
-        #status { margin-top: 15px; color: #666; font-size: 14px; min-height: 20px; }
+        #status { margin-top: 15px; color: #666; font-size: 14px; padding: 10px; background: #eee; border-radius: 6px; word-break: break-all; }
+        .error { background: #ffe3e3 !important; color: #dc3545 !important; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Controle de Andamento em BPM</h2>
-    <div id="status">Carregando arquivos de áudio...</div>
+    <h2>Player de Áudio BPM</h2>
+    <div id="status">Iniciando...</div>
 
     <div class="btn-group">
-        <div class="control-row">
-            <span class="track-label">Groove</span>
-            <button id="grooveBtn" class="groove-btn" disabled>Tocar Groove</button>
-        </div>
-
-        <div class="control-row">
-            <span class="track-label">Fill (Instantâneo)</span>
-            <button id="fillBtn" class="fill-btn" disabled>Cortar para Fill</button>
-        </div>
+        <button id="grooveBtn" class="groove-btn" disabled>Carregando Groove...</button>
+        <button id="fillBtn" class="fill-btn" disabled>Cortar para Fill</button>
     </div>
-
-    <!-- Novo Controle deslizante baseado em BPM -->
-    <div class="tempo-container">
-        <div class="track-label">Andamento: <span id="bpmVal">120</span> BPM</div>
-        <input type="range" id="bpmSlider" min="60" max="180" step="1" value="140">
+    
+    <div style="margin-top:20px;">
+        <label>BPM: <span id="bpmVal">120</span></label><br>
+        <input type="range" id="bpmSlider" min="60" max="180" value="120" style="width:100%;">
     </div>
 </div>
 
 <script>
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
     const grooveBtn = document.getElementById('grooveBtn');
     const fillBtn = document.getElementById('fillBtn');
+    const statusDiv = document.getElementById('status');
     const bpmSlider = document.getElementById('bpmSlider');
     const bpmVal = document.getElementById('bpmVal');
-    const statusDiv = document.getElementById('status');
 
-    // CONFIGURAÇÃO DE SUCESSO: Mude aqui para o BPM nativo dos seus loops originais!
-    const BPM_ORIGINAL = 120; 
-
-    let grooveBuffer = null;
-    let fillBuffer = null;
-
-    let grooveSource = null;
-    let fillSource = null; 
-    let grooveGainNode = null; 
-
-    let grooveStartTime = 0; 
-    let baseLoopDuration = 0;    
-    let currentPlaybackRate = 1.0; 
+    const BPM_ORIGINAL = 120;
+    let grooveBuffer = null, fillBuffer = null;
+    let grooveSource = null, fillSource = null, grooveGainNode = null;
+    let grooveStartTime = 0, baseLoopDuration = 0, currentPlaybackRate = 1.0;
+    
+    // CORREÇÃO: Variáveis globais declaradas corretamente aqui
+    let isGroovePlaying = false; 
+    let isPlayingFill = false;
 
     async function loadTrack(url) {
+        statusDiv.textContent = `Buscando arquivo: ${url}...`;
         const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`Não foi possível encontrar o arquivo "${url}". Erro HTTP: ${response.status}`);
+        }
+        
         const arrayBuffer = await response.arrayBuffer();
         return await audioCtx.decodeAudioData(arrayBuffer);
     }
@@ -129,22 +68,16 @@
         try {
             grooveBuffer = await loadTrack('groove.wav');
             fillBuffer = await loadTrack('fill.wav');
-            baseLoopDuration = grooveBuffer.duration; 
-            
-            // Sincroniza o slider padrão ao inicializar caso o BPM_ORIGINAL não seja 120
-            bpmSlider.value = BPM_ORIGINAL;
-            bpmVal.textContent = BPM_ORIGINAL;
+            baseLoopDuration = grooveBuffer.duration;
 
-            statusDiv.textContent = "Áudios prontos.";
+            statusDiv.textContent = "Arquivos carregados com sucesso! Clique em Tocar Groove.";
+            grooveBtn.textContent = "Tocar Groove";
             grooveBtn.disabled = false;
         } catch (error) {
-            statusDiv.textContent = "Erro ao carregar arquivos.";
+            statusDiv.textContent = "ERRO: " + error.message;
+            statusDiv.classList.add('error');
             console.error(error);
         }
-    }
-
-    function getScaledLoopDuration() {
-        return baseLoopDuration / currentPlaybackRate;
     }
 
     function toggleGroove() {
@@ -152,25 +85,22 @@
 
         if (!isGroovePlaying) {
             grooveStartTime = audioCtx.currentTime;
-            
             grooveGainNode = audioCtx.createGain();
-            grooveGainNode.gain.setValueAtTime(1, grooveStartTime); 
+            grooveGainNode.gain.setValueAtTime(1, grooveStartTime);
             grooveGainNode.connect(audioCtx.destination);
 
             grooveSource = audioCtx.createBufferSource();
             grooveSource.buffer = grooveBuffer;
             grooveSource.loop = true;
-            
             grooveSource.playbackRate.setValueAtTime(currentPlaybackRate, grooveStartTime);
-            
             grooveSource.connect(grooveGainNode);
             grooveSource.start(grooveStartTime);
-            
+
             isGroovePlaying = true;
-            grooveBtn.textContent = "Parar Groove";
+            grooveBtn.textContent = "Parar";
             grooveBtn.classList.add('active-stop');
-            fillBtn.disabled = false; 
-            statusDiv.textContent = "Groove rolando.";
+            fillBtn.disabled = false;
+            statusDiv.textContent = "Groove tocando.";
         } else {
             stopAll();
         }
@@ -185,19 +115,16 @@
 
         grooveGainNode.gain.setValueAtTime(0, now);
 
-        const scaledDuration = getScaledLoopDuration();
+        const scaledDuration = baseLoopDuration / currentPlaybackRate;
         const timeElapsedInCurrentLoop = (now - grooveStartTime) % scaledDuration;
         const timeRemainingInCurrentLoop = scaledDuration - timeElapsedInCurrentLoop;
         const nextLoopStartTime = now + timeRemainingInCurrentLoop;
-
         const bufferOffset = timeElapsedInCurrentLoop * currentPlaybackRate;
 
         fillSource = audioCtx.createBufferSource();
         fillSource.buffer = fillBuffer;
-        
         fillSource.playbackRate.setValueAtTime(currentPlaybackRate, now);
         fillSource.connect(audioCtx.destination);
-        
         fillSource.start(now, bufferOffset);
 
         grooveGainNode.gain.setValueAtTime(1, nextLoopStartTime);
@@ -205,34 +132,24 @@
         fillBtn.textContent = "Tocando Fill...";
         fillBtn.classList.add('playing-fill');
 
-        const msUntilReturn = Math.max(0, timeRemainingInCurrentLoop * 1000);
         setTimeout(() => {
             if (isGroovePlaying) {
                 isPlayingFill = false;
                 fillBtn.disabled = false;
                 fillBtn.textContent = "Cortar para Fill";
                 fillBtn.classList.remove('playing-fill');
-                statusDiv.textContent = "Groove restaurado em sincronia.";
+                statusDiv.textContent = "Groove restaurado.";
             }
-        }, msUntilReturn);
+        }, Math.max(0, timeRemainingInCurrentLoop * 1000));
     }
 
-    // Gerencia a mudança baseada no slider de BPM
     bpmSlider.addEventListener('input', (e) => {
         const targetBpm = parseInt(e.target.value);
         bpmVal.textContent = targetBpm;
-
-        // Converte o BPM alvo para o multiplicador de taxa da Web Audio API
         currentPlaybackRate = targetBpm / BPM_ORIGINAL;
 
-        const now = audioCtx.currentTime;
-
         if (isGroovePlaying && grooveSource) {
-            grooveSource.playbackRate.setValueAtTime(currentPlaybackRate, now);
-        }
-        
-        if (isPlayingFill && fillSource) {
-            fillSource.playbackRate.setValueAtTime(currentPlaybackRate, now);
+            grooveSource.playbackRate.setValueAtTime(currentPlaybackRate, audioCtx.currentTime);
         }
     });
 
@@ -244,14 +161,11 @@
         grooveBtn.textContent = "Tocar Groove";
         grooveBtn.classList.remove('active-stop');
         fillBtn.disabled = true;
-        fillBtn.textContent = "Cortar para Fill";
-        fillBtn.classList.remove('playing-fill');
-        statusDiv.textContent = "Reprodução parada.";
+        statusDiv.textContent = "Parado.";
     }
 
     grooveBtn.addEventListener('click', toggleGroove);
     fillBtn.addEventListener('click', triggerInstantFill);
-
     init();
 </script>
 
