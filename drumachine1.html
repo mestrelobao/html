@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interrupção Instantânea com Fill</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 350px;
+        }
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        .track-label {
+            font-weight: bold;
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 140px;
+            transition: background 0.2s;
+            color: white;
+        }
+        .groove-btn { background-color: #007bff; }
+        .groove-btn:hover { background-color: #0056b3; }
+        .fill-btn { background-color: #e0a800; color: #212529; }
+        .fill-btn:hover { background-color: #d39e00; }
+        .active-stop { background-color: #dc3545 !important; color: white !important; }
+        .active-stop:hover { background-color: #c82333 !important; }
+        .playing-fill { background-color: #28a745 !important; color: white !important; }
+        button:disabled { background-color: #cccccc !important; color: white !important; cursor: not-allowed; }
+        #status { margin-top: 15px; color: #666; font-size: 14px; min-height: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Corte Instantâneo com Fill</h2>
+    <div id="status">Carregando arquivos de áudio...</div>
+
+    <div class="btn-group">
+        <!-- Controle do Groove -->
+        <div class="control-row">
+            <span class="track-label">Groove</span>
+            <button id="grooveBtn" class="groove-btn" disabled>Tocar Groove</button>
+        </div>
+
+        <!-- Controle do Fill -->
+        <div class="control-row">
+            <span class="track-label">Fill (Instantâneo)</span>
+            <button id="fillBtn" class="fill-btn" disabled>Cortar para Fill</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    const grooveBtn = document.getElementById('grooveBtn');
+    const fillBtn = document.getElementById('fillBtn');
+    const statusDiv = document.getElementById('status');
+
+    let grooveBuffer = null;
+    let fillBuffer = null;
+
+    let grooveSource = null;
+    let grooveGainNode = null; 
+
+    let grooveStartTime = 0; 
+    let loopDuration = 0;    
+
+    let isGroovePlaying = false;
+    let isPlayingFill = false; 
+
+    // Carrega e decodifica o arquivo de áudio
+    async function loadTrack(url) {
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        return await audioCtx.decodeAudioData(arrayBuffer);
+    }
+
+    async function init() {
+        try {
+            grooveBuffer = await loadTrack('groove.wav');
+            fillBuffer = await loadTrack('fill.wav');
+            
+            loopDuration = grooveBuffer.duration; 
+            
+            statusDiv.textContent = "Áudios prontos.";
+            grooveBtn.disabled = false;
+        } catch (error) {
+            statusDiv.textContent = "Erro ao carregar arquivos.";
+            console.error(error);
+        }
+    }
+
+    function toggleGroove() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        if (!isGroovePlaying) {
+            grooveStartTime = audioCtx.currentTime;
+            
+            grooveGainNode = audioCtx.createGain();
+            grooveGainNode.gain.setValueAtTime(1, grooveStartTime); 
+            grooveGainNode.connect(audioCtx.destination);
+
+            grooveSource = audioCtx.createBufferSource();
+            grooveSource.buffer = grooveBuffer;
+            grooveSource.loop = true;
+            grooveSource.connect(grooveGainNode);
+            grooveSource.start(grooveStartTime);
+            
+            isGroovePlaying = true;
+            grooveBtn.textContent = "Parar Groove";
+            grooveBtn.classList.add('active-stop');
+            fillBtn.disabled = false; 
+            statusDiv.textContent = "Groove rolando.";
+        } else {
+            stopAll();
+        }
+    }
+
+    function triggerInstantFill() {
+        if (!isGroovePlaying || isPlayingFill) return;
+
+        const now = audioCtx.currentTime;
+        isPlayingFill = true;
+        fillBtn.disabled = true;
+
+        // 1. Muta o Groove imediatamente na linha do tempo de áudio
+        grooveGainNode.gain.setValueAtTime(0, now);
+
+        // 2. Calcula onde o Groove está no ciclo atual para saber quando ele reinicia
+        const timeElapsedInCurrentLoop = (now - grooveStartTime) % loopDuration;
+        const timeRemainingInCurrentLoop = loopDuration - timeElapsedInCurrentLoop;
+        const nextLoopStartTime = now + timeRemainingInCurrentLoop;
+
+        // 3. Dispara o Fill imediatamente a partir do mesmo ponto em que o Groove estava tocando
+        const fillSource = audioCtx.createBufferSource();
+        fillSource.buffer = fillBuffer;
+        fillSource.connect(audioCtx.destination);
+        
+        // Parâmetros: start(quando iniciar, a partir de qual segundo do arquivo)
+        fillSource.start(now, timeElapsedInCurrentLoop);
+
+        // 4. Agenda o unmute do Groove para acontecer exatamente quando o ciclo atual acabar
+        grooveGainNode.gain.setValueAtTime(1, nextLoopStartTime);
+
+        // Interface Visual
+        fillBtn.textContent = "Tocando Fill...";
+        fillBtn.classList.add('playing-fill');
+        statusDiv.textContent = "Groove mutado! Tocando Fill instantaneamente.";
+
+        // Reseta o estado do botão visual assim que o ciclo atual termina e o Groove volta
+        const msUntilReturn = Math.max(0, timeRemainingInCurrentLoop * 1000);
+        setTimeout(() => {
+            if (isGroovePlaying) {
+                isPlayingFill = false;
+                fillBtn.disabled = false;
+                fillBtn.textContent = "Cortar para Fill";
+                fillBtn.classList.remove('playing-fill');
+                statusDiv.textContent = "Groove restaurado em sincronia.";
+            }
+        }, msUntilReturn);
+    }
+
+    function stopAll() {
+        if (grooveSource) {
+            try { grooveSource.stop(); } catch(e) {}
+        }
+        isGroovePlaying = false;
+        isPlayingFill = false;
+        grooveBtn.textContent = "Tocar Groove";
+        grooveBtn.classList.remove('active-stop');
+        fillBtn.disabled = true;
+        fillBtn.textContent = "Cortar para Fill";
+        fillBtn.classList.remove('playing-fill');
+        statusDiv.textContent = "Reprodução parada.";
+    }
+
+    grooveBtn.addEventListener('click', toggleGroove);
+    fillBtn.addEventListener('click', triggerInstantFill);
+
+    init();
+</script>
+
+</body>
+</html>
