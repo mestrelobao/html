@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantized Audio Loop Sync</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 350px;
+        }
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        .track-label {
+            font-weight: bold;
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 120px;
+            transition: background 0.2s;
+            color: white;
+        }
+        .groove-btn { background-color: #007bff; }
+        .groove-btn:hover { background-color: #0056b3; }
+        .fill-btn { background-color: #28a745; }
+        .fill-btn:hover { background-color: #218838; }
+        .active-stop { background-color: #dc3545 !important; }
+        .active-stop:hover { background-color: #c82333 !important; }
+        .pending { background-color: #ffc107 !important; color: #212529 !important; animation: pulse 1s infinite; }
+        button:disabled { background-color: #cccccc !important; color: white !important; cursor: not-allowed; }
+        #status { margin-top: 15px; color: #666; font-size: 14px; min-height: 20px; }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Loop Sync Quantizer</h2>
+    <div id="status">Loading loops...</div>
+
+    <div class="btn-group">
+        <!-- Groove Control -->
+        <div class="control-row">
+            <span class="track-label">Groove</span>
+            <button id="grooveBtn" class="groove-btn" disabled>Play Groove</button>
+        </div>
+
+        <!-- Fill Control -->
+        <div class="control-row">
+            <span class="track-label">Fill Loop</span>
+            <button id="fillBtn" class="fill-btn" disabled>Play Fill</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    const grooveBtn = document.getElementById('grooveBtn');
+    const fillBtn = document.getElementById('fillBtn');
+    const statusDiv = document.getElementById('status');
+
+    let grooveBuffer = null;
+    let fillBuffer = null;
+
+    let grooveSource = null;
+    let fillSource = null;
+
+    let grooveStartTime = 0; 
+    let loopDuration = 0;    
+
+    let isGroovePlaying = false;
+    let isFillPlaying = false;
+    let isFillPending = false; 
+
+    // Fetch and decode audio
+    async function loadTrack(url) {
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        return await audioCtx.decodeAudioData(arrayBuffer);
+    }
+
+    async function init() {
+        try {
+            grooveBuffer = await loadTrack('groove.wav');
+            fillBuffer = await loadTrack('fill.wav');
+            
+            // Assume identical length as per criteria
+            loopDuration = grooveBuffer.duration; 
+            
+            statusDiv.textContent = "Loops loaded and ready.";
+            grooveBtn.disabled = false;
+            fillBtn.disabled = false;
+        } catch (error) {
+            statusDiv.textContent = "Error loading assets. Verify file names.";
+            console.error(error);
+        }
+    }
+
+    // Main logic loop to find when the next loop cycle starts
+    function getNextLoopStartTime() {
+        const now = audioCtx.currentTime;
+        
+        if (!isGroovePlaying) {
+            return now; // Start instantly if groove isn't running yet
+        }
+
+        const timeElapsedInCurrentLoop = (now - grooveStartTime) % loopDuration;
+        const timeRemainingInCurrentLoop = loopDuration - timeElapsedInCurrentLoop;
+        
+        return now + timeRemainingInCurrentLoop;
+    }
+
+    function toggleGroove() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        if (!isGroovePlaying) {
+            // Start Groove
+            grooveStartTime = audioCtx.currentTime;
+            grooveSource = audioCtx.createBufferSource();
+            grooveSource.buffer = grooveBuffer;
+            grooveSource.loop = true;
+            grooveSource.connect(audioCtx.destination);
+            grooveSource.start(grooveStartTime);
+            
+            isGroovePlaying = true;
+            grooveBtn.textContent = "Stop Groove";
+            grooveBtn.classList.add('active-stop');
+            statusDiv.textContent = "Groove running.";
+        } else {
+            // Stop Groove (and force stop fill if it's attached)
+            grooveSource.stop();
+            isGroovePlaying = false;
+            grooveBtn.textContent = "Play Groove";
+            grooveBtn.classList.remove('active-stop');
+
+            if (isFillPlaying) {
+                stopFillNode();
+            }
+            statusDiv.textContent = "All playback stopped.";
+        }
+    }
+
+    function toggleFill() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        if (!isFillPlaying && !isFillPending) {
+            // Queue Fill to start precisely at the next loop iteration point
+            const targetStartTime = getNextLoopStartTime();
+            isFillPending = true;
+
+            fillBtn.textContent = "Waiting...";
+            fillBtn.classList.add('pending');
+            statusDiv.textContent = "Fill scheduled for next loop start...";
+
+            fillSource = audioCtx.createBufferSource();
+            fillSource.buffer = fillBuffer;
+            fillSource.loop = true;
+            fillSource.connect(audioCtx.destination);
+            fillSource.start(targetStartTime);
+
+            // Time JavaScript visual update to match Audio Timeline scheduling
+            const msUntilStart = Math.max(0, (targetStartTime - audioCtx.currentTime) * 1000);
+            setTimeout(() => {
+                if (isFillPending) { 
+                    isFillPending = false;
+                    isFillPlaying = true;
+                    fillBtn.textContent = "Stop Fill";
+                    fillBtn.classList.remove('pending');
+                    fillBtn.classList.add('active-stop');
+                    statusDiv.textContent = "Groove and Fill playing in sync.";
+                }
+            }, msUntilStart);
+
+        } else {
+            // Stop Fill immediately
+            stopFillNode();
+        }
+    }
+
+    function stopFillNode() {
+        isFillPending = false;
+        isFillPlaying = false;
+        
+        if (fillSource) {
+            try { fillSource.stop(); } catch(e) {}
+            fillSource = null;
+        }
+
+        fillBtn.textContent = "Play Fill";
+        fillBtn.classList.remove('active-stop', 'pending');
+        statusDiv.textContent = isGroovePlaying ? "Groove running. Fill stopped." : "Stopped.";
+    }
+
+    grooveBtn.addEventListener('click', toggleGroove);
+    fillBtn.addEventListener('click', toggleFill);
+
+    init();
+</script>
+
+</body>
+</html>
