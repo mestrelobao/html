@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Tempo dos Samples</title>
+    <title>Controle de Tempo em BPM</title>
     <style>
         body {
             font-family: sans-serif;
@@ -74,7 +74,7 @@
 <body>
 
 <div class="container">
-    <h2>Controle de Tempo e Corte</h2>
+    <h2>Controle de Andamento em BPM</h2>
     <div id="status">Carregando arquivos de áudio...</div>
 
     <div class="btn-group">
@@ -89,10 +89,10 @@
         </div>
     </div>
 
-    <!-- Novo Controle de Velocidade/Tempo -->
+    <!-- Novo Controle deslizante baseado em BPM -->
     <div class="tempo-container">
-        <div class="track-label">Velocidade (Tempo): <span id="tempoVal">1.00</span>x</div>
-        <input type="range" id="tempoSlider" min="0.5" max="2.0" step="0.05" value="1.0">
+        <div class="track-label">Andamento: <span id="bpmVal">120</span> BPM</div>
+        <input type="range" id="bpmSlider" min="60" max="180" step="1" value="140">
     </div>
 </div>
 
@@ -101,23 +101,23 @@
     
     const grooveBtn = document.getElementById('grooveBtn');
     const fillBtn = document.getElementById('fillBtn');
-    const tempoSlider = document.getElementById('tempoSlider');
-    const tempoVal = document.getElementById('tempoVal');
+    const bpmSlider = document.getElementById('bpmSlider');
+    const bpmVal = document.getElementById('bpmVal');
     const statusDiv = document.getElementById('status');
+
+    // CONFIGURAÇÃO DE SUCESSO: Mude aqui para o BPM nativo dos seus loops originais!
+    const BPM_ORIGINAL = 120; 
 
     let grooveBuffer = null;
     let fillBuffer = null;
 
     let grooveSource = null;
-    let fillSource = null; // Armazenado globalmente para ajustar o tempo em tempo real se necessário
+    let fillSource = null; 
     let grooveGainNode = null; 
 
     let grooveStartTime = 0; 
-    let baseLoopDuration = 0; // Duração original do sample    
-    let currentPlaybackRate = 1.0; // Velocidade atual
-
-    let isGroovePlaying = false;
-    let isPlayingFill = false; 
+    let baseLoopDuration = 0;    
+    let currentPlaybackRate = 1.0; 
 
     async function loadTrack(url) {
         const response = await fetch(url);
@@ -131,6 +131,10 @@
             fillBuffer = await loadTrack('fill.wav');
             baseLoopDuration = grooveBuffer.duration; 
             
+            // Sincroniza o slider padrão ao inicializar caso o BPM_ORIGINAL não seja 120
+            bpmSlider.value = BPM_ORIGINAL;
+            bpmVal.textContent = BPM_ORIGINAL;
+
             statusDiv.textContent = "Áudios prontos.";
             grooveBtn.disabled = false;
         } catch (error) {
@@ -139,7 +143,6 @@
         }
     }
 
-    // Retorna a duração ajustada com base na velocidade atual
     function getScaledLoopDuration() {
         return baseLoopDuration / currentPlaybackRate;
     }
@@ -158,7 +161,6 @@
             grooveSource.buffer = grooveBuffer;
             grooveSource.loop = true;
             
-            // Aplica a velocidade atual do slider ao iniciar
             grooveSource.playbackRate.setValueAtTime(currentPlaybackRate, grooveStartTime);
             
             grooveSource.connect(grooveGainNode);
@@ -183,19 +185,16 @@
 
         grooveGainNode.gain.setValueAtTime(0, now);
 
-        // O cálculo do tempo decorrido agora leva em conta a duração escalada pela velocidade
         const scaledDuration = getScaledLoopDuration();
         const timeElapsedInCurrentLoop = (now - grooveStartTime) % scaledDuration;
         const timeRemainingInCurrentLoop = scaledDuration - timeElapsedInCurrentLoop;
         const nextLoopStartTime = now + timeRemainingInCurrentLoop;
 
-        // Converte o tempo real decorrido de volta para a posição original do Buffer (segundos originais)
         const bufferOffset = timeElapsedInCurrentLoop * currentPlaybackRate;
 
         fillSource = audioCtx.createBufferSource();
         fillSource.buffer = fillBuffer;
         
-        // Aplica a mesma velocidade do slider ao Fill
         fillSource.playbackRate.setValueAtTime(currentPlaybackRate, now);
         fillSource.connect(audioCtx.destination);
         
@@ -218,19 +217,20 @@
         }, msUntilReturn);
     }
 
-    // Escuta as mudanças do Slider de Tempo
-    tempoSlider.addEventListener('input', (e) => {
-        currentPlaybackRate = parseFloat(e.target.value);
-        tempoVal.textContent = currentPlaybackRate.toFixed(2);
+    // Gerencia a mudança baseada no slider de BPM
+    bpmSlider.addEventListener('input', (e) => {
+        const targetBpm = parseInt(e.target.value);
+        bpmVal.textContent = targetBpm;
+
+        // Converte o BPM alvo para o multiplicador de taxa da Web Audio API
+        currentPlaybackRate = targetBpm / BPM_ORIGINAL;
 
         const now = audioCtx.currentTime;
 
-        // Se o groove estiver tocando, atualiza a velocidade dele em tempo real
         if (isGroovePlaying && grooveSource) {
             grooveSource.playbackRate.setValueAtTime(currentPlaybackRate, now);
         }
         
-        // Se o fill estiver tocando no momento da mudança, atualiza ele também
         if (isPlayingFill && fillSource) {
             fillSource.playbackRate.setValueAtTime(currentPlaybackRate, now);
         }
