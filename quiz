@@ -1,0 +1,8 @@
+### 🧠 How to add more questions in the future:
+If you want to add a third or fourth phrase later, just find line **128** in the code (`const questions = [ ... ]`) and paste a new block like this right inside the list:
+```javascript
+{
+    portuguese: "O gato está dormindo.",
+    words: ["sleeping", "cat", "is", "the"],
+    correctOrder: ["the", "cat", "is", "sleeping"]
+}
