@@ -1,298 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Language Learning Quiz - Multi-Level</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .quiz-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-            text-align: center;
-            max-width: 600px;
-            width: 100%;
-        }
-        h2 {
-            color: #333;
-            margin-bottom: 5px;
-        }
-        .prompt {
-            font-size: 26px;
-            font-weight: bold;
-            color: #1cb0f6;
-            margin-bottom: 25px;
-        }
-        .slots-container, .words-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 25px;
-            min-height: 55px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .slot {
-            width: 85px;
-            height: 48px;
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            background-color: #fafafa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background-color 0.2s, border-color 0.2s;
-        }
-        .slot.drag-over {
-            background-color: #e1f5fe;
-            border-color: #1cb0f6;
-        }
-        .word {
-            padding: 10px 18px;
-            background-color: white;
-            border: 2px solid #e5e5e5;
-            border-bottom: 4px solid #e5e5e5;
-            border-radius: 8px;
-            cursor: grab;
-            font-weight: bold;
-            color: #4b4b4b;
-            user-select: none;
-        }
-        .word:active {
-            cursor: grabbing;
-        }
-        .word.dragging {
-            opacity: 0.4;
-        }
-        .btn-container {
-            display: flex;
-            gap: 15px;
-        }
-        button {
-            color: white;
-            border: none;
-            padding: 14px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 12px;
-            cursor: pointer;
-            flex: 1;
-            transition: background-color 0.2s;
-        }
-        .check-btn {
-            background-color: #58cc02;
-            border-bottom: 4px solid #46a302;
-        }
-        .check-btn:hover { background-color: #61e002; }
-        .next-btn {
-            background-color: #1cb0f6;
-            border-bottom: 4px solid #1899d6;
-            display: none; /* Hidden until correct answer */
-        }
-        .next-btn:hover { background-color: #24bfff; }
-        button:active {
-            transform: translateY(2px);
-            border-bottom-width: 2px;
-        }
-        .feedback {
-            margin-top: 20px;
-            font-weight: bold;
-            font-size: 20px;
-            min-height: 28px;
-        }
-        .correct { color: #58cc02; }
-        .incorrect { color: #ea2b2b; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Language Quiz</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.quiz-container {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 420px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.prompt {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1cb0f6;
+    margin: 15px 0;
+}
+
+.slots-container, .words-container {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 15px 0;
+    flex-wrap: wrap;
+}
+
+.slot {
+    width: 80px;
+    height: 45px;
+    border: 2px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+}
+
+.slot.drag-over {
+    border-color: #1cb0f6;
+    background: #e8f6ff;
+}
+
+.word {
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid #ddd;
+    border-bottom: 3px solid #ccc;
+    border-radius: 8px;
+    cursor: grab;
+    font-weight: bold;
+}
+
+.word.dragging {
+    opacity: 0.4;
+}
+
+button {
+    padding: 10px;
+    margin-top: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.check-btn {
+    background: #58cc02;
+    color: white;
+}
+
+.next-btn {
+    background: #1cb0f6;
+    color: white;
+    display: none;
+}
+
+.feedback {
+    margin-top: 10px;
+    font-weight: bold;
+}
+.correct { color: green; }
+.incorrect { color: red; }
+
+</style>
 </head>
+
 <body>
 
 <div class="quiz-container">
-    <h2>Translate this sentence:</h2>
-    <div class="prompt" id="sentencePrompt">Loading...</div>
 
-    <!-- Drop Slots -->
+    <h2>Translate:</h2>
+    <div class="prompt"></div>
+
     <div class="slots-container" id="slotsContainer"></div>
-
-    <!-- Word Pool -->
     <div class="words-container" id="wordsContainer"></div>
 
-    <div class="btn-container">
-        <button class="check-btn" id="checkBtn" onclick="checkAnswer()">CHECK ANSWER</button>
-        <button class="next-btn" id="nextBtn" onclick="nextQuestion()">NEXT QUESTION →</button>
-    </div>
-    
+    <button class="check-btn" onclick="checkAnswer()">CHECK</button>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">NEXT</button>
+
     <div class="feedback" id="feedback"></div>
+
 </div>
 
 <script>
-    // System data holding your custom questions, options, and target order
-    const questions = [
-        {
-            portuguese: "O cabelo dela é azul.",
-            words: ["blue", "is", "hair", "her"],
-            correctOrder: ["her", "hair", "is", "blue"]
-        },
-        {
-            portuguese: "Eu gosto de jogar video game.",
-            words: ["like", "video", "play", "game", "I", "to"],
-            correctOrder: ["I", "like", "to", "play", "video", "game"]
-        }
-    ];
-
-    let currentQuestionIndex = 0;
-
-    function loadQuestion(index) {
-        if (index >= questions.length) {
-            document.querySelector('.quiz-container').innerHTML = "🎉 <h2>Congratulations! You finished the quiz!</h2>";
-            return;
-        }
-
-        const quiz = questions[index];
-        document.getElementById('sentencePrompt').innerText = `"${quiz.portuguese}"`;
-        document.getElementById('feedback').innerText = "";
-        document.getElementById('nextBtn').style.display = "none";
-        document.getElementById('checkBtn').style.display = "block";
-
-        // Build blank target slots dynamically
-        const slotsContainer = document.getElementById('slotsContainer');
-        slotsContainer.innerHTML = "";
-        quiz.correctOrder.forEach(() => {
-            const slot = document.createElement('div');
-            slot.className = 'slot';
-            setupSlotEvents(slot);
-            slotsContainer.appendChild(slot);
-        });
-
-        // Build word pool elements dynamically
-        const wordsContainer = document.getElementById('wordsContainer');
-        wordsContainer.innerHTML = "";
-        quiz.words.forEach((wordText, i) => {
-            const word = document.createElement('div');
-            word.className = 'word';
-            word.draggable = true;
-            word.id = `word-${i}`;
-            word.innerText = wordText;
-            setupWordEvents(word);
-            wordsContainer.appendChild(word);
-        });
+const questions = [
+    {
+        prompt: "O cabelo dela é azul.",
+        words: ["blue", "is", "hair", "her"],
+        answer: ["her", "hair", "is", "blue"]
+    },
+    {
+        prompt: "O gato é preto.",
+        words: ["black", "is", "cat", "the"],
+        answer: ["the", "cat", "is", "black"]
+    },
+    {
+        prompt: "Eu gosto de música.",
+        words: ["music", "like", "I"],
+        answer: ["I", "like", "music"]
     }
+];
 
-    // --- DRAG AND DROP SETUP LOGIC ---
+let current = 0;
 
-    function setupWordEvents(word) {
-        word.addEventListener('dragstart', (e) => {
-            word.classList.add('dragging');
-            e.dataTransfer.setData('text/plain', word.id);
-        });
+const slotsContainer = document.getElementById("slotsContainer");
+const wordsContainer = document.getElementById("wordsContainer");
 
-        word.addEventListener('dragend', () => {
-            word.classList.remove('dragging');
-        });
+function loadQuestion() {
+    const q = questions[current];
 
-        // Tap/click fallback support
-        word.addEventListener('click', () => {
-            const slotsContainer = document.getElementById('slotsContainer');
-            const wordsContainer = document.getElementById('wordsContainer');
-            
-            if (word.parentElement.classList.contains('slot')) {
-                wordsContainer.appendChild(word);
-            } else {
-                const slots = slotsContainer.querySelectorAll('.slot');
-                const firstEmptySlot = Array.from(slots).find(slot => slot.children.length === 0);
-                if (firstEmptySlot) {
-                    firstEmptySlot.appendChild(word);
-                }
-            }
-            document.getElementById('feedback').innerText = "";
-        });
-    }
+    document.querySelector(".prompt").innerText = q.prompt;
+    document.getElementById("feedback").innerText = "";
+    document.getElementById("nextBtn").style.display = "none";
 
-    function setupSlotEvents(slot) {
-        slot.addEventListener('dragover', (e) => {
+    slotsContainer.innerHTML = "";
+    wordsContainer.innerHTML = "";
+
+    // create slots
+    q.answer.forEach((_, i) => {
+        const slot = document.createElement("div");
+        slot.className = "slot";
+
+        slot.addEventListener("dragover", e => {
             e.preventDefault();
-            if (slot.children.length === 0) {
-                slot.classList.add('drag-over');
-            }
+            slot.classList.add("drag-over");
         });
 
-        slot.addEventListener('dragleave', () => {
-            slot.classList.remove('drag-over');
+        slot.addEventListener("dragleave", () => {
+            slot.classList.remove("drag-over");
         });
 
-        slot.addEventListener('drop', (e) => {
+        slot.addEventListener("drop", e => {
             e.preventDefault();
-            slot.classList.remove('drag-over');
-            if (slot.children.length === 0) {
-                const wordId = e.dataTransfer.getData('text/plain');
-                const draggedWord = document.getElementById(wordId);
-                slot.appendChild(draggedWord);
-                document.getElementById('feedback').innerText = "";
+            slot.classList.remove("drag-over");
+
+            const id = e.dataTransfer.getData("text");
+            const word = document.getElementById(id);
+
+            if (!slot.children.length) {
+                slot.appendChild(word);
             }
         });
-    }
 
-    // Initialize global wrapper zone drop rules
-    document.getElementById('wordsContainer').addEventListener('dragover', (e) => e.preventDefault());
-    document.getElementById('wordsContainer').addEventListener('drop', (e) => {
-        e.preventDefault();
-        const wordId = e.dataTransfer.getData('text/plain');
-        const draggedWord = document.getElementById(wordId);
-        document.getElementById('wordsContainer').appendChild(draggedWord);
-        document.getElementById('feedback').innerText = "";
+        slotsContainer.appendChild(slot);
     });
 
-    // --- CHECK AND ANIMATION EVALUATION LOGIC ---
+    // create words
+    q.words.forEach((w, i) => {
+        const div = document.createElement("div");
+        div.className = "word";
+        div.innerText = w;
+        div.id = "w-" + i;
 
-    function checkAnswer() {
-        const feedback = document.getElementById('feedback');
-        const slots = document.querySelectorAll('.slot');
-        const quiz = questions[currentQuestionIndex];
-        
-        let filledCount = 0;
-        let isCorrect = true;
+        div.draggable = true;
 
-        slots.forEach((slot, index) => {
-            if (slot.children.length > 0) {
-                filledCount++;
-                const wordText = slot.children[0].innerText;
-                if (wordText !== quiz.correctOrder[index]) {
-                    isCorrect = false;
-                }
-            } else {
-                isCorrect = false;
-            }
+        div.addEventListener("dragstart", e => {
+            div.classList.add("dragging");
+            e.dataTransfer.setData("text", div.id);
         });
 
-        if (filledCount < quiz.correctOrder.length) {
-            feedback.className = "feedback incorrect";
-            feedback.innerText = "Please use all the words to fill the blanks!";
-            return;
-        }
+        div.addEventListener("dragend", () => {
+            div.classList.remove("dragging");
+        });
 
-        if (isCorrect) {
-            feedback.className = "feedback correct";
-            feedback.innerText = "🎉 Amazing! You got it right!";
-            document.getElementById('nextBtn').style.display = "block";
-            document.getElementById('checkBtn').style.display = "none";
-        } else {
-            feedback.className = "feedback incorrect";
-            feedback.innerText = "❌ Not quite right. Drag them around to change order!";
+        wordsContainer.appendChild(div);
+    });
+}
+
+function checkAnswer() {
+    const q = questions[current];
+    const slots = document.querySelectorAll(".slot");
+
+    let correct = true;
+
+    slots.forEach((slot, i) => {
+        if (!slot.children.length) correct = false;
+        else {
+            const word = slot.children[0].innerText;
+            if (word !== q.answer[i]) correct = false;
         }
+    });
+
+    const feedback = document.getElementById("feedback");
+
+    if (correct) {
+        feedback.innerText = "Correct!";
+        feedback.className = "feedback correct";
+        document.getElementById("nextBtn").style.display = "block";
+    } else {
+        feedback.innerText = "Try again!";
+        feedback.className = "feedback incorrect";
+    }
+}
+
+function nextQuestion() {
+    current++;
+
+    if (current >= questions.length) {
+        document.querySelector(".quiz-container").innerHTML =
+            "<h2>🎉 Finished all questions!</h2>";
+        return;
     }
 
-    function nextQuestion() {
-        currentQuestionIndex++;
-        loadQuestion(currentQuestionIndex);
-    }
+    loadQuestion();
+}
 
-    // Boot startup initial question
+loadQuestion();
+</script>
+
+</body>
+</html>
