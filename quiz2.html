@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Learning Quiz - Drag & Drop</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .quiz-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .prompt {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1cb0f6;
+            margin-bottom: 25px;
+        }
+        .slots-container, .words-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            min-height: 55px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .slot {
+            width: 85px;
+            height: 48px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            background-color: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .slot.drag-over {
+            background-color: #e1f5fe;
+            border-color: #1cb0f6;
+        }
+        .word {
+            padding: 10px 18px;
+            background-color: white;
+            border: 2px solid #e5e5e5;
+            border-bottom: 4px solid #e5e5e5;
+            border-radius: 8px;
+            cursor: grab;
+            font-weight: bold;
+            color: #4b4b4b;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+        .word:active {
+            cursor: grabbing;
+        }
+        .word.dragging {
+            opacity: 0.4;
+        }
+        button.check-btn {
+            background-color: #58cc02;
+            color: white;
+            border: none;
+            border-bottom: 4px solid #46a302;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+        button.check-btn:hover {
+            background-color: #61e002;
+        }
+        button.check-btn:active {
+            transform: translateY(2px);
+            border-bottom-width: 2px;
+        }
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 18px;
+            min-height: 24px;
+        }
+        .correct { color: #58cc02; }
+        .incorrect { color: #ea2b2b; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2>Translate this sentence:</h2>
+    <div class="prompt">"O cabelo dela é azul."</div>
+
+    <!-- The 4 Drop Slots -->
+    <div class="slots-container" id="slotsContainer">
+        <div class="slot" data-index="0"></div>
+        <div class="slot" data-index="1"></div>
+        <div class="slot" data-index="2"></div>
+        <div class="slot" data-index="3"></div>
+    </div>
+
+    <!-- The Word Pool -->
+    <div class="words-container" id="wordsContainer">
+        <div class="word" draggable="true" id="w-blue">blue</div>
+        <div class="word" draggable="true" id="w-is">is</div>
+        <div class="word" draggable="true" id="w-hair">hair</div>
+        <div class="word" draggable="true" id="w-her">her</div>
+    </div>
+
+    <button class="check-btn" onclick="checkAnswer()">CHECK ANSWER</button>
+    <div class="feedback" id="feedback"></div>
+</div>
+
+<script>
+    const correctOrder = ["w-her", "w-hair", "w-is", "w-blue"];
+    const words = document.querySelectorAll('.word');
+    const slots = document.querySelectorAll('.slot');
+    const wordsContainer = document.getElementById('wordsContainer');
+
+    // --- DRAG AND DROP LOGIC ---
+
+    words.forEach(word => {
+        word.addEventListener('dragstart', (e) => {
+            word.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', word.id);
+        });
+
+        word.addEventListener('dragend', () => {
+            word.classList.remove('dragging');
+        });
+
+        // Click alternative for mobile/tablet users
+        word.addEventListener('click', () => {
+            if (word.parentElement.classList.contains('slot')) {
+                // If clicked inside a slot, return to the pool
+                wordsContainer.appendChild(word);
+            } else {
+                // If clicked in the pool, find first empty slot
+                const firstEmptySlot = Array.from(slots).find(slot => slot.children.length === 0);
+                if (firstEmptySlot) {
+                    firstEmptySlot.appendChild(word);
+                }
+            }
+            clearFeedback();
+        });
+    });
+
+    slots.forEach(slot => {
+        slot.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Required to allow dropping
+            if (slot.children.length === 0) {
+                slot.classList.add('drag-over');
+            }
+        });
+
+        slot.addEventListener('dragleave', () => {
+            slot.classList.remove('drag-over');
+        });
+
+        slot.addEventListener('drop', (e) => {
+            e.preventDefault();
+            slot.classList.remove('drag-over');
+            
+            // Only drop if the slot is currently empty
+            if (slot.children.length === 0) {
+                const wordId = e.dataTransfer.getData('text/plain');
+                const draggedWord = document.getElementById(wordId);
+                slot.appendChild(draggedWord);
+                clearFeedback();
+            }
+        });
+    });
+
+    // Also allow dropping words back into the main word container pool
+    wordsContainer.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+
+    wordsContainer.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const wordId = e.dataTransfer.getData('text/plain');
+        const draggedWord = document.getElementById(wordId);
+        wordsContainer.appendChild(draggedWord);
+        clearFeedback();
+    });
+
+    function clearFeedback() {
+        document.getElementById('feedback').innerText = "";
+    }
+
+    // --- EVALUATION LOGIC ---
+
+    function checkAnswer() {
+        const feedback = document.getElementById('feedback');
+        let filledCount = 0;
+        let isCorrect = true;
+
+        slots.forEach((slot, index) => {
+            if (slot.children.length > 0) {
+                filledCount++;
+                const currentWordId = slot.children[0].id;
+                if (currentWordId !== correctOrder[index]) {
+                    isCorrect = false;
+                }
+            } else {
+                isCorrect = false;
+            }
+        });
+
+        if (filledCount < 4) {
+            feedback.className = "feedback incorrect";
+            feedback.innerText = "Please drag all words into the blanks first!";
+            return;
+        }
+
+        if (isCorrect) {
+            feedback.className = "feedback correct";
+            feedback.innerText = "🎉 Perfect! You got it right!";
+        } else {
+            feedback.className = "feedback incorrect";
+            feedback.innerText = "❌ Incorrect order. Try dragging them around!";
+        }
+    }
+</script>
+
+</body>
+</html>
