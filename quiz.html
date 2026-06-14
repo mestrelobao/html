@@ -62,6 +62,7 @@ body {
     border-radius: 8px;
     cursor: grab;
     font-weight: bold;
+    user-select: none;
 }
 
 .word.dragging {
@@ -93,6 +94,7 @@ button {
     margin-top: 10px;
     font-weight: bold;
 }
+
 .correct { color: green; }
 .incorrect { color: red; }
 
@@ -127,11 +129,6 @@ const questions = [
         prompt: "O gato é preto.",
         words: ["black", "is", "cat", "the"],
         answer: ["the", "cat", "is", "black"]
-    },
-    {
-        prompt: "Eu gosto de música.",
-        words: ["music", "like", "I"],
-        answer: ["I", "like", "music"]
     }
 ];
 
@@ -150,8 +147,8 @@ function loadQuestion() {
     slotsContainer.innerHTML = "";
     wordsContainer.innerHTML = "";
 
-    // create slots
-    q.answer.forEach((_, i) => {
+    // CREATE SLOTS
+    q.answer.forEach(() => {
         const slot = document.createElement("div");
         slot.className = "slot";
 
@@ -171,21 +168,23 @@ function loadQuestion() {
             const id = e.dataTransfer.getData("text");
             const word = document.getElementById(id);
 
-            if (!slot.children.length) {
-                slot.appendChild(word);
+            // 🔥 FIX: if slot already has a word, send it back
+            if (slot.children.length > 0) {
+                wordsContainer.appendChild(slot.children[0]);
             }
+
+            slot.appendChild(word);
         });
 
         slotsContainer.appendChild(slot);
     });
 
-    // create words
+    // CREATE WORDS
     q.words.forEach((w, i) => {
         const div = document.createElement("div");
         div.className = "word";
         div.innerText = w;
         div.id = "w-" + i;
-
         div.draggable = true;
 
         div.addEventListener("dragstart", e => {
@@ -195,6 +194,20 @@ function loadQuestion() {
 
         div.addEventListener("dragend", () => {
             div.classList.remove("dragging");
+        });
+
+        // click support (mobile)
+        div.addEventListener("click", () => {
+            const parent = div.parentElement;
+
+            if (parent.classList.contains("slot")) {
+                wordsContainer.appendChild(div);
+            } else {
+                const emptySlot = Array.from(document.querySelectorAll(".slot"))
+                    .find(s => s.children.length === 0);
+
+                if (emptySlot) emptySlot.appendChild(div);
+            }
         });
 
         wordsContainer.appendChild(div);
