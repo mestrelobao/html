@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Learning Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .quiz-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .prompt {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1cb0f6;
+            margin-bottom: 25px;
+        }
+        .slots-container, .words-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            min-height: 50px;
+            flex-wrap: wrap;
+        }
+        .slot {
+            width: 80px;
+            height: 45px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            background-color: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .word {
+            padding: 10px 20px;
+            background-color: white;
+            border: 2px solid #e5e5e5;
+            border-bottom: 4px solid #e5e5e5;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #4b4b4b;
+            user-select: none;
+            transition: all 0.1s ease;
+        }
+        .word:active {
+            transform: translateY(2px);
+            border-bottom-width: 2px;
+        }
+        .word.used {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        button.check-btn {
+            background-color: #58cc02;
+            color: white;
+            border: none;
+            border-bottom: 4px solid #46a302;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+        button.check-btn:hover {
+            background-color: #61e002;
+        }
+        button.check-btn:active {
+            transform: translateY(2px);
+            border-bottom-width: 2px;
+        }
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 18px;
+            min-height: 24px;
+        }
+        .correct { color: #58cc02; }
+        .incorrect { color: #ea2b2b; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2>Translate this sentence:</h2>
+    <div class="prompt">"O cabelo dela é azul."</div>
+
+    <!-- The 4 blank squares -->
+    <div class="slots-container" id="slotsContainer">
+        <div class="slot" onclick="removeWord(0)"></div>
+        <div class="slot" onclick="removeWord(1)"></div>
+        <div class="slot" onclick="removeWord(2)"></div>
+        <div class="slot" onclick="removeWord(3)"></div>
+    </div>
+
+    <!-- The moveable word pool -->
+    <div class="words-container" id="wordsContainer">
+        <div class="word" onclick="selectWord(this, 'blue')">blue</div>
+        <div class="word" onclick="selectWord(this, 'is')">is</div>
+        <div class="word" onclick="selectWord(this, 'hair')">hair</div>
+        <div class="word" onclick="selectWord(this, 'her')">her</div>
+    </div>
+
+    <button class="check-btn" onclick="checkAnswer()">CHECK ANSWER</button>
+    <div class="feedback" id="feedback"></div>
+</div>
+
+<script>
+    const correctOrder = ["her", "hair", "is", "blue"];
+    let currentAnswers = [null, null, null, null];
+
+    function selectWord(wordElement, wordText) {
+        // Find the first empty slot
+        const emptyIndex = currentAnswers.indexOf(null);
+        if (emptyIndex !== -1) {
+            currentAnswers[emptyIndex] = { text: wordText, element: wordElement };
+            wordElement.classList.add('used');
+            updateSlots();
+        }
+    }
+
+    function removeWord(index) {
+        if (currentAnswers[index]) {
+            // Put the word back in the pool
+            currentAnswers[index].element.classList.remove('used');
+            currentAnswers[index] = null;
+            updateSlots();
+        }
+    }
+
+    function updateSlots() {
+        const slots = document.querySelectorAll('.slot');
+        slots.forEach((slot, index) => {
+            if (currentAnswers[index]) {
+                slot.innerHTML = `<div class="word">${currentAnswers[index].text}</div>`;
+                slot.style.borderStyle = "solid";
+            } else {
+                slot.innerHTML = "";
+                slot.style.borderStyle = "dashed";
+            }
+        });
+    }
+
+    function checkAnswer() {
+        const feedback = document.getElementById('feedback');
+        
+        // Check if all slots are filled
+        if (currentAnswers.includes(null)) {
+            feedback.className = "feedback incorrect";
+            feedback.innerText = "Please fill all blanks first!";
+            return;
+        }
+
+        // Compare answer strings
+        const isCorrect = currentAnswers.every((ans, index) => ans.text === correctOrder[index]);
+
+        if (isCorrect) {
+            feedback.className = "feedback correct";
+            feedback.innerText = "🎉 Amazing! That is correct!";
+        } else {
+            feedback.className = "feedback incorrect";
+            feedback.innerText = "❌ Not quite right. Try arranging them again!";
+        }
+    }
+</script>
+
+</body>
+</html>
