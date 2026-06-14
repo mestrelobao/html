@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Language Learning Quiz</title>
+    <title>Language Learning Quiz - Drag & Drop</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -38,38 +38,42 @@
             justify-content: center;
             gap: 10px;
             margin-bottom: 25px;
-            min-height: 50px;
+            min-height: 55px;
             flex-wrap: wrap;
+            align-items: center;
         }
         .slot {
-            width: 80px;
-            height: 45px;
+            width: 85px;
+            height: 48px;
             border: 2px dashed #ccc;
             border-radius: 8px;
             background-color: #fafafa;
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .slot.drag-over {
+            background-color: #e1f5fe;
+            border-color: #1cb0f6;
         }
         .word {
-            padding: 10px 20px;
+            padding: 10px 18px;
             background-color: white;
             border: 2px solid #e5e5e5;
             border-bottom: 4px solid #e5e5e5;
             border-radius: 8px;
-            cursor: pointer;
+            cursor: grab;
             font-weight: bold;
             color: #4b4b4b;
             user-select: none;
-            transition: all 0.1s ease;
+            transition: transform 0.1s;
         }
         .word:active {
-            transform: translateY(2px);
-            border-bottom-width: 2px;
+            cursor: grabbing;
         }
-        .word.used {
-            opacity: 0.3;
-            pointer-events: none;
+        .word.dragging {
+            opacity: 0.4;
         }
         button.check-btn {
             background-color: #58cc02;
@@ -107,20 +111,20 @@
     <h2>Translate this sentence:</h2>
     <div class="prompt">"O cabelo dela é azul."</div>
 
-    <!-- The 4 blank squares -->
+    <!-- The 4 Drop Slots -->
     <div class="slots-container" id="slotsContainer">
-        <div class="slot" onclick="removeWord(0)"></div>
-        <div class="slot" onclick="removeWord(1)"></div>
-        <div class="slot" onclick="removeWord(2)"></div>
-        <div class="slot" onclick="removeWord(3)"></div>
+        <div class="slot" data-index="0"></div>
+        <div class="slot" data-index="1"></div>
+        <div class="slot" data-index="2"></div>
+        <div class="slot" data-index="3"></div>
     </div>
 
-    <!-- The moveable word pool -->
+    <!-- The Word Pool -->
     <div class="words-container" id="wordsContainer">
-        <div class="word" onclick="selectWord(this, 'blue')">blue</div>
-        <div class="word" onclick="selectWord(this, 'is')">is</div>
-        <div class="word" onclick="selectWord(this, 'hair')">hair</div>
-        <div class="word" onclick="selectWord(this, 'her')">her</div>
+        <div class="word" draggable="true" id="w-blue">blue</div>
+        <div class="word" draggable="true" id="w-is">is</div>
+        <div class="word" draggable="true" id="w-hair">hair</div>
+        <div class="word" draggable="true" id="w-her">her</div>
     </div>
 
     <button class="check-btn" onclick="checkAnswer()">CHECK ANSWER</button>
@@ -128,60 +132,113 @@
 </div>
 
 <script>
-    const correctOrder = ["her", "hair", "is", "blue"];
-    let currentAnswers = [null, null, null, null];
+    const correctOrder = ["w-her", "w-hair", "w-is", "w-blue"];
+    const words = document.querySelectorAll('.word');
+    const slots = document.querySelectorAll('.slot');
+    const wordsContainer = document.getElementById('wordsContainer');
 
-    function selectWord(wordElement, wordText) {
-        // Find the first empty slot
-        const emptyIndex = currentAnswers.indexOf(null);
-        if (emptyIndex !== -1) {
-            currentAnswers[emptyIndex] = { text: wordText, element: wordElement };
-            wordElement.classList.add('used');
-            updateSlots();
-        }
-    }
+    // --- DRAG AND DROP LOGIC ---
 
-    function removeWord(index) {
-        if (currentAnswers[index]) {
-            // Put the word back in the pool
-            currentAnswers[index].element.classList.remove('used');
-            currentAnswers[index] = null;
-            updateSlots();
-        }
-    }
+    words.forEach(word => {
+        word.addEventListener('dragstart', (e) => {
+            word.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', word.id);
+        });
 
-    function updateSlots() {
-        const slots = document.querySelectorAll('.slot');
-        slots.forEach((slot, index) => {
-            if (currentAnswers[index]) {
-                slot.innerHTML = `<div class="word">${currentAnswers[index].text}</div>`;
-                slot.style.borderStyle = "solid";
+        word.addEventListener('dragend', () => {
+            word.classList.remove('dragging');
+        });
+
+        // Click alternative for mobile/tablet users
+        word.addEventListener('click', () => {
+            if (word.parentElement.classList.contains('slot')) {
+                // If clicked inside a slot, return to the pool
+                wordsContainer.appendChild(word);
             } else {
-                slot.innerHTML = "";
-                slot.style.borderStyle = "dashed";
+                // If clicked in the pool, find first empty slot
+                const firstEmptySlot = Array.from(slots).find(slot => slot.children.length === 0);
+                if (firstEmptySlot) {
+                    firstEmptySlot.appendChild(word);
+                }
+            }
+            clearFeedback();
+        });
+    });
+
+    slots.forEach(slot => {
+        slot.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Required to allow dropping
+            if (slot.children.length === 0) {
+                slot.classList.add('drag-over');
             }
         });
+
+        slot.addEventListener('dragleave', () => {
+            slot.classList.remove('drag-over');
+        });
+
+        slot.addEventListener('drop', (e) => {
+            e.preventDefault();
+            slot.classList.remove('drag-over');
+            
+            // Only drop if the slot is currently empty
+            if (slot.children.length === 0) {
+                const wordId = e.dataTransfer.getData('text/plain');
+                const draggedWord = document.getElementById(wordId);
+                slot.appendChild(draggedWord);
+                clearFeedback();
+            }
+        });
+    });
+
+    // Also allow dropping words back into the main word container pool
+    wordsContainer.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+
+    wordsContainer.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const wordId = e.dataTransfer.getData('text/plain');
+        const draggedWord = document.getElementById(wordId);
+        wordsContainer.appendChild(draggedWord);
+        clearFeedback();
+    });
+
+    function clearFeedback() {
+        document.getElementById('feedback').innerText = "";
     }
+
+    // --- EVALUATION LOGIC ---
 
     function checkAnswer() {
         const feedback = document.getElementById('feedback');
-        
-        // Check if all slots are filled
-        if (currentAnswers.includes(null)) {
+        let filledCount = 0;
+        let isCorrect = true;
+
+        slots.forEach((slot, index) => {
+            if (slot.children.length > 0) {
+                filledCount++;
+                const currentWordId = slot.children[0].id;
+                if (currentWordId !== correctOrder[index]) {
+                    isCorrect = false;
+                }
+            } else {
+                isCorrect = false;
+            }
+        });
+
+        if (filledCount < 4) {
             feedback.className = "feedback incorrect";
-            feedback.innerText = "Please fill all blanks first!";
+            feedback.innerText = "Please drag all words into the blanks first!";
             return;
         }
 
-        // Compare answer strings
-        const isCorrect = currentAnswers.every((ans, index) => ans.text === correctOrder[index]);
-
         if (isCorrect) {
             feedback.className = "feedback correct";
-            feedback.innerText = "🎉 Amazing! That is correct!";
+            feedback.innerText = "🎉 Perfect! You got it right!";
         } else {
             feedback.className = "feedback incorrect";
-            feedback.innerText = "❌ Not quite right. Try arranging them again!";
+            feedback.innerText = "❌ Incorrect order. Try dragging them around!";
         }
     }
 </script>
