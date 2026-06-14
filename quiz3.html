@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Language Learning Quiz</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.quiz-container {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+.prompt {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1cb0f6;
+    margin: 20px 0;
+}
+
+.slots-container,
+.words-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+    min-height: 60px;
+}
+
+.slot {
+    min-width: 90px;
+    height: 50px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    background: #fafafa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slot.drag-over {
+    background: #e1f5fe;
+    border-color: #1cb0f6;
+}
+
+.word {
+    padding: 10px 18px;
+    background: white;
+    border: 2px solid #e5e5e5;
+    border-bottom: 4px solid #e5e5e5;
+    border-radius: 8px;
+    cursor: grab;
+    font-weight: bold;
+    user-select: none;
+}
+
+.word.dragging {
+    opacity: 0.4;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.check-btn {
+    background: #58cc02;
+    color: white;
+}
+
+.next-btn {
+    background: #1cb0f6;
+    color: white;
+}
+
+.feedback {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    min-height: 24px;
+}
+
+.correct {
+    color: #58cc02;
+}
+
+.incorrect {
+    color: #ea2b2b;
+}
+
+.progress {
+    margin-bottom: 10px;
+    color: #777;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<div class="quiz-container">
+
+    <div class="progress" id="progress"></div>
+
+    <h2>Translate this sentence:</h2>
+
+    <div class="prompt" id="prompt"></div>
+
+    <div class="slots-container" id="slotsContainer"></div>
+
+    <div class="words-container" id="wordsContainer"></div>
+
+    <div class="buttons">
+        <button class="check-btn" onclick="checkAnswer()">
+            CHECK ANSWER
+        </button>
+
+        <button class="next-btn" onclick="nextQuestion()">
+            NEXT
+        </button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+</div>
+
+<script>
+
+const questions = [
+{
+    prompt: "O cabelo dela é azul.",
+    words: [
+        {id:"her", text:"her"},
+        {id:"hair", text:"hair"},
+        {id:"is", text:"is"},
+        {id:"blue", text:"blue"}
+    ],
+    correctOrder: ["her","hair","is","blue"]
+},
+
+{
+    prompt: "Eu gosto de café.",
+    words: [
+        {id:"i", text:"I"},
+        {id:"like", text:"like"},
+        {id:"coffee", text:"coffee"}
+    ],
+    correctOrder: ["i","like","coffee"]
+},
+
+{
+    prompt: "Nós somos amigos.",
+    words: [
+        {id:"we", text:"We"},
+        {id:"are", text:"are"},
+        {id:"friends", text:"friends"}
+    ],
+    correctOrder: ["we","are","friends"]
+},
+
+{
+    prompt: "Ela gosta de gatos.",
+    words: [
+        {id:"she", text:"She"},
+        {id:"likes", text:"likes"},
+        {id:"cats", text:"cats"}
+    ],
+    correctOrder: ["she","likes","cats"]
+}
+];
+
+let currentQuestion = 0;
+
+const promptElement = document.getElementById("prompt");
+const slotsContainer = document.getElementById("slotsContainer");
+const wordsContainer = document.getElementById("wordsContainer");
+const feedback = document.getElementById("feedback");
+const progress = document.getElementById("progress");
+
+function shuffle(array) {
+    return [...array].sort(() => Math.random() - 0.5);
+}
+
+function loadQuestion(index) {
+
+    const q = questions[index];
+
+    progress.textContent =
+        `Question ${index + 1} of ${questions.length}`;
+
+    promptElement.textContent = `"${q.prompt}"`;
+
+    slotsContainer.innerHTML = "";
+    wordsContainer.innerHTML = "";
+    feedback.textContent = "";
+    feedback.className = "feedback";
+
+    q.correctOrder.forEach((_, slotIndex) => {
+
+        const slot = document.createElement("div");
+        slot.className = "slot";
+        slot.dataset.index = slotIndex;
+
+        slot.addEventListener("dragover", e => {
+            e.preventDefault();
+            if(slot.children.length === 0){
+                slot.classList.add("drag-over");
+            }
+        });
+
+        slot.addEventListener("dragleave", () => {
+            slot.classList.remove("drag-over");
+        });
+
+        slot.addEventListener("drop", e => {
+
+            e.preventDefault();
+            slot.classList.remove("drag-over");
+
+            const wordId =
+                e.dataTransfer.getData("text/plain");
+
+            const draggedWord =
+                document.getElementById(wordId);
+
+            if(slot.children.length === 0){
+                slot.appendChild(draggedWord);
+            }
+
+            clearFeedback();
+        });
+
+        slotsContainer.appendChild(slot);
+    });
+
+    shuffle(q.words).forEach(wordData => {
+
+        const word = document.createElement("div");
+
+        word.className = "word";
+        word.id = wordData.id;
+        word.textContent = wordData.text;
+        word.draggable = true;
+
+        word.addEventListener("dragstart", e => {
+            word.classList.add("dragging");
+            e.dataTransfer.setData(
+                "text/plain",
+                word.id
+            );
+        });
+
+        word.addEventListener("dragend", () => {
+            word.classList.remove("dragging");
+        });
+
+        word.addEventListener("click", () => {
+
+            const slots =
+                document.querySelectorAll(".slot");
+
+            if(word.parentElement.classList.contains("slot")) {
+
+                wordsContainer.appendChild(word);
+
+            } else {
+
+                const emptySlot =
+                    Array.from(slots)
+                    .find(slot => slot.children.length === 0);
+
+                if(emptySlot){
+                    emptySlot.appendChild(word);
+                }
+            }
+
+            clearFeedback();
+        });
+
+        wordsContainer.appendChild(word);
+    });
+}
+
+wordsContainer.addEventListener("dragover", e => {
+    e.preventDefault();
+});
+
+wordsContainer.addEventListener("drop", e => {
+
+    e.preventDefault();
+
+    const wordId =
+        e.dataTransfer.getData("text/plain");
+
+    const draggedWord =
+        document.getElementById(wordId);
+
+    wordsContainer.appendChild(draggedWord);
+
+    clearFeedback();
+});
+
+function clearFeedback() {
+    feedback.textContent = "";
+    feedback.className = "feedback";
+}
+
+function checkAnswer() {
+
+    const slots =
+        document.querySelectorAll(".slot");
+
+    const correct =
+        questions[currentQuestion].correctOrder;
+
+    let allFilled = true;
+    let isCorrect = true;
+
+    slots.forEach((slot, index) => {
+
+        if(slot.children.length === 0) {
+            allFilled = false;
+            isCorrect = false;
+            return;
+        }
+
+        const wordId =
+            slot.children[0].id;
+
+        if(wordId !== correct[index]) {
+            isCorrect = false;
+        }
+    });
+
+    if(!allFilled) {
+
+        feedback.className =
+            "feedback incorrect";
+
+        feedback.textContent =
+            "Please place all words first.";
+
+        return;
+    }
+
+    if(isCorrect) {
+
+        feedback.className =
+            "feedback correct";
+
+        feedback.textContent =
+            "🎉 Correct!";
+
+    } else {
+
+        feedback.className =
+            "feedback incorrect";
+
+        feedback.textContent =
+            "❌ Incorrect. Try again.";
+    }
+}
+
+function nextQuestion() {
+
+    currentQuestion++;
+
+    if(currentQuestion >= questions.length) {
+
+        alert("🎉 Quiz completed!");
+
+        currentQuestion = 0;
+    }
+
+    loadQuestion(currentQuestion);
+}
+
+loadQuestion(0);
+
+</script>
+
+</body>
+</html>
