@@ -154,7 +154,8 @@ button {
 </div>
 
 <script>
-
+const wrong = new Audio('wrong.mp3');
+const right = new Audio('right.mp3');
 const questions = [
 {
     prompt: "O cabelo dela é azul.",
@@ -389,6 +390,7 @@ function checkAnswer() {
 
         feedback.textContent =
             "🎉 Correct!";
+        correct.play();
 
     } else {
 
@@ -397,6 +399,8 @@ function checkAnswer() {
 
         feedback.textContent =
             "❌ Incorrect. Try again.";
+                wrong.play();
+
     }
 }
 
