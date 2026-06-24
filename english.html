@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Language Learning Hub</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.quiz-container {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+}
+
+h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.prompt {
+    font-size: 18px;
+    color: #777;
+    margin: 10px 0 25px 0;
+}
+
+/* Menu Layout & Navigation links matching your theme */
+.menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.menu-link {
+    display: block;
+    padding: 20px;
+    background: white;
+    border: 2px solid #e5e5e5;
+    border-bottom: 4px solid #e5e5e5;
+    border-radius: 12px;
+    text-decoration: none; /* Removes underline from links */
+    color: #333;
+    font-weight: bold;
+    font-size: 16px;
+    transition: transform 0.1s, border-color 0.2s, background-color 0.2s;
+}
+
+.menu-link:hover {
+    background: #fafafa;
+    border-color: #1cb0f6;
+}
+
+.menu-link:active {
+    transform: translateY(2px);
+    border-bottom-width: 2px;
+}
+
+.menu-subtitle {
+    display: block;
+    font-size: 12px;
+    color: #777;
+    margin-top: 5px;
+    text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+
+<div class="quiz-container">
+
+    <h2>Choose Your Challenge</h2>
+    <p class="prompt">Select a mode below to start practicing</p>
+
+    <div class="menu-grid">
+        <!-- Update the href values below to link to your specific files -->
+        <a href="sentences-easy.html" class="menu-link">
+            Sentences
+            <span class="menu-subtitle">🟢 Easy</span>
+        </a>
+
+        <a href="sentences-hard.html" class="menu-link">
+            Sentences
+            <span class="menu-subtitle">🔴 Hard</span>
+        </a>
+
+        <a href="words-easy.html" class="menu-link">
+            Words
+            <span class="menu-subtitle">🟢 Easy</span>
+        </a>
+
+        <a href="words-hard.html" class="menu-link">
+            Words
+            <span class="menu-subtitle">🔴 Hard</span>
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>
