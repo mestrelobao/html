@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Language Learning Quiz - Text Inputs</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.quiz-container {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+.prompt {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1cb0f6;
+    margin: 20px 0;
+}
+
+/* Container holding the text input elements */
+.input-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 25px;
+    min-height: 60px;
+}
+
+/* Styled text box fields */
+.word-input {
+    width: 100px;
+    height: 45px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background: #fafafa;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.word-input:focus {
+    border-color: #1cb0f6;
+    background: #ffffff;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.check-btn {
+    background: #58cc02;
+    color: white;
+}
+
+.next-btn {
+    background: #1cb0f6;
+    color: white;
+}
+
+.feedback {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    min-height: 24px;
+}
+
+.correct {
+    color: #58cc02;
+}
+
+.incorrect {
+    color: #ea2b2b;
+}
+
+.progress {
+    margin-bottom: 10px;
+    color: #777;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<div class="quiz-container">
+
+    <div class="progress" id="progress"></div>
+
+    <h2>Translate this sentence:</h2>
+
+    <div class="prompt" id="prompt"></div>
+
+    <!-- Replaced slot containers with a unified input layout -->
+    <div class="input-container" id="inputContainer"></div>
+
+    <div class="buttons">
+        <button class="check-btn" onclick="checkAnswer()">
+            CHECK ANSWER
+        </button>
+
+        <button class="next-btn" onclick="nextQuestion()">
+            NEXT
+        </button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+</div>
+
+<script>
+const wrong = new Audio('wrong.mp3');
+const right = new Audio('right.mp3');
+const questions = [
+{
+    prompt: "O cabelo dela é azul.",
+    correctOrder: ["her","hair","is","blue"]
+},
+{
+    prompt: "Eu gosto de café.",
+    correctOrder: ["i","like","coffee"]
+},
+{
+    prompt: "Nós somos amigos.",
+    correctOrder: ["we","are","friends"]
+},
+{
+    prompt: "Ela gosta de gatos.",
+    correctOrder: ["she","likes","cats"]
+},
+{
+    prompt: "Azul",
+    correctOrder: ["b","l","u","e"]
+}
+];
+
+let currentQuestion = 0;
+
+const promptElement = document.getElementById("prompt");
+const inputContainer = document.getElementById("inputContainer");
+const feedback = document.getElementById("feedback");
+const progress = document.getElementById("progress");
+
+function loadQuestion(index) {
+    if (index >= questions.length) {
+        showQuizFinished();
+        return;
+    }
+
+    const q = questions[index];
+
+    progress.textContent = `Question ${index + 1} of ${questions.length}`;
+    promptElement.textContent = `"${q.prompt}"`;
+
+    inputContainer.innerHTML = "";
+    clearFeedback();
+
+    // Create an input textbox for every expected word in the array
+    q.correctOrder.forEach((_, inputIndex) => {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "word-input";
+        input.dataset.index = inputIndex;
+        input.placeholder = `Word ${inputIndex + 1}`;
+        input.autocomplete = "off";
+
+        // Optional UX: clear validation warning as soon as user types
+        input.addEventListener("input", clearFeedback);
+
+        inputContainer.appendChild(input);
+    });
+}
+
+function clearFeedback() {
+    feedback.textContent = "";
+    feedback.className = "feedback";
+}
+
+function checkAnswer() {
+    if (currentQuestion >= questions.length) return;
+
+    const inputs = document.querySelectorAll(".word-input");
+    const correct = questions[currentQuestion].correctOrder;
+
+    let allFilled = true;
+    let isCorrect = true;
+
+    inputs.forEach((input, index) => {
+        // Clean up text input data (strip out extra whitespaces and make lowercase)
+        const userValue = input.value.trim().toLowerCase();
+        const expectedValue = correct[index].toLowerCase();
+
+        if (userValue === "") {
+            allFilled = false;
+            isCorrect = false;
+            return;
+        }
+
+        if (userValue !== expectedValue) {
+            isCorrect = false;
+        }
+    });
+
+    if (!allFilled) {
+        feedback.className = "feedback incorrect";
+        feedback.textContent = "Please fill out all textboxes first.";
+        return;
+    }
+
+    if (isCorrect) {
+        feedback.className = "feedback correct";
+        feedback.textContent = "🎉 Correct!";
+        right.play().catch(e => console.log("Audio play blocked/failed:", e));
+    } else {
+        feedback.className = "feedback incorrect";
+        feedback.textContent = "❌ Incorrect. Try again.";
+        wrong.play().catch(e => console.log("Audio play blocked/failed:", e));
+    }
+}
+
+function nextQuestion() {
+    currentQuestion++;
+    loadQuestion(currentQuestion);
+}
+
+function showQuizFinished() {
+    progress.textContent = "Completed!";
+    promptElement.textContent = "🏆 Quiz Finished!";
+    inputContainer.innerHTML = "";
+    feedback.className = "feedback correct";
+    feedback.textContent = "Great job finishing all questions!";
+    
+    document.querySelectorAll(".buttons button").forEach(btn => {
+        btn.disabled = true;
+        btn.style.opacity = 0.5;
+        btn.style.cursor = "not-allowed";
+    });
+}
+
+// Start quiz structure
+loadQuestion(currentQuestion);
+</script>
+
+</body>
+</html>
